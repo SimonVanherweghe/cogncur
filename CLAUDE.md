@@ -13,6 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `make test`: the test bank
   - `make qa`: fontbakery + diffenator2, both informational only.
 - `make selftest` – reference vs itself; it must PASS with zero differences. Run it after changing `tests/compare.py`.
+- `make designer` – `sources` + `build` + `scripts/designer_files.py`. Run it after **any** glyph change, then commit + push `docs/ontwerper/` (the issue comments link to `main`). Remind the user if a glyph changed and this wasn't done.
 - `make artifact` – package `tools/live.html` + both fonts into `build/artifact/`. Republish that folder to the private artifact https://claude.ai/artifact/VMeKGZgUarp7qicDM7stXy (the same file path keeps the URL). The tool is in Dutch, with a feature table (designer descriptions) and config codes `vtex: ss03 ss08 -kern`; the link form is `#vtex-ss03-ss08-nokern`, since artifacts only pass plain hash names.
 - `make serve` – opens `tools/live.html` at http://127.0.0.1:8765/tools/live.html. It shows the original and new fonts overlaid or on separate lines, with colour, opacity and OpenType toggles. Fonts are loaded by fetch, so file:// won't work. Both fonts get the same ascent/descent overrides so their baselines align.
 - To test a single font against the reference: `.venv/bin/python tests/compare.py upstream/fonts/cogncur.ttf <font.ttf> --out <dir>`

@@ -20,6 +20,20 @@ make venv        # Python-omgeving met de font-tools
 make upstream    # haalt het origineel op (vastgezette versie in upstream.lock)
 make all         # bron maken → bouwen → testen → Google Fonts-controles
 make serve       # vergelijkingstool op http://127.0.0.1:8765/tools/live.html
+make designer    # bestanden voor de ontwerper opnieuw maken (zie hieronder)
 ```
 
 Rapporten komen in `tests/report/`. Meer uitleg voor ontwikkelaars staat in `CLAUDE.md`.
+
+## Na een wijziging aan een teken
+
+De issues voor de ontwerper (label `ontwerper`) linken naar bewerkbare SVG- en EPS-bestanden in
+`docs/ontwerper/`. Die worden niet vanzelf bijgewerkt. Na elke wijziging aan een teken:
+
+1. `make designer`: bouwt het lettertype opnieuw en maakt de bestanden opnieuw.
+2. Commit en push `docs/ontwerper/` naar `main`. De links in de issues wijzen altijd naar `main`,
+   dus de ontwerper ziet dan meteen de nieuwe versie. Je hoeft in de issues niets aan te passen.
+
+Komt er een nieuw issue voor de ontwerper bij? Zet de tekens in `"bestanden"` in
+`scripts/issues.py`, doe stap 1 en 2, en daarna `.venv/bin/python scripts/issues.py --files`
+(dat plaatst de reactie met de links, maar nooit twee keer).
