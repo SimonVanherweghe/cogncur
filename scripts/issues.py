@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
-from render_sample import render_lines  # noqa: E402
+from render_sample import render_lines, render_rows  # noqa: E402
 
 sys.path.insert(0, str(ROOT / "tests"))
 from compare import Font  # noqa: E402
@@ -25,6 +25,65 @@ REPO = "SimonVanherweghe/cogncur-tex"
 FONT = ROOT / "fonts" / "ttf" / "Vtex-Regular.ttf"
 IMG = ROOT / "docs" / "img"
 IMG_URL = f"https://github.com/{REPO}/blob/main/docs/img"
+TOOL_URL = "https://claude.ai/artifact/VMeKGZgUarp7qicDM7stXy"  # private artifact (make artifact)
+
+# Default letterforms: one comment per variant, so a 👍 means exactly one thing.
+# (id, title, description, features, sample) - descriptions follow the designer's documentation.
+FEATURE_OPTIONS = [
+    ("origineel", "Alles zoals het origineel", "Geen extra opties: de vormen zoals Cogncur ze standaard heeft.", [], "toot puddle yummy wow"),
+    ("ss01", "Geen instreken vanaf de basislijn", "Korte instreken aan het begin van een woord; geen instreek bij a, c, d, g, o, q.", ["ss01"], "abcde dag"),
+    ("ss02", "Geen uithalen aan s, p en ß", "Het ‘staartje’ aan het einde van s, p en ß verdwijnt.", ["ss02"], "kiss rap fuß"),
+    ("ss03", "Kortere stokken", "Stokken boven en onder de lijnen zijn 2/3 zo lang als lussen.", ["ss03"], "puddle"),
+    ("ss04", "f en q: andere verbinding", "f verbindt met een boog vanuit het midden, q vanaf onderaan.", ["ss04"], "ffqu fijn"),
+    ("ss05", "f en q: met penlift", "Na f en q wordt de pen opgetild.", ["ss05"], "ffqu fijn"),
+    ("ss04-ss05", "f en q: andere verbinding én penlift", "De combinatie van ss04 en ss05.", ["ss04", "ss05"], "ffqu fijn"),
+    ("ss06", "s met een buikje", "Een s met een bolle onderkant in plaats van de slanke s.", ["ss06"], "kiss zus"),
+    ("ss07", "Drukletter-r", "Een r die meer op de drukletter lijkt.", ["ss07"], "err rood"),
+    ("ss08", "Moderne t (met boogje)", "De bekende drukletter-t. Standaard volgt de t de Duitse en Nederlandse traditie.", ["ss08"], "toot tante"),
+    ("ss08-ss09", "Moderne t met rechte verbinding", "Moderne t met een rechte verbinding, zoals in veel Nederlandse methodes.", ["ss08", "ss09"], "toot tante"),
+    ("ss11", "r en z beginnen met een hoek", "r, z en Z beginnen met een hoek in plaats van een boog.", ["ss11"], "rz Z zero"),
+    ("ss12", "Ronde verbindingen (onderbogen)", "Rechte stukjes in verbindingen worden bogen. **De ontwerper raadt dit af.**", ["ss12"], "impunity"),
+    ("ss13", "y begint met een hoek", "y begint met een hoek, zoals i; geldt ook voor de ij.", ["ss13"], "yummy bij"),
+    ("ss14", "w begint met een boog", "w begint met een boog, zoals v.", ["ss14"], "wow water"),
+    ("ss15", "p begint met een boog", "p begint met een boog, zoals n.", ["ss15"], "pup appel"),
+    ("ss16", "Open p", "p zonder gesloten lus; verbindt zoals de n.", ["ss16"], "pup appel"),
+    ("ss15-ss16", "Open p die met een boog begint", "De combinatie van ss15 en ss16.", ["ss15", "ss16"], "pup appel"),
+    ("ss19", "C, G en L zonder beginlus", "Eenvoudigere hoofdletters C, G en L.", ["ss19"], "Cc Gg Ll"),
+    ("ss20", "A, M en N als grote schrijfletters", "A, M en N lijken op vergrote kleine letters.", ["ss20"], "Aa Mm Nn"),
+    ("ss17", "Cijfervarianten 1", "Andere vormen voor sommige cijfers.", ["ss17"], "1234567890"),
+    ("ss18", "Cijfervarianten 2", "Andere vormen voor sommige cijfers.", ["ss18"], "1234567890"),
+    ("ss17-ss18", "Cijfervarianten 1 en 2 samen", "Met beide samen krijgen 4 en 7 nog een andere vorm.", ["ss17", "ss18"], "1234567890"),
+    ("tnum", "Even brede cijfers", "Alle cijfers even breed, handig voor rekenopgaven onder elkaar.", ["tnum"], "1111 2020"),
+    ("onum", "Mediaevalcijfers", "Cijfers met stokken boven en onder de lijn.", ["onum"], "1234567890"),
+]
+
+FEATURES_BODY = f"""<!-- beslissing:standaardvormen -->
+## Waarover gaat het?
+
+In **Google Docs, Google Slides** en op de meeste websites kan je de extra opties van een lettertype (de "stijlvarianten") niet aan- of uitzetten. **Wat standaard aan staat, krijgt iedereen.**
+
+Cogncur heeft veel varianten, bijvoorbeeld een moderne t, een drukletter-r of kortere stokken. Ze staan nu allemaal uit. Welke vormen moeten in Vtex standaard zijn?
+
+## Zelf uitproberen
+
+In de **vergelijkingstool** typ je je eigen tekst en zet je varianten aan of uit. Je ziet meteen het resultaat op schrijflijnen. Bovenaan rechts staat je keuze als **code** (bijvoorbeeld `vtex: ss03 ss08 ss09`), met een knop om ze te kopiëren.
+
+👉 {TOOL_URL}
+_(Opent de link niet? Vraag Simon om toegang.)_
+
+## Hoe stemmen?
+
+1. Hieronder staat **voor elke variant een aparte reactie**, met een voorbeeld: blauw zonder, rood met.
+2. Geef een 👍 bij **elke variant die je standaard wilt**. Meerdere mag. Varianten van dezelfde letter sluiten elkaar uit: kies er per letter één (bv. één keuze voor de t).
+3. Wil je je volledige keuze delen? Kopieer de code uit de tool en plak ze in een reactie onderaan. Zet erbij voor welk leerjaar of welke schrijfmethode, en waarom.
+
+## Wat gebeurt er met het resultaat?
+
+De gekozen vormen worden de standaardvormen van Vtex. Google doet dat ook bij zijn eigen schoolschrift **Playwrite** (bijvoorbeeld *Playwrite BE VLG* voor Vlaanderen): vaste vormen per land. In Word of LibreOffice kan je de andere vormen nog altijd zelf kiezen.
+
+_Werknaam van het lettertype: Vtex. De naam "Cogncur" is voorbehouden aan de oorspronkelijke ontwerper._
+"""
+
 
 VOTE_DRAFT = [
     ("Akkoord", "Deze schets mag zo in het lettertype."),
@@ -169,6 +228,22 @@ DECISIONS = [
 ]
 
 
+DECISIONS.append({
+    "id": "standaardvormen", "labels": ["leerkrachten"],
+    "titel": "Welke lettervormen moeten standaard zijn?",
+    "body": FEATURES_BODY,
+    "feature_options": FEATURE_OPTIONS,
+})
+
+
+def render_feature_options(font):
+    for oid, title, _desc, feats, sample in FEATURE_OPTIONS:
+        rows = [("zonder" if feats else "standaard", sample, {}, "1E4FB8")]
+        if feats:
+            rows.append(("met " + " + ".join(feats), sample, {f: True for f in feats}, "B42318"))
+        render_rows(font, rows, 72).save(IMG / f"standaard-{oid}.png", optimize=True)
+
+
 def gh(*args, input=None):
     return subprocess.run(["gh", *args], check=True, capture_output=True, text=True, input=input).stdout
 
@@ -221,6 +296,7 @@ def main():
     font = Font(FONT)
     for d in DECISIONS:
         render(d, font)
+    render_feature_options(font)
     print(f"rendered {2 * sum(1 for d in DECISIONS if 'glyphs' in d)} images into {IMG}")
     if a.dry_run:
         for d in DECISIONS:
@@ -237,7 +313,12 @@ def main():
         url = gh("issue", "create", "-R", REPO, "--title", d["titel"], "--label", labels, "--body-file", "-",
                  input=d.get("body") or body(d)).strip()
         num = url.rsplit("/", 1)[1]
-        for i, opt in enumerate(d["options"]):
+        for oid, title, desc, feats, _sample in d.get("feature_options", []):
+            code = ("`vtex: " + " ".join(feats) + "`") if feats else "`vtex: standaard`"
+            gh("issue", "comment", num, "-R", REPO, "--body-file", "-",
+               input=f"### {title}\n\n{desc}\n\nCode: {code}\n\n"
+                     f"![{title}]({IMG_URL}/standaard-{oid}.png?raw=true)\n\n👍 = dit wil ik standaard")
+        for i, opt in enumerate(d.get("options", [])):
             label, text = opt[0], opt[1]
             if d.get("option_style") == "multi":
                 img = f"\n\n![{label}]({IMG_URL}/{opt[2]}?raw=true)" if len(opt) > 2 else ""

@@ -55,6 +55,43 @@ def render_lines(font, lines, size, features, ink):
     return img
 
 
+def render_rows(font, rows, size):
+    """rows: [(label, text, features, ink_hex)]; each row gets its own features
+    and a label in the margin (e.g. 'zonder' / 'met ss08')."""
+    from PIL import ImageFont
+    upem = font.upem
+    s = size / upem
+    row_h = int((1768 + 703 + 250) * s)
+    base_y = int((1768 + 120) * s)
+    label_font = ImageFont.load_default(size=max(14, int(size * 0.24)))
+    probe = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+    label_w = max(probe.textlength(r[0], font=label_font) for r in rows)
+    margin_x = int(label_w + size * 0.35)
+    pad_l, pad_r = margin_x + int(size * 0.3), int(size * 0.4)
+    shaped = [font.shape(r[1], r[2]) for r in rows]
+    width = max(int(sum(g[2] for g in sh) * s) for sh in shaped) + pad_l + pad_r
+    img = Image.new("RGB", (width, row_h * len(rows) + int(size * 0.2)), PAPER)
+    draw = ImageDraw.Draw(img)
+    draw.line([(margin_x, 0), (margin_x, img.height)], fill=MARGIN_RED, width=2)
+    for i, ((label, _text, _feats, ink), sh) in enumerate(zip(rows, shaped)):
+        top = i * row_h
+        for units, col, w, dash in ((-1364, RULE, 1, False), (-682, RULE, 1, True),
+                                    (0, RULE_STRONG, 2, False), (682, RULE, 1, False)):
+            y = top + base_y + int(units * s)
+            if dash:
+                for x in range(0, width, 12):
+                    draw.line([(x, y), (x + 6, y)], fill=col, width=w)
+            else:
+                draw.line([(0, y), (width, y)], fill=col, width=w)
+        rgb = tuple(int(ink[k:k + 2], 16) for k in (0, 2, 4))
+        draw.text((margin_x - size * 0.15, top + base_y - int(341 * s)), label, fill=rgb,
+                  font=label_font, anchor="rm")
+        g = font.render(sh, size, (width, row_h, base_y))
+        g = np.roll(g, pad_l - int(size * 0.5), axis=1)
+        img.paste(Image.new("RGB", (width, row_h), rgb), (0, top), Image.fromarray(g))
+    return img
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("font")
