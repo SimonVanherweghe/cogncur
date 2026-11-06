@@ -31,7 +31,48 @@ VOTE_DRAFT = [
     ("Aanpassen", "Er moet iets veranderen. Schrijf in een reactie wat, of laat de ontwerper het hertekenen."),
 ]
 
+STYLES_BODY = """<!-- beslissing:stijlen -->
+## Waarover gaat het?
+
+Het originele lettertype Cogncur bestaat in **vijf stijlen**. Op dit moment zetten we alleen **Regular** om voor Google Fonts. Elke extra stijl is extra werk: alle nieuwe tekens en verbindingen moeten ook in die stijl gemaakt en getest worden.
+
+Welke stijlen hebben leerkrachten echt nodig in de klas?
+
+## Hoe stemmen?
+
+Hieronder staat **voor elke stijl een aparte reactie** met een voorbeeld.
+
+- Geef een 👍 bij **elke stijl die je wilt** (meerdere mag).
+- Waarom wel of niet? Schrijf het in een reactie onderaan, bijvoorbeeld welk leerjaar of welke leermethode die stijl gebruikt.
+
+## Achtergrond
+
+- **Regular** helt licht (7,5°), **Oblique** helt sterker (15°) en **Vertical** staat rechtop.
+- **Edged** heeft een lijn met dik en dun, zoals met een beitelpen.
+- Alle voorbeelden komen uit de *originele* lettertypes van Cogncur.
+
+_Werknaam van het nieuwe lettertype: Vtex. De naam "Cogncur" is voorbehouden aan de oorspronkelijke ontwerper._
+"""
+
+LABELS = [("beslissing", "5319E7", "Open vraag waarover gestemd wordt"),
+          ("ontwerper", "D93F0B", "Vooral voor de grafisch ontwerper"),
+          ("leerkrachten", "0E8A16", "Vooral voor het team leerkrachten"),
+          ("iedereen", "FBCA04", "Voor ontwerper en leerkrachten")]
+
 DECISIONS = [
+    {
+        "id": "stijlen", "labels": ["leerkrachten"],
+        "titel": "Welke stijlen willen we op Google Fonts?",
+        "body": STYLES_BODY,
+        "options": [
+            ("Regular", "Licht hellend (7,5°). Deze stijl wordt nu omgezet.", "stijlen-regular.png"),
+            ("Vertical", "Rechtop, zonder helling.", "stijlen-vertical.png"),
+            ("Oblique", "Sterker hellend (15°).", "stijlen-oblique.png"),
+            ("Edged", "Met dik en dun, zoals een beitelpen, licht hellend.", "stijlen-edged.png"),
+            ("Edged Vertical", "Met dik en dun, rechtop.", "stijlen-edged-vertical.png"),
+        ],
+        "option_style": "multi",
+    },
     {
         "id": "schets-eth", "labels": ["ontwerper"],
         "titel": "Schets: ð (eth)",
@@ -144,6 +185,8 @@ def existing_markers():
 
 
 def render(d, font):
+    if "glyphs" not in d:
+        return []
     paths = []
     for kind, lines, size in (("tekens", d["glyphs"], 120), ("woorden", d["words"], 80)):
         p = IMG / f"{d['id']}-{kind}.png"
@@ -178,11 +221,13 @@ def main():
     font = Font(FONT)
     for d in DECISIONS:
         render(d, font)
-    print(f"rendered {2 * len(DECISIONS)} images into {IMG}")
+    print(f"rendered {2 * sum(1 for d in DECISIONS if 'glyphs' in d)} images into {IMG}")
     if a.dry_run:
         for d in DECISIONS:
             print("would create:", d["titel"])
         return
+    for name, color, desc in LABELS:
+        gh("label", "create", name, "--color", color, "--description", desc, "-R", REPO, "--force")
     have = existing_markers()
     for d in DECISIONS:
         if d["id"] in have:
@@ -190,12 +235,17 @@ def main():
             continue
         labels = ",".join(["beslissing"] + d["labels"])
         url = gh("issue", "create", "-R", REPO, "--title", d["titel"], "--label", labels, "--body-file", "-",
-                 input=body(d)).strip()
+                 input=d.get("body") or body(d)).strip()
         num = url.rsplit("/", 1)[1]
-        for i, (label, text) in enumerate(d["options"]):
-            letter = "ABCDEFG"[i]
-            gh("issue", "comment", num, "-R", REPO, "--body-file", "-",
-               input=f"### Optie {letter}: {label}\n\n{text}\n\n👍 = ik kies optie {letter}")
+        for i, opt in enumerate(d["options"]):
+            label, text = opt[0], opt[1]
+            if d.get("option_style") == "multi":
+                img = f"\n\n![{label}]({IMG_URL}/{opt[2]}?raw=true)" if len(opt) > 2 else ""
+                msg = f"### {label}\n\n{text}{img}\n\n👍 = deze stijl wil ik op Google Fonts"
+            else:
+                letter = "ABCDEFG"[i]
+                msg = f"### Optie {letter}: {label}\n\n{text}\n\n👍 = ik kies optie {letter}"
+            gh("issue", "comment", num, "-R", REPO, "--body-file", "-", input=msg)
         print(f"created: {url}")
 
 
