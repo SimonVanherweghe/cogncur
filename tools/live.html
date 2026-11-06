@@ -1,13 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html lang="nl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Live font comparison</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vtex vergelijken</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
+/* Layout: writing sheet + feature table on the left, sticky settings panel on the right; one column on phones. */
 :root {
   --ui-bg: #EEF2F7;
   --ui-fg: #1B2433;
@@ -15,40 +17,48 @@
   --ui-line: #CCD5E1;
   --ui-panel: #FFFFFF;
   --ui-focus: #1E4FB8;
+  --ui-warn: #9A5B00;
+  --ui-err: #B42318;
+  --ui-ok: #1D7A3A;
   --paper: #FAFCFF;
+  --paper-ink: #1B2433;
   --rule: #A9C3E8;
   --rule-strong: #6F93C9;
   --margin: #E8838F;
+  --font-ui: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --font-code: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --ui-bg: #121A24; --ui-fg: #E6EBF2; --ui-muted: #9AA6B8; --ui-line: #2C3A4C;
-    --ui-panel: #1A2431; --ui-focus: #8FB3FF;
+    --ui-panel: #1A2431; --ui-focus: #8FB3FF; --ui-warn: #E3B341; --ui-err: #FF8A80; --ui-ok: #5FD38A;
+    color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --ui-bg: #121A24; --ui-fg: #E6EBF2; --ui-muted: #9AA6B8; --ui-line: #2C3A4C;
-  --ui-panel: #1A2431; --ui-focus: #8FB3FF;
+  --ui-panel: #1A2431; --ui-focus: #8FB3FF; --ui-warn: #E3B341; --ui-err: #FF8A80; --ui-ok: #5FD38A;
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
   background: var(--ui-bg);
   color: var(--ui-fg);
-  font: 16px/1.5 "Atkinson Hyperlegible", system-ui, sans-serif;
-  min-height: 100vh;
+  font: 16px/1.5 var(--font-ui);
 }
 .app {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 330px;
   gap: 20px;
-  padding: 20px;
+  padding-block: 20px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
   max-width: 1600px;
   margin: 0 auto;
 }
-@media (max-width: 900px) {
-  .app { grid-template-columns: minmax(0, 1fr); padding: 16px; }
-}
+.main { display: grid; gap: 20px; min-width: 0; align-content: start; }
+@media (max-width: 900px) { .app { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------------- the sheet (always paper, also in dark mode) ------------ */
 .sheet {
@@ -57,24 +67,11 @@ body {
   box-shadow: 0 1px 0 rgba(27, 36, 51, .08), 0 8px 24px -12px rgba(27, 36, 51, .25);
   overflow-x: auto;
   position: relative;
-  min-height: 60vh;
+  min-height: 50vh;
 }
-.sheet-inner {
-  position: relative;
-  padding: 24px 32px 48px 0;
-  min-width: max-content;
-}
-.margin-rule {
-  position: absolute; top: 0; bottom: 0;
-  left: var(--margin-x); width: 2px;
-  background: var(--margin);
-  opacity: .75;
-}
-.row {
-  position: relative;
-  height: var(--row-h);
-  margin-bottom: var(--row-gap);
-}
+.sheet-inner { position: relative; padding: 24px 32px 48px 0; min-width: max-content; }
+.margin-rule { position: absolute; top: 0; bottom: 0; left: var(--margin-x); width: 2px; background: var(--margin); opacity: .75; }
+.row { position: relative; height: var(--row-h); margin-bottom: var(--row-gap); }
 .row.stack-first { margin-bottom: calc(var(--row-gap) * .25); }
 .guides { position: absolute; left: 0; right: -32px; top: 0; height: 100%; pointer-events: none; }
 .guides i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
@@ -89,52 +86,74 @@ body {
 }
 .ink {
   position: absolute; left: calc(var(--margin-x) + 20px); top: 0;
-  font-size: var(--size);
-  line-height: var(--line-h);
-  white-space: pre;
-  font-feature-settings: var(--fea);
-  font-kerning: var(--kerning);
-  font-synthesis: none;
+  font-size: var(--size); line-height: var(--line-h); white-space: pre;
+  font-feature-settings: var(--fea); font-kerning: var(--kerning); font-synthesis: none;
 }
 .ink.orig { font-family: "RefFont", sans-serif; color: var(--c-orig); opacity: var(--o-orig); }
 .ink.new  { font-family: "NewFont", sans-serif; color: var(--c-new);  opacity: var(--o-new); }
 .sheet.blend .ink { mix-blend-mode: multiply; }
 .sheet.hide-orig .ink.orig, .sheet.hide-orig .row.only-orig { display: none; }
 .sheet.hide-new .ink.new,  .sheet.hide-new .row.only-new  { display: none; }
-.empty-hint {
-  position: absolute; left: calc(var(--margin-x) + 20px); top: 32px;
-  color: var(--ui-muted); font-size: 18px;
+.empty-hint { position: absolute; left: calc(var(--margin-x) + 20px); top: 32px; color: #5B6577; font-size: 18px; }
+
+/* ---------------- feature table ------------------------------------------ */
+.features {
+  background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 6px; padding: 16px;
+  min-width: 0;
 }
+.features h2 { font-size: 20px; margin: 0 0 4px; text-wrap: balance; }
+.features .intro { color: var(--ui-muted); margin: 0 0 12px; max-width: 70ch; }
+.table-wrap { overflow-x: auto; }
+table.fea { border-collapse: collapse; width: 100%; min-width: 720px; }
+table.fea th, table.fea td { text-align: left; vertical-align: middle; padding: 8px 10px; border-bottom: 1px solid var(--ui-line); }
+table.fea thead th { font-size: 13px; color: var(--ui-muted); font-weight: 700; }
+table.fea tbody th.group {
+  font-size: 14px; letter-spacing: .02em; padding-top: 18px; color: var(--ui-fg);
+  border-bottom: 2px solid var(--ui-line);
+}
+table.fea tbody th.group small { font-weight: 400; color: var(--ui-muted); letter-spacing: 0; }
+table.fea tr.on td { background: color-mix(in srgb, var(--ui-focus) 9%, transparent); }
+td.tog { width: 44px; }
+td.tog input { width: 20px; height: 20px; accent-color: var(--ui-focus); }
+td.code code { font: 13px var(--font-code); white-space: nowrap; }
+td.what strong { display: block; }
+td.what span { color: var(--ui-muted); font-size: 14px; }
+td.what em { display: block; font-style: normal; font-size: 13px; color: var(--ui-warn); margin-top: 2px; }
+td.ex { white-space: nowrap; }
+.sample {
+  display: inline-block; font-family: "NewFont", sans-serif; font-size: 30px; line-height: 1.25;
+  color: var(--paper-ink); background: var(--paper); border-radius: 4px; padding: 0 8px;
+  font-synthesis: none;
+}
+.sample.after { color: #B42318; }
+td.ex .arrow { color: var(--ui-muted); margin: 0 6px; }
 
 /* ---------------- controls ---------------------------------------------- */
 .panel {
-  background: var(--ui-panel);
-  border: 1px solid var(--ui-line);
-  border-radius: 6px;
-  padding: 16px;
-  align-self: start;
-  position: sticky; top: 20px;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
+  background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 6px; padding: 16px;
+  align-self: start; position: sticky; top: max(20px, env(safe-area-inset-top, 0px));
+  max-height: calc(100vh - 40px); overflow-y: auto;
 }
 @media (max-width: 900px) { .panel { position: static; max-height: none; } }
-.panel h1 { font-size: 20px; margin: 0 0 4px; line-height: 1.25; }
+.panel h1 { font-size: 22px; margin: 0 0 4px; line-height: 1.25; }
 .panel .sub { color: var(--ui-muted); font-size: 14px; margin: 0 0 16px; }
-fieldset { border: 0; padding: 0; margin: 0 0 18px; }
+fieldset { border: 0; padding: 0; margin: 0 0 18px; min-width: 0; }
 legend { font-weight: 700; font-size: 15px; padding: 0; margin-bottom: 6px; }
 label { font-size: 15px; }
-textarea {
-  width: 100%; min-height: 110px; resize: vertical;
-  font: 17px/1.4 "Atkinson Hyperlegible", system-ui, sans-serif;
+textarea, input[type=text] {
+  width: 100%; font: 17px/1.4 var(--font-ui);
   color: var(--ui-fg); background: var(--ui-bg);
   border: 1px solid var(--ui-line); border-radius: 4px; padding: 8px 10px;
 }
-.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+textarea { min-height: 110px; resize: vertical; }
+input.code { font: 14px var(--font-code); }
+.presets, .btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 button, .seg label {
   font: inherit; font-size: 14px; color: var(--ui-fg);
   background: var(--ui-bg); border: 1px solid var(--ui-line); border-radius: 4px;
   padding: 4px 10px; cursor: pointer;
 }
+button.primary { background: var(--ui-fg); color: var(--ui-panel); border-color: var(--ui-fg); }
 button:hover, .seg label:hover { border-color: var(--ui-muted); }
 :focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
 .seg { display: flex; }
@@ -147,132 +166,255 @@ button:hover, .seg label:hover { border-color: var(--ui-muted); }
 .range { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
 .range output { font-variant-numeric: tabular-nums; min-width: 3.5em; text-align: right; color: var(--ui-muted); font-size: 14px; }
 input[type=range] { width: 100%; accent-color: var(--ui-fg); }
-.font-ctl {
-  border-left: 4px solid var(--swatch); padding: 6px 0 6px 10px; margin-bottom: 10px;
-}
+.font-ctl { border-left: 4px solid var(--swatch); padding: 6px 0 6px 10px; margin-bottom: 10px; }
 .font-ctl .top { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
 .font-ctl .file { color: var(--ui-muted); font-size: 13px; word-break: break-all; margin: 2px 0 4px; }
 input[type=color] { width: 34px; height: 26px; padding: 0; border: 1px solid var(--ui-line); border-radius: 4px; background: none; }
 .check { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
-.chips { display: flex; flex-wrap: wrap; gap: 4px; }
-.chips label {
-  font-size: 13px; padding: 2px 8px; border: 1px solid var(--ui-line); border-radius: 12px; cursor: pointer;
-  user-select: none;
-}
-.chips input { position: absolute; opacity: 0; pointer-events: none; }
-.chips input:checked + span { font-weight: 700; }
-.chips label:has(input:checked) { background: var(--ui-fg); color: var(--ui-panel); border-color: var(--ui-fg); }
-.chips label:has(input:focus-visible) { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
 .status { font-size: 13px; color: var(--ui-muted); margin-top: 8px; }
-.status.err { color: #C0392B; }
+.status.err { color: var(--ui-err); }
+.status.ok { color: var(--ui-ok); }
 .note { font-size: 13px; color: var(--ui-muted); margin: 0; }
+.config { border: 1px solid var(--ui-line); border-radius: 6px; padding: 12px; background: var(--ui-bg); }
+.config legend { padding: 0 4px; }
+.config .hint { font-size: 13px; color: var(--ui-muted); margin: 6px 0 0; }
+@media (prefers-reduced-motion: no-preference) { tr { transition: background-color .15s; } }
 </style>
 </head>
 <body>
 <div class="app">
-  <main class="sheet" id="sheet" aria-label="Comparison">
-    <div class="sheet-inner" id="sheetInner">
-      <div class="margin-rule"></div>
-      <div id="rows"></div>
-    </div>
-  </main>
+  <div class="main">
+    <main class="sheet" id="sheet" aria-label="Vergelijking">
+      <div class="sheet-inner" id="sheetInner">
+        <div class="margin-rule"></div>
+        <div id="rows"></div>
+      </div>
+    </main>
 
-  <aside class="panel" aria-label="Settings">
-    <h1>Live font comparison</h1>
-    <p class="sub">The original Cogncur against the new build, on the same writing lines.</p>
+    <section class="features" aria-labelledby="feaTitle">
+      <h2 id="feaTitle">Lettervormen kiezen</h2>
+      <p class="intro">In Google Docs kan je deze opties niet aan- of uitzetten: wat standaard aan staat, krijgt iedereen. Zet aan wat jij standaard wilt, bekijk het resultaat op het blad hierboven, en deel je keuze met de code rechts.</p>
+      <div class="table-wrap">
+        <table class="fea">
+          <thead><tr><th scope="col">Aan</th><th scope="col">Code</th><th scope="col">Wat verandert er?</th><th scope="col">Voorbeeld (zonder → met)</th></tr></thead>
+          <tbody id="feaBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <aside class="panel" aria-label="Instellingen">
+    <h1>Vtex vergelijken</h1>
+    <p class="sub">Het originele Cogncur en de nieuwe versie op dezelfde schrijflijnen.</p>
+
+    <fieldset class="config">
+      <legend>Jouw keuze als code</legend>
+      <input type="text" class="code" id="cfgOut" readonly aria-label="Code van je huidige keuze">
+      <div class="btns">
+        <button type="button" class="primary" id="cfgCopy">Kopieer</button>
+        <button type="button" id="cfgReset">Alles standaard</button>
+      </div>
+      <label for="cfgIn" style="display:block;margin-top:10px">Code plakken</label>
+      <input type="text" class="code" id="cfgIn" placeholder="vtex: ss03 ss08" spellcheck="false">
+      <div class="btns"><button type="button" id="cfgApply">Toepassen</button></div>
+      <p class="status" id="cfgStatus" role="status"></p>
+      <p class="hint">Plak de code in een reactie op GitHub, zodat anderen precies jouw keuze kunnen bekijken.</p>
+    </fieldset>
 
     <fieldset>
-      <legend><label for="text">Text</label></legend>
-      <textarea id="text" spellcheck="false">Amsterdam bijzonder
-quick brown fox
-(hallo) don't zoo</textarea>
-      <div class="presets" aria-label="Example texts">
-        <button type="button" data-preset="joins">Every join</button>
-        <button type="button" data-preset="caps">Capitals</button>
-        <button type="button" data-preset="accents">Accents</button>
-        <button type="button" data-preset="punct">Punctuation</button>
-        <button type="button" data-preset="newletters">New letters</button>
+      <legend><label for="text">Tekst</label></legend>
+      <textarea id="text" spellcheck="false">Leren schrijven in de klas
+toot puddle yummy wow
+Amsterdam bijzonder (hallo)</textarea>
+      <div class="presets" aria-label="Voorbeeldteksten">
+        <button type="button" data-preset="joins">Alle verbindingen</button>
+        <button type="button" data-preset="caps">Hoofdletters</button>
+        <button type="button" data-preset="accents">Accenten</button>
+        <button type="button" data-preset="punct">Leestekens</button>
+        <button type="button" data-preset="numbers">Cijfers</button>
+        <button type="button" data-preset="newletters">Nieuwe letters</button>
       </div>
     </fieldset>
 
     <fieldset>
-      <legend>Layout</legend>
+      <legend>Weergave</legend>
       <div class="seg" role="radiogroup">
-        <input type="radio" name="view" id="vOverlay" value="overlay" checked><label for="vOverlay">On top of each other</label>
-        <input type="radio" name="view" id="vStack" value="stack"><label for="vStack">Separate lines</label>
+        <input type="radio" name="view" id="vOverlay" value="overlay" checked><label for="vOverlay">Over elkaar</label>
+        <input type="radio" name="view" id="vStack" value="stack"><label for="vStack">Onder elkaar</label>
       </div>
     </fieldset>
 
     <fieldset>
-      <legend><label for="size">Size</label></legend>
-      <div class="range"><input type="range" id="size" min="30" max="358" step="4" value="150"><output for="size" id="sizeOut">150 px</output></div>
+      <legend><label for="size">Grootte</label></legend>
+      <div class="range"><input type="range" id="size" min="30" max="358" step="4" value="110"><output for="size" id="sizeOut">110 px</output></div>
     </fieldset>
 
     <fieldset>
-      <legend>Fonts</legend>
+      <legend>Lettertypes</legend>
       <div class="font-ctl" id="ctlOrig" style="--swatch: #1E4FB8">
         <div class="top">
-          <label class="check"><input type="checkbox" id="showOrig" checked> <strong>Original</strong></label>
-          <input type="color" id="colOrig" value="#1E4FB8" aria-label="Colour of the original">
+          <label class="check"><input type="checkbox" id="showOrig" checked> <strong>Origineel (Cogncur)</strong></label>
+          <input type="color" id="colOrig" value="#1E4FB8" aria-label="Kleur van het origineel">
         </div>
         <div class="file" id="fileOrig"></div>
-        <div class="range"><input type="range" id="opOrig" min="0" max="100" value="70" aria-label="Opacity of the original"><output id="opOrigOut">70%</output></div>
+        <div class="range"><input type="range" id="opOrig" min="0" max="100" value="70" aria-label="Doorzichtigheid van het origineel"><output id="opOrigOut">70%</output></div>
       </div>
       <div class="font-ctl" id="ctlNew" style="--swatch: #D1203B">
         <div class="top">
-          <label class="check"><input type="checkbox" id="showNew" checked> <strong>New build</strong></label>
-          <input type="color" id="colNew" value="#D1203B" aria-label="Colour of the new build">
+          <label class="check"><input type="checkbox" id="showNew" checked> <strong>Nieuwe versie (Vtex)</strong></label>
+          <input type="color" id="colNew" value="#D1203B" aria-label="Kleur van de nieuwe versie">
         </div>
         <div class="file" id="fileNew"></div>
-        <div class="range"><input type="range" id="opNew" min="0" max="100" value="70" aria-label="Opacity of the new build"><output id="opNewOut">70%</output></div>
+        <div class="range"><input type="range" id="opNew" min="0" max="100" value="70" aria-label="Doorzichtigheid van de nieuwe versie"><output id="opNewOut">70%</output></div>
       </div>
-      <label class="check"><input type="checkbox" id="blend" checked> Darken where they overlap</label>
-      <label class="check"><input type="checkbox" id="guides" checked> Writing lines</label>
-      <label class="check"><input type="checkbox" id="ghost" checked> Show the base letter in the original for new letters</label>
-      <button type="button" id="reload">Reload fonts</button>
+      <label class="check"><input type="checkbox" id="blend" checked> Donkerder waar ze overlappen</label>
+      <label class="check"><input type="checkbox" id="guides" checked> Schrijflijnen</label>
+      <label class="check"><input type="checkbox" id="ghost" checked> Bij nieuwe letters de basisletter tonen in het origineel</label>
+      <button type="button" id="reload">Lettertypes herladen</button>
       <div class="status" id="status" role="status"></div>
     </fieldset>
 
-    <fieldset>
-      <legend>OpenType features</legend>
-      <div class="chips" id="features"></div>
-    </fieldset>
-
-    <p class="note">Both fonts get the same vertical metrics here so their baselines line up. Differences in line spacing between the files are not shown on this page.</p>
+    <p class="note">Beide lettertypes krijgen hier dezelfde regelhoogte, zodat de basislijnen samenvallen. Verschillen in regelafstand tussen de bestanden zie je op deze pagina dus niet.</p>
   </aside>
 </div>
 
 <script>
 (() => {
-  // Font files, relative to the repository root (served by `make serve`).
+  // Where the files are. tools/live.html (make serve) uses repository paths;
+  // the published artifact sets window.LIVE_CONFIG before this script.
+  const CFG = Object.assign({
+    orig: "../upstream/fonts/cogncur.ttf",
+    new: "../fonts/ttf/Vtex-Regular.ttf",
+    manifest: "../build/composites.json",
+    cacheBust: true,
+    canReload: true,
+  }, window.LIVE_CONFIG || {});
   const FONTS = {
-    orig: { family: "RefFont", url: "../upstream/fonts/cogncur.ttf" },
-    new:  { family: "NewFont", url: "../fonts/ttf/Vtex-Regular.ttf" },
+    orig: { family: "RefFont", url: CFG.orig },
+    new: { family: "NewFont", url: CFG.new },
   };
   // Metrics in font units (UPM 2048), shared by both fonts so baselines align.
   const UPM = 2048, ASC = 1768, DESC = 703;
   const XH = 682, ASCENDER = 1364, DESCENDER = 682;
 
-  const FEATURES = [
-    ["calt", "Connections (calt)", true], ["kern", "Kerning", true], ["liga", "Ligatures", true],
-    ["tnum", "tnum", false], ["onum", "onum", false],
-    ...["01","02","03","04","05","06","07","08","09","11","12","13","14","15","16","17","18","19","20"]
-      .map(n => ["ss" + n, "ss" + n, false]),
+  // OpenType features. Texts paraphrase the designer's own documentation
+  // (upstream/documentation/customization.html); example words are hers.
+  const GROUPS = [
+    { id: "base", title: "Altijd aan", note: "In Google Docs staan deze altijd aan. Uitzetten kan hier alleen om te vergelijken." },
+    { id: "lower", title: "Kleine letters" },
+    { id: "upper", title: "Hoofdletters" },
+    { id: "num", title: "Cijfers" },
   ];
+  const FEATURES = [
+    { tag: "calt", group: "base", on: true, name: "Verbindingen tussen de letters", desc: "Kiest voor elke letter de juiste instreek, verbinding en uithaal. Zonder deze optie staan de letters los.", ex: "minimum" },
+    { tag: "kern", group: "base", on: true, name: "Spatiëring (kerning)", desc: "Fijnregeling van de ruimte tussen bepaalde letters.", ex: "Tom Vos" },
+    { tag: "liga", group: "base", on: true, name: "Eén accent boven dubbele klinkers", desc: "aa, ee, oo en uu met een streepje of boogje krijgen één accent over beide letters.", ex: "āā ēē ōō" },
+    { tag: "rlig", group: "base", on: true, name: "Nederlandse ij en vaste ligaturen", desc: "De ij als verbonden geheel. Ook nodig om de ruimte goed te houden bij ss01.", ex: "bij ijs" },
+    { tag: "ss01", group: "lower", name: "Geen instreken vanaf de basislijn", desc: "Korte instreken aan het begin van een woord; geen instreek bij a, c, d, g, o, q en de moderne t.", ex: "abcde" },
+    { tag: "ss02", group: "lower", name: "Geen uithalen aan s, p en ß", desc: "Het ‘staartje’ aan het einde van s, p en ß verdwijnt.", ex: "kiss rap fuß" },
+    { tag: "ss03", group: "lower", name: "Kortere stokken", desc: "Stokken boven en onder de lijnen zijn 2/3 zo lang als lussen. Niet voor de gewone t.", ex: "puddle" },
+    { tag: "ss04", group: "lower", name: "f en q: andere verbinding", desc: "f verbindt met een boog vanuit het midden, q verbindt vanaf onderaan.", ex: "ffqu" },
+    { tag: "ss05", group: "lower", name: "f en q: met penlift", desc: "Na f en q wordt de pen opgetild. Combineert met ss04 en ss03.", ex: "ffqu" },
+    { tag: "ss06", group: "lower", name: "s met een buikje", desc: "Een s met een bolle onderkant in plaats van de slanke s.", ex: "kiss" },
+    { tag: "ss07", group: "lower", name: "Drukletter-r", desc: "Een r die meer op de drukletter lijkt, in plaats van de traditionele schrijf-r.", ex: "err" },
+    { tag: "ss08", group: "lower", name: "Moderne t", desc: "De bekende drukletter-t. Standaard volgt de t de Duitse en Nederlandse traditie, zonder penlift.", ex: "toot" },
+    { tag: "ss09", group: "lower", name: "Moderne t met rechte verbinding", desc: "Rechte verbinding naar de moderne t, zoals veel Nederlandse methodes.", warn: "Werkt alleen samen met ss08.", needs: ["ss08"], ex: "toot" },
+    { tag: "ss11", group: "lower", name: "r en z beginnen met een hoek", desc: "r en z (en Z) beginnen met een hoek in plaats van een boog tegen de middellijn.", ex: "rz Z" },
+    { tag: "ss12", group: "lower", name: "Ronde verbindingen (onderbogen)", desc: "Rechte stukjes in verbindingen worden bogen.", warn: "De ontwerper raadt dit af.", ex: "impunity" },
+    { tag: "ss13", group: "lower", name: "y begint met een hoek", desc: "y begint met een hoek, zoals i; geldt ook voor de ij.", ex: "yummy" },
+    { tag: "ss14", group: "lower", name: "w begint met een boog", desc: "w begint met een boog, zoals v.", ex: "wow" },
+    { tag: "ss15", group: "lower", name: "p begint met een boog", desc: "p begint met een boog, zoals n.", ex: "pup" },
+    { tag: "ss16", group: "lower", name: "Open p", desc: "p zonder gesloten lus; verbindt zoals de n.", ex: "pup" },
+    { tag: "ss19", group: "upper", name: "C, G en L zonder beginlus", desc: "Eenvoudigere hoofdletters C, G en L.", ex: "Cc Gg Ll" },
+    { tag: "ss20", group: "upper", name: "A, M en N als grote schrijfletters", desc: "A, M en N lijken op vergrote kleine letters.", ex: "Aa Mm Nn" },
+    { tag: "ss17", group: "num", name: "Cijfervarianten 1", desc: "Andere vormen voor sommige cijfers. Met ss18 samen ontstaan bij 4 en 7 nog andere vormen.", ex: "1234567890" },
+    { tag: "ss18", group: "num", name: "Cijfervarianten 2", desc: "Andere vormen voor sommige cijfers.", ex: "1234567890" },
+    { tag: "tnum", group: "num", name: "Even brede cijfers", desc: "Alle cijfers even breed, handig voor rekenopgaven onder elkaar.", ex: "1111 2020" },
+    { tag: "onum", group: "num", name: "Mediaevalcijfers", desc: "Cijfers met stokken boven en onder de lijn, zoals in lopende tekst.", ex: "1234567890" },
+  ];
+  const BY_TAG = Object.fromEntries(FEATURES.map(f => [f.tag, f]));
 
   const PRESETS = {
     joins: "abcdefghijklm\nnopqrstuvwxyz\naa ab ac ad ae af ag\nba bb bc bd be bf bg\nfa fb ff fi fj fo fz\nqa qu qz sa sb ss st",
     caps: "Amsterdam Brugge Cindy\nDaan Emma Fien Gent\nHilde IJsland Jan Kim\nLeo Marie Nina Otto",
     accents: "café naïve façade élève\ngeëerd reünie Noël\nšpička žena œuvre æble",
     punct: "(hallo) [test] \"quote\"\nword. word, word; word!\ndon't e-mail 1st 2024",
+    numbers: "1234567890\n12 + 34 = 46\n2024 – 1789",
     newletters: "Ćwierć źrebię Łódź\nż ą ę ł ő ű ș ț ģ ķ ļ ņ\nnćn nčn nğn nńn nňn nŕn nřn\nnśn nşn nźn ŵan ẃan ẅan\nnąn nęn nįn nųn nċn nėn nġn nżn\nnőn nűn nșn nțn nķn nļn nņn\nnďn nľn nťn nĺn nđn nħn nłn nðn nþn\nĆn Čn Ďn Ěn Ğn Ĺn Ńn Ňn Ŕn Řn\nŚn Şn Ťn Źn Ŵn Ỳn Ĩn Ǎn Ǐn Ǒn Ǔn\nĄn Ęn Įn Ųn Ċn Ėn Ġn Żn İn Őn Űn\nȘn Țn Ķn Ļn Ņn Ģn Ľn Đn Ðn Ħn Łn Þn ẞn\n¯ ˆ ˇ ˘ ˙ ˚ ˛ ˜ ˝ … 5−3",
   };
 
   const $ = id => document.getElementById(id);
   const sheet = $("sheet"), rows = $("rows"), text = $("text");
+  const state = Object.fromEntries(FEATURES.map(f => [f.tag, !!f.on]));
+
+  // ---------- config code: "vtex: ss03 ss08 -kern" (only what differs from the default)
+  function encode() {
+    const toks = FEATURES.filter(f => state[f.tag] !== !!f.on).map(f => (state[f.tag] ? "" : "-") + f.tag);
+    return "vtex: " + (toks.length ? toks.join(" ") : "standaard");
+  }
+  function hashOf() {
+    const toks = FEATURES.filter(f => state[f.tag] !== !!f.on).map(f => (state[f.tag] ? "" : "no") + f.tag);
+    return "vtex" + (toks.length ? "-" + toks.join("-") : "");
+  }
+  // Accepts the text form "vtex: ss03 ss08 -kern" and the link form "#vtex-ss03-ss08-nokern".
+  function decodeAny(str) {
+    const next = Object.fromEntries(FEATURES.map(f => [f.tag, !!f.on]));
+    const unknown = [];
+    let s = (str || "").trim().replace(/^#/, "");
+    let toks;
+    if (/^vtex(-|$)/i.test(s)) {
+      toks = s.slice(4).split("-").filter(Boolean).map(t => t.toLowerCase())
+        .map(t => (/^no[a-z0-9]{4}$/.test(t) && BY_TAG[t.slice(2)]) ? "-" + t.slice(2) : t);
+    } else {
+      toks = s.replace(/^vtex\s*:?\s*/i, "").split(/[\s,;]+/).filter(Boolean).map(t => t.toLowerCase());
+    }
+    for (const t of toks) {
+      const neg = t.startsWith("-");
+      const tag = neg ? t.slice(1) : t;
+      if (tag === "standaard" || tag === "default") continue;
+      if (BY_TAG[tag]) next[tag] = !neg; else unknown.push(t);
+    }
+    return { next, unknown };
+  }
+  function apply(next) {
+    for (const f of FEATURES) state[f.tag] = !!next[f.tag];
+    for (const f of FEATURES) { const cb = $("f_" + f.tag); if (cb) cb.checked = state[f.tag]; }
+  }
+
+  // ---------- feature table
+  const fs = obj => Object.entries(obj).map(([t, v]) => `"${t}" ${v ? 1 : 0}`).join(", ");
+  const DEFAULTS = Object.fromEntries(FEATURES.map(f => [f.tag, !!f.on]));
+  function buildTable() {
+    const body = $("feaBody");
+    for (const g of GROUPS) {
+      const head = document.createElement("tr");
+      head.innerHTML = `<th class="group" colspan="4" scope="colgroup">${g.title}${g.note ? ` <small>· ${g.note}</small>` : ""}</th>`;
+      body.appendChild(head);
+      for (const f of FEATURES.filter(x => x.group === g.id)) {
+        const tr = document.createElement("tr");
+        tr.id = "row_" + f.tag;
+        // left: this feature off, right: on (plus what it needs), the rest as default
+        const before = Object.assign({}, DEFAULTS, { [f.tag]: false });
+        const after = Object.assign({}, DEFAULTS, { [f.tag]: true });
+        for (const n of f.needs || []) { before[n] = true; after[n] = true; }
+        tr.innerHTML =
+          `<td class="tog"><input type="checkbox" id="f_${f.tag}" aria-label="${f.name}"></td>` +
+          `<td class="code"><code>${f.tag}</code></td>` +
+          `<td class="what"><label for="f_${f.tag}"><strong>${f.name}</strong></label><span>${f.desc}</span>${f.warn ? `<em>${f.warn}</em>` : ""}</td>` +
+          `<td class="ex"><span class="sample" style='font-feature-settings: ${fs(before)}'></span>` +
+          `<span class="arrow" aria-hidden="true">→</span>` +
+          `<span class="sample after" style='font-feature-settings: ${fs(after)}'></span></td>`;
+        tr.querySelectorAll(".sample").forEach(s => { s.textContent = f.ex; });
+        if (f.tag === "kern") tr.querySelectorAll(".sample")[0].style.fontKerning = "none";
+        body.appendChild(tr);
+        $("f_" + f.tag).checked = state[f.tag];
+        $("f_" + f.tag).addEventListener("change", e => { state[f.tag] = e.target.checked; render(); });
+      }
+    }
+  }
 
   // ---------- persisted settings (per browser, best effort)
-  const KEY = "live-compare-v1";
+  const KEY = "live-compare-v2";
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { saved = {}; }
   const persist = () => {
@@ -282,47 +424,38 @@ quick brown fox
       opOrig: $("opOrig").value, opNew: $("opNew").value,
       showOrig: $("showOrig").checked, showNew: $("showNew").checked,
       blend: $("blend").checked, guides: $("guides").checked, ghost: $("ghost").checked,
-      fea: Object.fromEntries(FEATURES.map(([t]) => [t, $("f_" + t).checked])),
+      fea: state,
     };
     try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* storage unavailable */ }
   };
-
-  // ---------- feature chips
-  const feaBox = $("features");
-  for (const [tag, label, on] of FEATURES) {
-    const l = document.createElement("label");
-    l.title = tag;
-    l.innerHTML = `<input type="checkbox" id="f_${tag}"><span>${label}</span>`;
-    feaBox.appendChild(l);
-    $("f_" + tag).checked = saved.fea && tag in saved.fea ? saved.fea[tag] : on;
-  }
-
-  // ---------- restore
   if (typeof saved.text === "string") text.value = saved.text;
   if (saved.view) { const r = document.querySelector(`input[name=view][value=${saved.view}]`); if (r) r.checked = true; }
   for (const k of ["size", "colOrig", "colNew", "opOrig", "opNew"]) if (saved[k] != null) $(k).value = saved[k];
   for (const k of ["showOrig", "showNew", "blend", "guides", "ghost"]) if (saved[k] != null) $(k).checked = saved[k];
+  if (saved.fea) for (const f of FEATURES) if (f.tag in saved.fea) state[f.tag] = !!saved.fea[f.tag];
+  if (location.hash.toLowerCase().startsWith("#vtex")) apply(decodeAny(location.hash).next);
+  if (!CFG.canReload) $("reload").hidden = true;
 
-  // Letters added in the new build (from scripts/composites.py). The original
-  // font doesn't have them; optionally show their base letter there instead.
+  // Letters added in the new build (scripts/composites.py). The original font
+  // doesn't have them; optionally show their base letter there instead.
   let NEW_CHARS = new Set();
-  fetch("../build/composites.json", { cache: "no-store" })
+  fetch(CFG.manifest, { cache: "no-store" })
     .then(r => r.ok ? r.json() : [])
     .then(m => { NEW_CHARS = new Set(m.map(x => x.char)); render(); })
     .catch(() => {});
   const toBase = line => [...line].map(c => NEW_CHARS.has(c) ? c.normalize("NFD")[0] : c).join("");
 
-  // ---------- font loading (cache-busted so a rebuild shows up after "Reload fonts")
+  // ---------- font loading
   const loaded = {};
   async function loadFonts() {
     const status = $("status");
     status.className = "status";
-    status.textContent = "Loading fonts…";
+    status.textContent = "Lettertypes laden…";
     const v = Date.now();
     const errors = [];
     for (const [key, f] of Object.entries(FONTS)) {
       try {
-        const res = await fetch(`${f.url}?v=${v}`, { cache: "no-store" });
+        const res = await fetch(CFG.cacheBust ? `${f.url}?v=${v}` : f.url, { cache: "no-store" });
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
         const buf = await res.arrayBuffer();
         const face = new FontFace(f.family, buf, {
@@ -336,7 +469,7 @@ quick brown fox
         loaded[key] = face;
         const when = res.headers.get("Last-Modified");
         $(key === "orig" ? "fileOrig" : "fileNew").textContent =
-          `${f.url.replace("../", "")} · ${(buf.byteLength / 1024).toFixed(0)} KB${when ? " · " + new Date(when).toLocaleString() : ""}`;
+          `${f.url.replace("../", "")} · ${(buf.byteLength / 1024).toFixed(0)} KB${when ? " · " + new Date(when).toLocaleString("nl-BE") : ""}`;
       } catch (e) {
         errors.push(`${f.url.replace("../", "")}: ${e.message}`);
       }
@@ -344,10 +477,10 @@ quick brown fox
     if (errors.length) {
       status.className = "status err";
       status.textContent = location.protocol === "file:"
-        ? "Fonts can't load from a file:// page. Run `make serve` and open the address it prints."
-        : "Couldn't load " + errors.join("; ") + ". Run `make build` first.";
+        ? "Lettertypes laden niet vanaf een file://-pagina. Start `make serve` en open het adres dat het toont."
+        : "Kon niet laden: " + errors.join("; ") + ".";
     } else {
-      status.textContent = "Fonts loaded at " + new Date().toLocaleTimeString() + ".";
+      status.textContent = "Lettertypes geladen om " + new Date().toLocaleTimeString("nl-BE") + ".";
     }
     render();
   }
@@ -356,7 +489,6 @@ quick brown fox
   function guideLines() {
     const g = document.createElement("div");
     g.className = "guides";
-    // positions relative to the row top; baseline sits at ASC/UPM * size
     const lines = [["asc", ASC - ASCENDER], ["xh", ASC - XH], ["base", ASC], ["desc", ASC + DESCENDER]];
     for (const [cls, units] of lines) {
       const i = document.createElement("i");
@@ -406,13 +538,22 @@ quick brown fox
     s.setProperty("--o-new", $("opNew").value / 100);
     $("ctlOrig").style.setProperty("--swatch", $("colOrig").value);
     $("ctlNew").style.setProperty("--swatch", $("colNew").value);
-    const fea = FEATURES.map(([t]) => `"${t}" ${$("f_" + t).checked ? 1 : 0}`).join(", ");
-    s.setProperty("--fea", fea);
-    s.setProperty("--kerning", $("f_kern").checked ? "normal" : "none");
+    s.setProperty("--fea", fs(state));
+    s.setProperty("--kerning", state.kern ? "normal" : "none");
     sheet.classList.toggle("blend", $("blend").checked);
     sheet.classList.toggle("no-guides", !$("guides").checked);
     sheet.classList.toggle("hide-orig", !$("showOrig").checked);
     sheet.classList.toggle("hide-new", !$("showNew").checked);
+    for (const f of FEATURES) { const tr = $("row_" + f.tag); if (tr) tr.classList.toggle("on", state[f.tag]); }
+
+    // config code + link
+    $("cfgOut").value = encode();
+    try { history.replaceState(null, "", "#" + hashOf()); } catch (e) { /* not allowed here */ }
+    const warn = [];
+    if (state.ss09 && !state.ss08) warn.push("ss09 werkt alleen samen met ss08.");
+    if (!state.calt) warn.push("Zonder calt staan de letters los.");
+    const st = $("cfgStatus");
+    if (!st.dataset.sticky) { st.className = "status" + (warn.length ? " err" : ""); st.textContent = warn.join(" "); }
 
     const view = document.querySelector("input[name=view]:checked").value;
     const lines = text.value.split("\n");
@@ -420,7 +561,7 @@ quick brown fox
     if (!text.value.trim()) {
       const h = document.createElement("div");
       h.className = "empty-hint";
-      h.textContent = "Type some text in the box on the right to compare the two fonts.";
+      h.textContent = "Typ tekst in het vak rechts om de twee lettertypes te vergelijken.";
       rows.appendChild(h);
       persist();
       return;
@@ -429,23 +570,52 @@ quick brown fox
       if (view === "overlay") {
         rows.appendChild(makeRow(line, ["orig", "new"]));
       } else {
-        const a = makeRow(line, ["orig"], { text: "Original", color: $("colOrig").value });
+        const a = makeRow(line, ["orig"], { text: "Origineel", color: $("colOrig").value });
         a.classList.add("stack-first");
         rows.appendChild(a);
-        rows.appendChild(makeRow(line, ["new"], { text: "New build", color: $("colNew").value }));
+        rows.appendChild(makeRow(line, ["new"], { text: "Nieuw", color: $("colNew").value }));
       }
     }
     persist();
   }
 
+  function flash(msg, cls) {
+    const st = $("cfgStatus");
+    st.className = "status " + cls;
+    st.textContent = msg;
+    st.dataset.sticky = "1";
+    setTimeout(() => { delete st.dataset.sticky; render(); }, 4000);
+  }
+
   // ---------- events
-  document.querySelector(".panel").addEventListener("input", render);
-  document.querySelector(".panel").addEventListener("change", render);
+  buildTable();
+  document.querySelector(".panel").addEventListener("input", e => { if (!e.target.closest(".config")) render(); });
+  document.querySelector(".panel").addEventListener("change", e => { if (!e.target.closest(".config")) render(); });
   document.querySelectorAll("[data-preset]").forEach(b => b.addEventListener("click", () => {
     text.value = PRESETS[b.dataset.preset];
     render();
   }));
   $("reload").addEventListener("click", loadFonts);
+  $("cfgCopy").addEventListener("click", () => {
+    const out = $("cfgOut");
+    navigator.clipboard.writeText(out.value)
+      .then(() => flash("Gekopieerd: " + out.value, "ok"))
+      .catch(() => { out.focus(); out.select(); flash("Kopiëren lukt hier niet automatisch. De code is geselecteerd: kopieer ze met Ctrl/Cmd+C.", "err"); });
+  });
+  $("cfgReset").addEventListener("click", () => { apply(DEFAULTS); render(); flash("Alles staat weer standaard.", "ok"); });
+  const doApply = () => {
+    const { next, unknown } = decodeAny($("cfgIn").value);
+    apply(next);
+    render();
+    flash(unknown.length ? `Toegepast. Onbekend en genegeerd: ${unknown.join(", ")}` : "Toegepast: " + encode(), unknown.length ? "err" : "ok");
+  };
+  $("cfgApply").addEventListener("click", doApply);
+  $("cfgIn").addEventListener("keydown", e => { if (e.key === "Enter") doApply(); });
+  window.addEventListener("hashchange", () => {
+    if (location.hash.toLowerCase().startsWith("#vtex") && location.hash.slice(1) !== hashOf()) {
+      apply(decodeAny(location.hash).next); render();
+    }
+  });
 
   render();
   loadFonts();

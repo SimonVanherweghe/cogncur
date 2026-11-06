@@ -14,7 +14,7 @@ TTF    := fonts/ttf/$(FAMILY)-$(STYLE).ttf
 REPORT := tests/report
 
 .DEFAULT_GOAL := all
-.PHONY: all venv upstream sources build test selftest qa corpus serve
+.PHONY: all venv upstream sources build test selftest qa corpus serve artifact
 
 serve:  ## live comparison tool at http://127.0.0.1:8765/tools/live.html
 	@echo "Open http://127.0.0.1:8765/tools/live.html  (Ctrl+C to stop)"
@@ -51,3 +51,6 @@ selftest:  ## reference vs itself: must PASS with zero differences
 qa:  ## Google Fonts checks + GF visual diff (informational, never fails the build)
 	-$(VENV)/bin/fontbakery check-googlefonts -l WARN --succinct --html $(REPORT)/fontbakery.html --ghmarkdown $(REPORT)/fontbakery.md $(TTF) > build/fontbakery.txt 2>&1; tail -1 build/fontbakery.txt
 	-$(VENV)/bin/diffenator2 diff -fb $(REF) -fa $(TTF) -o $(REPORT)/diffenator > build/diffenator.log 2>&1; tail -2 build/diffenator.log
+
+artifact:  ## package tools/live.html + fonts for the private Claude artifact (build/artifact/)
+	$(PY) scripts/build_artifact.py
