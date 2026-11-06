@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="839.6" height="2286" viewBox="0 0 839.6 2286">
+<title>ˇ caron</title>
+<g transform="matrix(1 0 0 -1 175.6 1484)">
+  <g id="hulplijnen" inkscape:groupmode="layer" inkscape:label="hulplijnen">
+    <line x1="-175.6" y1="-682" x2="664" y2="-682" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="20 20"/>
+    <line x1="-175.6" y1="0" x2="664" y2="0" stroke="#6f93c9" stroke-width="4"/>
+    <line x1="-175.6" y1="682" x2="664" y2="682" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="-175.6" y1="1364" x2="664" y2="1364" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="0" y1="-802" x2="0" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+    <line x1="544" y1="-802" x2="544" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+  </g>
+  <g id="omtrek" inkscape:groupmode="layer" inkscape:label="omtrek">
+    <path d="M-54.3 952 C-55.6 961.3 -53.3 969.3 -47.5 976 C-41.7 982.7 -34.1 986 -24.8 986 C-16.8 986 -9.5 983.7 -2.9 979 L143.5 877 L291.8 981 C296.7 984.3 302.5 986 309.2 986 C318.5 986 327 982.7 334.5 976 C342.1 969.3 346.4 961.3 347.7 952 C349.3 939.3 345.6 929.7 336.5 923 L168.9 806 C164 802.7 158.2 801 151.5 801 C143.5 801 136.2 803.3 129.6 808 L-36.8 925 C-47 931.7 -52.8 940.7 -54.3 952 Z" fill="#1e1e1e" fill-opacity="0.18" fill-rule="nonzero"/>
+  </g>
+  <g id="middenlijn" inkscape:groupmode="layer" inkscape:label="middenlijn">
+    <path d="M-20 952 L147 835 L314 952" fill="none" stroke="#d0312d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="vlakken" inkscape:groupmode="layer" inkscape:label="vlakken">
+
+  </g>
+</g>
+</svg>

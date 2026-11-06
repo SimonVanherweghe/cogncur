@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="770.2" height="2286" viewBox="0 0 770.2 2286">
+<title>˚ ring</title>
+<g transform="matrix(1 0 0 -1 174.2 1484)">
+  <g id="hulplijnen" inkscape:groupmode="layer" inkscape:label="hulplijnen">
+    <line x1="-174.2" y1="-682" x2="596" y2="-682" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="20 20"/>
+    <line x1="-174.2" y1="0" x2="596" y2="0" stroke="#6f93c9" stroke-width="4"/>
+    <line x1="-174.2" y1="682" x2="596" y2="682" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="-174.2" y1="1364" x2="596" y2="1364" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="0" y1="-802" x2="0" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+    <line x1="476" y1="-802" x2="476" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+  </g>
+  <g id="omtrek" inkscape:groupmode="layer" inkscape:label="omtrek">
+    <path d="M121.1 1017 C91.1 1017 65.6 1005.3 44.7 982 C24.5 958.7 16.3 932 20.2 902 C23.3 878.7 33.5 859.3 50.9 844 C68.2 828.7 88.9 821 112.9 821 C142.9 821 168.4 832.7 189.3 856 C209.6 879.3 217.7 906 213.8 936 C210.7 959.3 200.5 978.7 183.1 994 C165.8 1009.3 145.1 1017 121.1 1017 Z M-47.8 902 C-54.2 950.7 -41.4 993.3 -9.6 1030 C22.9 1066.7 63.5 1085 112.2 1085 C154.8 1085 192.4 1070.7 224.8 1042 C257.3 1013.3 276.2 978 281.8 936 C288.2 887.3 275.5 844.7 243.6 808 C211.1 771.3 170.5 753 121.9 753 C79.2 753 41.6 767.3 9.2 796 C-23.2 824.7 -42.2 860 -47.8 902 Z" fill="#1e1e1e" fill-opacity="0.18" fill-rule="nonzero"/>
+  </g>
+  <g id="middenlijn" inkscape:groupmode="layer" inkscape:label="middenlijn">
+    <path d="M-15.2 919 C-15.2 955.3 -2.2 986.4 23.7 1012.3 C49.6 1038.2 80.7 1051.2 117 1051.2 C153.3 1051.2 184.4 1038.2 210.3 1012.3 C236.2 986.4 249.2 955.3 249.2 919 C249.2 882.7 236.2 851.6 210.3 825.7 C184.4 799.8 153.3 786.8 117 786.8 C80.7 786.8 49.6 799.8 23.7 825.7 C-2.2 851.6 -15.2 882.7 -15.2 919 Z" fill="none" stroke="#d0312d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="vlakken" inkscape:groupmode="layer" inkscape:label="vlakken">
+
+  </g>
+</g>
+</svg>

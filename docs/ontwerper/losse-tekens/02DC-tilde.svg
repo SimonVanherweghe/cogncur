@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="862.8" height="2286" viewBox="0 0 862.8 2286">
+<title>˜ tilde</title>
+<g transform="matrix(1 0 0 -1 159.8 1484)">
+  <g id="hulplijnen" inkscape:groupmode="layer" inkscape:label="hulplijnen">
+    <line x1="-159.8" y1="-682" x2="703" y2="-682" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="20 20"/>
+    <line x1="-159.8" y1="0" x2="703" y2="0" stroke="#6f93c9" stroke-width="4"/>
+    <line x1="-159.8" y1="682" x2="703" y2="682" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="-159.8" y1="1364" x2="703" y2="1364" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="0" y1="-802" x2="0" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+    <line x1="583" y1="-802" x2="583" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+  </g>
+  <g id="omtrek" inkscape:groupmode="layer" inkscape:label="omtrek">
+    <path d="M356 927 C365.3 927 373.7 923.7 381.3 917 C388.8 910.3 393.2 902.3 394.4 893 C395.3 886.3 394.1 880 390.9 874 C375.9 846.7 355.1 825 328.5 809 C308.7 797.7 289.1 792 269.7 792 C259.1 792 247.5 794 234.9 798 C223.1 802 213.2 806 205.4 810 L175 828 C146.7 845.3 127.9 856.3 118.6 861 C109.4 865.7 101.4 868 94.7 868 C86.1 868 74.7 863.3 60.6 854 C46.4 845.3 34.7 832.7 25.6 816 C20.2 806 11.5 801 -0.5 801 C-9.8 801 -18.2 804.3 -25.8 811 C-33.3 817.7 -37.7 825.7 -38.9 835 C-39.8 841.7 -38.6 848 -35.4 854 C-20.4 881.3 0.5 903 27 919 C46.9 930.3 66.4 936 85.8 936 C96.4 936 107.7 934 119.6 930 C131.4 926 140.9 922 148.1 918 L178.4 901 C205.9 884.3 224.7 873.3 234.7 868 C244.8 862.7 253.4 860 260.8 860 C269.4 860 280.8 864.7 294.9 874 C309.1 882.7 320.8 895.3 329.9 912 C335.3 922 344 927 356 927 Z" fill="#1e1e1e" fill-opacity="0.18" fill-rule="nonzero"/>
+  </g>
+  <g id="middenlijn" inkscape:groupmode="layer" inkscape:label="middenlijn">
+    <path d="M360.4 893 C349.1 872.3 334.2 855.9 315.8 844 C297.4 832 280.5 826 265 826 C260.4 826 255.5 826.6 250.3 827.8 C245.2 829 240.6 830.3 236.8 831.6 C232.9 832.9 227.8 835.2 221.6 838.4 C215.4 841.6 210.8 844.1 207.9 845.8 C204.9 847.4 199.8 850.5 192.5 854.9 C185.2 859.3 180.4 862.1 178.2 863.5 C175.5 865 169.6 868.6 160.4 874.2 C151.2 879.8 144.7 883.5 141.1 885.5 C137.5 887.4 132.2 890 125.3 893.4 C118.3 896.7 112.1 899 106.7 900.2 C101.3 901.4 95.9 902 90.4 902 C74.9 902 58 896 39.6 884 C21.2 872.1 6.3 855.7 -5 835" fill="none" stroke="#d0312d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="vlakken" inkscape:groupmode="layer" inkscape:label="vlakken">
+
+  </g>
+</g>
+</svg>

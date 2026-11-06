@@ -3,7 +3,7 @@ build procedure from upstream/sources/howto.txt ("BUILDING THE FONTS FOR
 MULTIPLE SUBSTITUTION") in a scripted, repeatable way.
 
 Run with FontForge's Python:
-    fontforge -lang=py -script scripts/export_ufo.py <in.sfd> <layer> <out.ufo> [<skeleton_out.ufo>]
+    fontforge -lang=py -script scripts/export_ufo.py <in.sfd> <layer> <out.ufo> [<skeleton_out.ufo> [<extra_out.ufo>]]
 
 The .sfd is opened read-only in memory and never saved.
 The 'space' placeholder fix (howto step 9) is done afterwards on the
@@ -18,6 +18,7 @@ import psMat
 
 src, layer, out = sys.argv[1:4]
 skeleton_out = sys.argv[4] if len(sys.argv) > 4 else None
+extra_out = sys.argv[5] if len(sys.argv) > 5 else None
 
 f = fontforge.open(src)
 
@@ -56,16 +57,25 @@ if empty:
     print("  empty:", " ".join(empty[:40]))
 
 if skeleton_out:
-    # Single-stroke (centre-line) version for a later pen-plotter export.
+    # Single-stroke (centre-line) version for a later pen-plotter export, and
+    # the designer's 'Extra' layer (dots, commas: filled shapes) separately, so
+    # closed centre lines (o, e, rings) can be told apart from filled shapes.
     # Same skew as the Regular style (7.5 deg, see derive-layers.py).
     skew = psMat.skew(7.5 * math.pi / 180.0)
     noskew = {"asciitilde", "underscore", "uni203E"}
+    extra = {}
     for g in f.glyphs():
         sk = g.layers["Skeleton"]
         ex = g.layers["Extra"]
         if g.glyphname not in noskew:
             sk.transform(skew)
             ex.transform(skew)
-        g.layers["Fore"] = sk + ex
+        g.layers["Fore"] = sk
+        extra[g.glyphname] = ex
     f.generate(skeleton_out, layer="Fore")
     print(f"exported skeleton -> {skeleton_out}")
+    if extra_out:
+        for g in f.glyphs():
+            g.layers["Fore"] = extra[g.glyphname]
+        f.generate(extra_out, layer="Fore")
+        print(f"exported extra -> {extra_out}")

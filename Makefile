@@ -31,9 +31,9 @@ upstream:  ## clone upstream at the pinned commit
 
 sources:  ## .sfd -> raw UFO (FontForge) -> GF-ready UFO
 	mkdir -p build sources
-	rm -rf build/raw-$(STYLE).ufo build/skeleton-$(STYLE).ufo
-	fontforge -lang=py -script scripts/export_ufo.py $(SFD) $(LAYER) build/raw-$(STYLE).ufo build/skeleton-$(STYLE).ufo 2> build/export-$(STYLE).log
-	$(PY) scripts/postprocess_ufo.py build/raw-$(STYLE).ufo $(UFO) --style $(STYLE) --skeleton build/skeleton-$(STYLE).ufo
+	rm -rf build/raw-$(STYLE).ufo build/skeleton-$(STYLE).ufo build/extra-$(STYLE).ufo
+	fontforge -lang=py -script scripts/export_ufo.py $(SFD) $(LAYER) build/raw-$(STYLE).ufo build/skeleton-$(STYLE).ufo build/extra-$(STYLE).ufo 2> build/export-$(STYLE).log
+	$(PY) scripts/postprocess_ufo.py build/raw-$(STYLE).ufo $(UFO) --style $(STYLE) --skeleton build/skeleton-$(STYLE).ufo --extra build/extra-$(STYLE).ufo
 
 build:
 	cd sources && PATH="$(CURDIR)/$(VENV)/bin:$$PATH" gftools builder config.yaml # sources/config.yaml

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="1012.3" height="2286" viewBox="0 0 1012.3 2286">
+<title>˝ hungarumlaut</title>
+<g transform="matrix(1 0 0 -1 156.3 1484)">
+  <g id="hulplijnen" inkscape:groupmode="layer" inkscape:label="hulplijnen">
+    <line x1="-156.3" y1="-682" x2="856" y2="-682" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="20 20"/>
+    <line x1="-156.3" y1="0" x2="856" y2="0" stroke="#6f93c9" stroke-width="4"/>
+    <line x1="-156.3" y1="682" x2="856" y2="682" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="-156.3" y1="1364" x2="856" y2="1364" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="0" y1="-802" x2="0" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+    <line x1="736" y1="-802" x2="736" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+  </g>
+  <g id="omtrek" inkscape:groupmode="layer" inkscape:label="omtrek">
+    <path d="M502.5 976 C511.8 976 520.3 972.7 527.8 966 C535.4 959.3 539.8 951.3 541 942 C542.7 928.7 538.4 918.7 527.9 912 L314.2 773 C309.3 769.7 303.9 768 297.9 768 C288.6 768 280.1 771.3 272.6 778 C265 784.7 260.6 792.7 259.4 802 C257.7 815.3 261.7 825.3 271.5 832 L485.2 971 C490.1 974.3 495.8 976 502.5 976 Z M208.5 976 C217.8 976 226.3 972.7 233.8 966 C241.4 959.3 245.8 951.3 247 942 C248.7 928.7 244.4 918.7 233.9 912 L20.2 773 C15.3 769.7 9.9 768 3.9 768 C-5.4 768 -13.9 771.3 -21.4 778 C-29 784.7 -33.4 792.7 -34.6 802 C-36.3 815.3 -32.3 825.3 -22.5 832 L191.2 971 C196.1 974.3 201.8 976 208.5 976 Z" fill="#1e1e1e" fill-opacity="0.18" fill-rule="nonzero"/>
+  </g>
+  <g id="middenlijn" inkscape:groupmode="layer" inkscape:label="middenlijn">
+    <path d="M212.9 941.6 L106 872 L-0.8 802.4 M506.8 941.6 L400 872 L293.1 802.4" fill="none" stroke="#d0312d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="vlakken" inkscape:groupmode="layer" inkscape:label="vlakken">
+
+  </g>
+</g>
+</svg>

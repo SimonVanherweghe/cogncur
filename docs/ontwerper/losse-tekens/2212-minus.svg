@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="860" height="2286" viewBox="0 0 860 2286">
+<title>− minus</title>
+<g transform="matrix(1 0 0 -1 120 1484)">
+  <g id="hulplijnen" inkscape:groupmode="layer" inkscape:label="hulplijnen">
+    <line x1="-120" y1="-682" x2="740" y2="-682" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="20 20"/>
+    <line x1="-120" y1="0" x2="740" y2="0" stroke="#6f93c9" stroke-width="4"/>
+    <line x1="-120" y1="682" x2="740" y2="682" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="-120" y1="1364" x2="740" y2="1364" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="0" y1="-802" x2="0" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+    <line x1="620" y1="-802" x2="620" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+  </g>
+  <g id="omtrek" inkscape:groupmode="layer" inkscape:label="omtrek">
+    <path d="M94.3 317 C86.7 323.7 82.3 331.7 81.1 341 C79.9 350.3 82.2 358.3 87.9 365 C93.7 371.7 101.3 375 110.6 375 L531.6 375 C541 375 549.4 371.7 556.9 365 C564.5 358.3 568.9 350.3 570.1 341 C571.3 331.7 569.1 323.7 563.3 317 C557.5 310.3 549.9 307 540.6 307 L119.6 307 C110.2 307 101.8 310.3 94.3 317 Z" fill="#1e1e1e" fill-opacity="0.18" fill-rule="nonzero"/>
+  </g>
+  <g id="middenlijn" inkscape:groupmode="layer" inkscape:label="middenlijn">
+    <path d="M115.1 341 L536 341" fill="none" stroke="#d0312d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="vlakken" inkscape:groupmode="layer" inkscape:label="vlakken">
+
+  </g>
+</g>
+</svg>

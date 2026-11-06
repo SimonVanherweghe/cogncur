@@ -1,6 +1,6 @@
 """Turn FontForge's raw UFO export into a Google-Fonts-ready source UFO.
 
-    python scripts/postprocess_ufo.py <raw.ufo> <out.ufo> [--skeleton <skeleton.ufo>]
+    python scripts/postprocess_ufo.py <raw.ufo> <out.ufo> [--skeleton <skeleton.ufo>] [--extra <extra.ufo>]
 
 1. Feature fix (howto.txt, step 9): the 4 'start' rules in the calt lookup use a
    backtrack class that contains only 'space' as a development placeholder. In
@@ -8,8 +8,9 @@
    start / after punctuation. We remove it here.
 2. Metadata: family name, GF copyright/license strings, version, fsType,
    vertical metrics.
-3. Optionally store the single-stroke skeleton as an extra UFO layer
-   ('skeleton') for a later pen-plotter export. Not built into the font.
+3. Optionally store the single-stroke skeleton and the designer's 'Extra'
+   shapes (dots, commas) as UFO layers 'skeleton' and 'extra' (for a later
+   pen-plotter export and docs/ontwerper/). Not built into the font.
 """
 import argparse
 import re
@@ -362,11 +363,11 @@ def clean_outlines(font: ufoLib2.Font, tol: float = 1.0) -> dict:
     return stats
 
 
-def add_skeleton_layer(font: ufoLib2.Font, skeleton_path: str) -> None:
+def add_skeleton_layer(font: ufoLib2.Font, skeleton_path: str, name: str = "skeleton") -> None:
     skel = ufoLib2.Font.open(skeleton_path)
-    layer = font.newLayer("skeleton") if "skeleton" not in font.layers else font.layers["skeleton"]
+    layer = font.newLayer(name) if name not in font.layers else font.layers[name]
     for g in skel:
-        if g.name in font:
+        if g.name in font and g.contours:
             ng = layer.newGlyph(g.name)
             ng.width = g.width
             ng.contours = [c for c in g.contours]
@@ -378,6 +379,7 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--style", default="Regular")
     ap.add_argument("--skeleton")
+    ap.add_argument("--extra")
     a = ap.parse_args()
 
     font = ufoLib2.Font.open(a.raw)
@@ -399,6 +401,8 @@ def main():
         print("gf extra:", c)
     if a.skeleton:
         add_skeleton_layer(font, a.skeleton)
+    if a.extra:
+        add_skeleton_layer(font, a.extra, "extra")
     shutil.rmtree(a.out, ignore_errors=True)
     font.save(a.out)
     print(f"wrote {a.out}")

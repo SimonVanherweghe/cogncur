@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="830.1" height="2286" viewBox="0 0 830.1 2286">
+<title>¯ macron</title>
+<g transform="matrix(1 0 0 -1 166.1 1484)">
+  <g id="hulplijnen" inkscape:groupmode="layer" inkscape:label="hulplijnen">
+    <line x1="-166.1" y1="-682" x2="664" y2="-682" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="20 20"/>
+    <line x1="-166.1" y1="0" x2="664" y2="0" stroke="#6f93c9" stroke-width="4"/>
+    <line x1="-166.1" y1="682" x2="664" y2="682" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="-166.1" y1="1364" x2="664" y2="1364" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="0" y1="-802" x2="0" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+    <line x1="544" y1="-802" x2="544" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+  </g>
+  <g id="omtrek" inkscape:groupmode="layer" inkscape:label="omtrek">
+    <path d="M327.6 846 L-6.4 846 C-15.7 846 -24.2 849.3 -31.7 856 C-39.2 862.7 -43.6 870.7 -44.9 880 C-46.1 889.3 -43.8 897.3 -38 904 C-32.2 910.7 -24.7 914 -15.3 914 L318.7 914 C328 914 336.4 910.7 344 904 C351.5 897.3 355.9 889.3 357.1 880 C358.4 870.7 356.1 862.7 350.3 856 C344.5 849.3 337 846 327.6 846 Z" fill="#1e1e1e" fill-opacity="0.18" fill-rule="nonzero"/>
+  </g>
+  <g id="middenlijn" inkscape:groupmode="layer" inkscape:label="middenlijn">
+    <path d="M323 880 L-11 880" fill="none" stroke="#d0312d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="vlakken" inkscape:groupmode="layer" inkscape:label="vlakken">
+
+  </g>
+</g>
+</svg>

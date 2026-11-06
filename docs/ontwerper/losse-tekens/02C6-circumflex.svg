@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="824.6" height="2286" viewBox="0 0 824.6 2286">
+<title>ˆ circumflex</title>
+<g transform="matrix(1 0 0 -1 160.6 1484)">
+  <g id="hulplijnen" inkscape:groupmode="layer" inkscape:label="hulplijnen">
+    <line x1="-160.6" y1="-682" x2="664" y2="-682" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="20 20"/>
+    <line x1="-160.6" y1="0" x2="664" y2="0" stroke="#6f93c9" stroke-width="4"/>
+    <line x1="-160.6" y1="682" x2="664" y2="682" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="-160.6" y1="1364" x2="664" y2="1364" stroke="#a9c3e8" stroke-width="2"/>
+    <line x1="0" y1="-802" x2="0" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+    <line x1="544" y1="-802" x2="544" y2="1484" stroke="#a9c3e8" stroke-width="2" stroke-dasharray="8 12"/>
+  </g>
+  <g id="omtrek" inkscape:groupmode="layer" inkscape:label="omtrek">
+    <path d="M363.1 835 C364.3 825.7 362 817.7 356.2 811 C350.4 804.3 342.9 801 333.5 801 C325.5 801 318.2 803.3 311.6 808 L166.2 910 L16.9 806 C12 802.7 6.2 801 -0.5 801 C-9.8 801 -18.2 804.3 -25.8 811 C-33.3 817.7 -37.7 825.7 -38.9 835 C-40.6 847.7 -36.5 857.3 -26.7 864 L139.8 981 C144.7 984.3 150.5 986 157.2 986 C165.2 986 172.5 983.7 179.1 979 L346.5 862 C356.1 855.3 361.6 846.3 363.1 835 Z" fill="#1e1e1e" fill-opacity="0.18" fill-rule="nonzero"/>
+  </g>
+  <g id="middenlijn" inkscape:groupmode="layer" inkscape:label="middenlijn">
+    <path d="M329 835 L162 952 L-5 835" fill="none" stroke="#d0312d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="vlakken" inkscape:groupmode="layer" inkscape:label="vlakken">
+
+  </g>
+</g>
+</svg>

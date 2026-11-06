@@ -2,9 +2,12 @@
 
     python scripts/issues.py            # render images + create missing issues
     python scripts/issues.py --dry-run  # only render images, print what would be created
+    python scripts/issues.py --files    # also add the designer-files comment (see below)
 
 Each issue carries a hidden marker <!-- beslissing:<id> -->; issues whose
-marker already exists are skipped. Images are rendered from the current build
+marker already exists are skipped. Designer issues get one comment linking their
+editable SVG/EPS files (scripts/designer_files.py -> docs/ontwerper/<slug>/),
+marked <!-- bestanden:<id> --> so it is posted only once. Images are rendered from the current build
 (fonts/ttf/Vtex-Regular.ttf) into docs/img/ and must be committed and pushed
 before the issue is created (the issue links to them in the repo).
 """
@@ -134,6 +137,7 @@ DECISIONS = [
     },
     {
         "id": "schets-eth", "labels": ["ontwerper"],
+        "bestanden": "ð",
         "titel": "Schets: ð (eth)",
         "context": "De **ð** komt voor in het IJslands en het Faeröers. Cogncur heeft deze letter niet. "
                    "De schets gebruikt de buik van haar **d**, een steel die bovenaan naar links buigt, en een schuine streep. "
@@ -144,6 +148,7 @@ DECISIONS = [
     },
     {
         "id": "schets-thorn", "labels": ["ontwerper"],
+        "bestanden": "þ",
         "titel": "Schets: þ (thorn)",
         "context": "De **þ** komt voor in het IJslands. De schets combineert de lus bovenaan van haar **b** met de "
                    "staart en de buik van haar **p**.\n\nDe þ verbindt zich precies zoals de **p** (getest).",
@@ -152,6 +157,7 @@ DECISIONS = [
     },
     {
         "id": "schets-Thorn", "labels": ["ontwerper"],
+        "slug": "schets-thorn-hoofdletter", "bestanden": "Þ",
         "titel": "Schets: Þ (hoofdletter thorn)",
         "context": "De **Þ** is de hoofdletter van þ (IJslands). De schets is haar **P** met de buik naar het midden verschoven.\n\n"
                    "De Þ verbindt zich precies zoals de **P** (getest).",
@@ -160,6 +166,7 @@ DECISIONS = [
     },
     {
         "id": "schets-scharfes-s", "labels": ["ontwerper"],
+        "bestanden": "ẞ",
         "titel": "Schets: ẞ (hoofdletter ringel-s)",
         "context": "De **ẞ** is de Duitse hoofdletter van ß. De schets gebruikt de steel en de onderste buik van haar **B**, "
                    "met een vlakke bovenkant en een schuine lijn. Van alle schetsen is dit de ruwste.\n\n"
@@ -169,6 +176,7 @@ DECISIONS = [
     },
     {
         "id": "accent-ogonek", "labels": ["ontwerper"],
+        "bestanden": "ąęįųĄĘĮŲ",
         "titel": "Nieuw accent: ogonek (ą ę į ų)",
         "context": "Het haakje onder **ą ę į ų** (Pools, Litouws) bestaat niet in Cogncur. Het is nieuw getekend als middenlijn en met haar pen uitgezet. "
                    "Het hangt aan de onderkant van de laatste stok van de letter. Die plaats is geschat.\n\n"
@@ -178,6 +186,7 @@ DECISIONS = [
     },
     {
         "id": "accent-dubbele-aigu", "labels": ["ontwerper"],
+        "bestanden": "őűŐŰ",
         "titel": "Nieuw accent: dubbele accent aigu (ő ű)",
         "context": "Het dubbele accent op **ő ű** (Hongaars) bestaat uit twee van haar eigen accents aigus, "
                    "elk 20 % smaller en naast elkaar gezet.",
@@ -186,6 +195,7 @@ DECISIONS = [
     },
     {
         "id": "accent-komma-onder", "labels": ["ontwerper"],
+        "bestanden": "șțķļņģȘȚĶĻŅ",
         "titel": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
         "context": "De komma onder **ș ț** (Roemeens) en **ķ ļ ņ** (Lets) is haar eigen komma, op 80 % van de grootte. "
                    "Voor de **ģ** staat de komma, zoals in het Lets gebruikelijk, omgekeerd *boven* de letter.\n\n"
@@ -195,6 +205,7 @@ DECISIONS = [
     },
     {
         "id": "accent-punt-boven", "labels": ["ontwerper"],
+        "bestanden": "ċėġżĊĖĠŻİ",
         "titel": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
         "context": "De punt op **ċ ė ġ ż** (Pools, Litouws, Maltees) en de **İ** (Turks) is exact de punt van haar **i**.",
         "glyphs": ["ċ ė ġ ż  Ċ Ė Ġ Ż İ  i"], "words": ["żaba ėsti ġurnata İzmir"],
@@ -202,6 +213,7 @@ DECISIONS = [
     },
     {
         "id": "accent-apostrof-haacek", "labels": ["ontwerper"],
+        "bestanden": "ďľťĽ",
         "titel": "Nieuw accent: haček als apostrof (ď ľ ť Ľ)",
         "context": "Bij **ď ľ ť Ľ** (Tsjechisch, Slowaaks) staat de haček niet boven de lange stok maar ernaast, als een apostrof. "
                    "Daarvoor is haar eigen apostrof (zoals in *don't*) gebruikt, rechts van de stok. De plaats is per letter geschat.\n\n"
@@ -211,6 +223,7 @@ DECISIONS = [
     },
     {
         "id": "streep-letters", "labels": ["ontwerper"],
+        "bestanden": "ĐÐđĦħŁł",
         "titel": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
         "context": "**Đ đ** (Kroatisch, Vietnamees), **Ð** (IJslands), **Ħ ħ** (Maltees) en **Ł ł** (Pools) zijn haar letter "
                    "met een rechte streep (of schuine streep bij Ł ł). Die streep is met haar pen getekend. De hoogte van de streep is geschat.",
@@ -219,6 +232,7 @@ DECISIONS = [
     },
     {
         "id": "losse-tekens", "labels": ["ontwerper"],
+        "bestanden": "¯ˆˇ˘˙˚˛˜˝…−",
         "titel": "Schets: losse accenten, … en −",
         "context": "Google Fonts vraagt ook **losse accenten** (¯ ˆ ˇ ˘ ˙ ˚ ˛ ˜ ˝), het **beletselteken** (…) en het **minteken** (−). "
                    "De losse accenten zijn haar eigen accenten met ruimte ernaast. … bestaat uit drie van haar punten. − is de liggende streep van haar +.",
@@ -259,19 +273,25 @@ def existing_markers():
     return found
 
 
+def slug(d):
+    """File name for an issue's images/files. Must not differ from another slug only
+    in case (macOS is case-insensitive: schets-thorn vs schets-Thorn collided)."""
+    return d.get("slug", d["id"])
+
+
 def render(d, font):
     if "glyphs" not in d:
         return []
     paths = []
     for kind, lines, size in (("tekens", d["glyphs"], 120), ("woorden", d["words"], 80)):
-        p = IMG / f"{d['id']}-{kind}.png"
+        p = IMG / f"{slug(d)}-{kind}.png"
         render_lines(font, lines, size, {}, "1E4FB8").save(p, optimize=True)
         paths.append(p)
     return paths
 
 
 def body(d):
-    imgs = "\n\n".join(f"![{d['titel']}]({IMG_URL}/{d['id']}-{k}.png?raw=true)" for k in ("tekens", "woorden"))
+    imgs = "\n\n".join(f"![{d['titel']}]({IMG_URL}/{slug(d)}-{k}.png?raw=true)" for k in ("tekens", "woorden"))
     return f"""<!-- beslissing:{d['id']} -->
 ## Waarover gaat het?
 
@@ -288,9 +308,54 @@ _Dit is een schets op basis van de vormen en de pen van Cogncur. Niets is al def
 """
 
 
+REPO_URL = f"https://github.com/{REPO}"
+
+
+def files_comment(d):
+    """Comment for a designer issue, linking its editable files."""
+    folder = f"docs/ontwerper/{slug(d)}"
+    rows = []
+    for ch in d["bestanden"]:
+        stem = next(p.stem for p in (ROOT / folder).glob(f"{ord(ch):04X}-*.svg"))
+        rows.append(f"| {ch} | [SVG]({REPO_URL}/blob/main/{folder}/{stem}.svg) | "
+                    f"[EPS]({REPO_URL}/raw/main/{folder}/{stem}.eps) |")
+    return f"""<!-- bestanden:{d['id']} -->
+### Bestanden om aan te passen
+
+Elk teken als vectorbestand, rechtop en in de eenheden van het lettertype (2048 per em).
+
+- **SVG**: voor Illustrator of Inkscape, met lagen voor hulplijnen, omtrek, middenlijn en vlakken (punten, komma's).
+- **EPS**: alleen de middenlijn en vlakken, om in FontForge te importeren op de laag *Skeleton*.
+
+| Teken | Illustrator / Inkscape | FontForge |
+|---|---|---|
+{chr(10).join(rows)}
+
+Overzicht van de voorbeeldregels (met verbindingen): [SVG]({REPO_URL}/blob/main/{folder}/overzicht.svg) · [EPS]({REPO_URL}/raw/main/{folder}/overzicht.eps)
+
+Alles in één map: [{folder}]({REPO_URL}/tree/main/{folder}) · uitleg: [README]({REPO_URL}/blob/main/docs/ontwerper/README.md)
+
+Een aangepaste versie mag je als bijlage in een reactie hieronder zetten.
+"""
+
+
+def post_files_comments(have):
+    for d in DECISIONS:
+        if "bestanden" not in d or d["id"] not in have:
+            continue
+        num = str(have[d["id"]])
+        bodies = gh("issue", "view", num, "-R", REPO, "--json", "comments", "-q", ".comments[].body")
+        if f"<!-- bestanden:{d['id']} -->" in bodies:
+            print(f"files comment exists: #{num}")
+            continue
+        gh("issue", "comment", num, "-R", REPO, "--body-file", "-", input=files_comment(d))
+        print(f"files comment added: #{num}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--files", action="store_true", help="add the designer-files comment to designer issues")
     a = ap.parse_args()
     IMG.mkdir(parents=True, exist_ok=True)
     font = Font(FONT)
@@ -328,6 +393,9 @@ def main():
                 msg = f"### Optie {letter}: {label}\n\n{text}\n\n👍 = ik kies optie {letter}"
             gh("issue", "comment", num, "-R", REPO, "--body-file", "-", input=msg)
         print(f"created: {url}")
+        have[d["id"]] = int(num)
+    if a.files:
+        post_files_comments(have)
 
 
 if __name__ == "__main__":
