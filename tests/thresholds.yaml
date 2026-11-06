@@ -1,0 +1,16 @@
+# Thresholds for tests/compare.py. Calibrated with reference-vs-reference
+# (must give zero on everything). Joins: no tolerance at all.
+render_ppem: 48              # word rendering size for connectivity checks
+pixel_tolerance: 32          # per-pixel grey difference that counts as "different" (0-255)
+max_shaping_mismatches: 0    # glyph sequence + positions must be identical
+max_connectivity_mismatches: 0
+max_advance_mismatches: 0
+glyph_diff_ratio_max: 0.02   # per glyph: differing pixels / ink pixels (rasterised at 2x render_ppem)
+
+# Deliberate differences from the reference. Each needs a reason; the report
+# lists them separately as "expected" (they never silently pass).
+intentional_changes:
+  uni2010: "U+2010 HYPHEN is empty upstream (fontbakery contour_count FAIL); now a copy of hyphen-minus"
+
+# New accented letters (tests/check_composites.py)
+min_accent_gap: 40          # font units between accent and letter (cedilla excluded)

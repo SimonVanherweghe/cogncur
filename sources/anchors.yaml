@@ -1,0 +1,6 @@
+# Overrides for accent positions on letters the designer never accented.
+# Key: <glyph>.<anchor>, value: [x, y] in unslanted font units (like her anchors).
+# Anchors: topleft (acute), topmid (most accents), topright (grave), bottom (cedilla,
+# comma below), ogonek, caronvert (apostrophe-caron), bar, slash.
+# Example:
+# l.caronvert: [540, 1330]

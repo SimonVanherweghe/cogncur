@@ -1,0 +1,13 @@
+fontTools[ufo,unicode]
+ufoLib2
+fontmake
+gftools[qa]
+fontbakery[googlefonts]
+diffenator2
+uharfbuzz
+freetype-py
+Pillow
+numpy
+scipy
+ttfautohint-py
+PyYAML

@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live font comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ui-bg: #EEF2F7;
+  --ui-fg: #1B2433;
+  --ui-muted: #5B6577;
+  --ui-line: #CCD5E1;
+  --ui-panel: #FFFFFF;
+  --ui-focus: #1E4FB8;
+  --paper: #FAFCFF;
+  --rule: #A9C3E8;
+  --rule-strong: #6F93C9;
+  --margin: #E8838F;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ui-bg: #121A24; --ui-fg: #E6EBF2; --ui-muted: #9AA6B8; --ui-line: #2C3A4C;
+    --ui-panel: #1A2431; --ui-focus: #8FB3FF;
+  }
+}
+:root[data-theme="dark"] {
+  --ui-bg: #121A24; --ui-fg: #E6EBF2; --ui-muted: #9AA6B8; --ui-line: #2C3A4C;
+  --ui-panel: #1A2431; --ui-focus: #8FB3FF;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--ui-bg);
+  color: var(--ui-fg);
+  font: 16px/1.5 "Atkinson Hyperlegible", system-ui, sans-serif;
+  min-height: 100vh;
+}
+.app {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); padding: 16px; }
+}
+
+/* ---------------- the sheet (always paper, also in dark mode) ------------ */
+.sheet {
+  background: var(--paper);
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgba(27, 36, 51, .08), 0 8px 24px -12px rgba(27, 36, 51, .25);
+  overflow-x: auto;
+  position: relative;
+  min-height: 60vh;
+}
+.sheet-inner {
+  position: relative;
+  padding: 24px 32px 48px 0;
+  min-width: max-content;
+}
+.margin-rule {
+  position: absolute; top: 0; bottom: 0;
+  left: var(--margin-x); width: 2px;
+  background: var(--margin);
+  opacity: .75;
+}
+.row {
+  position: relative;
+  height: var(--row-h);
+  margin-bottom: var(--row-gap);
+}
+.row.stack-first { margin-bottom: calc(var(--row-gap) * .25); }
+.guides { position: absolute; left: 0; right: -32px; top: 0; height: 100%; pointer-events: none; }
+.guides i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--rule); }
+.guides i.base { border-top: 1.5px solid var(--rule-strong); }
+.guides i.xh { border-top-style: dashed; }
+.sheet.no-guides .guides { display: none; }
+.row-label {
+  position: absolute; left: 10px; top: 0; height: 100%;
+  width: calc(var(--margin-x) - 18px);
+  display: flex; align-items: center; justify-content: flex-end;
+  font-size: 13px; font-weight: 700; text-align: right; line-height: 1.2;
+}
+.ink {
+  position: absolute; left: calc(var(--margin-x) + 20px); top: 0;
+  font-size: var(--size);
+  line-height: var(--line-h);
+  white-space: pre;
+  font-feature-settings: var(--fea);
+  font-kerning: var(--kerning);
+  font-synthesis: none;
+}
+.ink.orig { font-family: "RefFont", sans-serif; color: var(--c-orig); opacity: var(--o-orig); }
+.ink.new  { font-family: "NewFont", sans-serif; color: var(--c-new);  opacity: var(--o-new); }
+.sheet.blend .ink { mix-blend-mode: multiply; }
+.sheet.hide-orig .ink.orig, .sheet.hide-orig .row.only-orig { display: none; }
+.sheet.hide-new .ink.new,  .sheet.hide-new .row.only-new  { display: none; }
+.empty-hint {
+  position: absolute; left: calc(var(--margin-x) + 20px); top: 32px;
+  color: var(--ui-muted); font-size: 18px;
+}
+
+/* ---------------- controls ---------------------------------------------- */
+.panel {
+  background: var(--ui-panel);
+  border: 1px solid var(--ui-line);
+  border-radius: 6px;
+  padding: 16px;
+  align-self: start;
+  position: sticky; top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+@media (max-width: 900px) { .panel { position: static; max-height: none; } }
+.panel h1 { font-size: 20px; margin: 0 0 4px; line-height: 1.25; }
+.panel .sub { color: var(--ui-muted); font-size: 14px; margin: 0 0 16px; }
+fieldset { border: 0; padding: 0; margin: 0 0 18px; }
+legend { font-weight: 700; font-size: 15px; padding: 0; margin-bottom: 6px; }
+label { font-size: 15px; }
+textarea {
+  width: 100%; min-height: 110px; resize: vertical;
+  font: 17px/1.4 "Atkinson Hyperlegible", system-ui, sans-serif;
+  color: var(--ui-fg); background: var(--ui-bg);
+  border: 1px solid var(--ui-line); border-radius: 4px; padding: 8px 10px;
+}
+.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+button, .seg label {
+  font: inherit; font-size: 14px; color: var(--ui-fg);
+  background: var(--ui-bg); border: 1px solid var(--ui-line); border-radius: 4px;
+  padding: 4px 10px; cursor: pointer;
+}
+button:hover, .seg label:hover { border-color: var(--ui-muted); }
+:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
+.seg { display: flex; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { flex: 1; text-align: center; border-radius: 0; padding: 6px 8px; }
+.seg label:first-of-type { border-radius: 4px 0 0 4px; }
+.seg label:last-of-type { border-radius: 0 4px 4px 0; border-left: 0; }
+.seg input:checked + label { background: var(--ui-fg); color: var(--ui-panel); border-color: var(--ui-fg); }
+.seg input:focus-visible + label { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
+.range { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.range output { font-variant-numeric: tabular-nums; min-width: 3.5em; text-align: right; color: var(--ui-muted); font-size: 14px; }
+input[type=range] { width: 100%; accent-color: var(--ui-fg); }
+.font-ctl {
+  border-left: 4px solid var(--swatch); padding: 6px 0 6px 10px; margin-bottom: 10px;
+}
+.font-ctl .top { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.font-ctl .file { color: var(--ui-muted); font-size: 13px; word-break: break-all; margin: 2px 0 4px; }
+input[type=color] { width: 34px; height: 26px; padding: 0; border: 1px solid var(--ui-line); border-radius: 4px; background: none; }
+.check { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips label {
+  font-size: 13px; padding: 2px 8px; border: 1px solid var(--ui-line); border-radius: 12px; cursor: pointer;
+  user-select: none;
+}
+.chips input { position: absolute; opacity: 0; pointer-events: none; }
+.chips input:checked + span { font-weight: 700; }
+.chips label:has(input:checked) { background: var(--ui-fg); color: var(--ui-panel); border-color: var(--ui-fg); }
+.chips label:has(input:focus-visible) { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
+.status { font-size: 13px; color: var(--ui-muted); margin-top: 8px; }
+.status.err { color: #C0392B; }
+.note { font-size: 13px; color: var(--ui-muted); margin: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <main class="sheet" id="sheet" aria-label="Comparison">
+    <div class="sheet-inner" id="sheetInner">
+      <div class="margin-rule"></div>
+      <div id="rows"></div>
+    </div>
+  </main>
+
+  <aside class="panel" aria-label="Settings">
+    <h1>Live font comparison</h1>
+    <p class="sub">The original Cogncur against the new build, on the same writing lines.</p>
+
+    <fieldset>
+      <legend><label for="text">Text</label></legend>
+      <textarea id="text" spellcheck="false">Amsterdam bijzonder
+quick brown fox
+(hallo) don't zoo</textarea>
+      <div class="presets" aria-label="Example texts">
+        <button type="button" data-preset="joins">Every join</button>
+        <button type="button" data-preset="caps">Capitals</button>
+        <button type="button" data-preset="accents">Accents</button>
+        <button type="button" data-preset="punct">Punctuation</button>
+        <button type="button" data-preset="newletters">New letters</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Layout</legend>
+      <div class="seg" role="radiogroup">
+        <input type="radio" name="view" id="vOverlay" value="overlay" checked><label for="vOverlay">On top of each other</label>
+        <input type="radio" name="view" id="vStack" value="stack"><label for="vStack">Separate lines</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><label for="size">Size</label></legend>
+      <div class="range"><input type="range" id="size" min="30" max="358" step="4" value="150"><output for="size" id="sizeOut">150 px</output></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fonts</legend>
+      <div class="font-ctl" id="ctlOrig" style="--swatch: #1E4FB8">
+        <div class="top">
+          <label class="check"><input type="checkbox" id="showOrig" checked> <strong>Original</strong></label>
+          <input type="color" id="colOrig" value="#1E4FB8" aria-label="Colour of the original">
+        </div>
+        <div class="file" id="fileOrig"></div>
+        <div class="range"><input type="range" id="opOrig" min="0" max="100" value="70" aria-label="Opacity of the original"><output id="opOrigOut">70%</output></div>
+      </div>
+      <div class="font-ctl" id="ctlNew" style="--swatch: #D1203B">
+        <div class="top">
+          <label class="check"><input type="checkbox" id="showNew" checked> <strong>New build</strong></label>
+          <input type="color" id="colNew" value="#D1203B" aria-label="Colour of the new build">
+        </div>
+        <div class="file" id="fileNew"></div>
+        <div class="range"><input type="range" id="opNew" min="0" max="100" value="70" aria-label="Opacity of the new build"><output id="opNewOut">70%</output></div>
+      </div>
+      <label class="check"><input type="checkbox" id="blend" checked> Darken where they overlap</label>
+      <label class="check"><input type="checkbox" id="guides" checked> Writing lines</label>
+      <label class="check"><input type="checkbox" id="ghost" checked> Show the base letter in the original for new letters</label>
+      <button type="button" id="reload">Reload fonts</button>
+      <div class="status" id="status" role="status"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>OpenType features</legend>
+      <div class="chips" id="features"></div>
+    </fieldset>
+
+    <p class="note">Both fonts get the same vertical metrics here so their baselines line up. Differences in line spacing between the files are not shown on this page.</p>
+  </aside>
+</div>
+
+<script>
+(() => {
+  // Font files, relative to the repository root (served by `make serve`).
+  const FONTS = {
+    orig: { family: "RefFont", url: "../upstream/fonts/cogncur.ttf" },
+    new:  { family: "NewFont", url: "../fonts/ttf/Vtex-Regular.ttf" },
+  };
+  // Metrics in font units (UPM 2048), shared by both fonts so baselines align.
+  const UPM = 2048, ASC = 1768, DESC = 703;
+  const XH = 682, ASCENDER = 1364, DESCENDER = 682;
+
+  const FEATURES = [
+    ["calt", "Connections (calt)", true], ["kern", "Kerning", true], ["liga", "Ligatures", true],
+    ["tnum", "tnum", false], ["onum", "onum", false],
+    ...["01","02","03","04","05","06","07","08","09","11","12","13","14","15","16","17","18","19","20"]
+      .map(n => ["ss" + n, "ss" + n, false]),
+  ];
+
+  const PRESETS = {
+    joins: "abcdefghijklm\nnopqrstuvwxyz\naa ab ac ad ae af ag\nba bb bc bd be bf bg\nfa fb ff fi fj fo fz\nqa qu qz sa sb ss st",
+    caps: "Amsterdam Brugge Cindy\nDaan Emma Fien Gent\nHilde IJsland Jan Kim\nLeo Marie Nina Otto",
+    accents: "café naïve façade élève\ngeëerd reünie Noël\nšpička žena œuvre æble",
+    punct: "(hallo) [test] \"quote\"\nword. word, word; word!\ndon't e-mail 1st 2024",
+    newletters: "Ćwierć źrebię Łódź\nż ą ę ł ő ű ș ț ģ ķ ļ ņ\nnćn nčn nğn nńn nňn nŕn nřn\nnśn nşn nźn ŵan ẃan ẅan\nnąn nęn nįn nųn nċn nėn nġn nżn\nnőn nűn nșn nțn nķn nļn nņn\nnďn nľn nťn nĺn nđn nħn nłn nðn nþn\nĆn Čn Ďn Ěn Ğn Ĺn Ńn Ňn Ŕn Řn\nŚn Şn Ťn Źn Ŵn Ỳn Ĩn Ǎn Ǐn Ǒn Ǔn\nĄn Ęn Įn Ųn Ċn Ėn Ġn Żn İn Őn Űn\nȘn Țn Ķn Ļn Ņn Ģn Ľn Đn Ðn Ħn Łn Þn ẞn\n¯ ˆ ˇ ˘ ˙ ˚ ˛ ˜ ˝ … 5−3",
+  };
+
+  const $ = id => document.getElementById(id);
+  const sheet = $("sheet"), rows = $("rows"), text = $("text");
+
+  // ---------- persisted settings (per browser, best effort)
+  const KEY = "live-compare-v1";
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { saved = {}; }
+  const persist = () => {
+    const data = {
+      text: text.value, view: document.querySelector("input[name=view]:checked").value,
+      size: $("size").value, colOrig: $("colOrig").value, colNew: $("colNew").value,
+      opOrig: $("opOrig").value, opNew: $("opNew").value,
+      showOrig: $("showOrig").checked, showNew: $("showNew").checked,
+      blend: $("blend").checked, guides: $("guides").checked, ghost: $("ghost").checked,
+      fea: Object.fromEntries(FEATURES.map(([t]) => [t, $("f_" + t).checked])),
+    };
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* storage unavailable */ }
+  };
+
+  // ---------- feature chips
+  const feaBox = $("features");
+  for (const [tag, label, on] of FEATURES) {
+    const l = document.createElement("label");
+    l.title = tag;
+    l.innerHTML = `<input type="checkbox" id="f_${tag}"><span>${label}</span>`;
+    feaBox.appendChild(l);
+    $("f_" + tag).checked = saved.fea && tag in saved.fea ? saved.fea[tag] : on;
+  }
+
+  // ---------- restore
+  if (typeof saved.text === "string") text.value = saved.text;
+  if (saved.view) { const r = document.querySelector(`input[name=view][value=${saved.view}]`); if (r) r.checked = true; }
+  for (const k of ["size", "colOrig", "colNew", "opOrig", "opNew"]) if (saved[k] != null) $(k).value = saved[k];
+  for (const k of ["showOrig", "showNew", "blend", "guides", "ghost"]) if (saved[k] != null) $(k).checked = saved[k];
+
+  // Letters added in the new build (from scripts/composites.py). The original
+  // font doesn't have them; optionally show their base letter there instead.
+  let NEW_CHARS = new Set();
+  fetch("../build/composites.json", { cache: "no-store" })
+    .then(r => r.ok ? r.json() : [])
+    .then(m => { NEW_CHARS = new Set(m.map(x => x.char)); render(); })
+    .catch(() => {});
+  const toBase = line => [...line].map(c => NEW_CHARS.has(c) ? c.normalize("NFD")[0] : c).join("");
+
+  // ---------- font loading (cache-busted so a rebuild shows up after "Reload fonts")
+  const loaded = {};
+  async function loadFonts() {
+    const status = $("status");
+    status.className = "status";
+    status.textContent = "Loading fonts…";
+    const v = Date.now();
+    const errors = [];
+    for (const [key, f] of Object.entries(FONTS)) {
+      try {
+        const res = await fetch(`${f.url}?v=${v}`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+        const buf = await res.arrayBuffer();
+        const face = new FontFace(f.family, buf, {
+          ascentOverride: `${(ASC / UPM * 100).toFixed(4)}%`,
+          descentOverride: `${(DESC / UPM * 100).toFixed(4)}%`,
+          lineGapOverride: "0%",
+        });
+        await face.load();
+        if (loaded[key]) document.fonts.delete(loaded[key]);
+        document.fonts.add(face);
+        loaded[key] = face;
+        const when = res.headers.get("Last-Modified");
+        $(key === "orig" ? "fileOrig" : "fileNew").textContent =
+          `${f.url.replace("../", "")} · ${(buf.byteLength / 1024).toFixed(0)} KB${when ? " · " + new Date(when).toLocaleString() : ""}`;
+      } catch (e) {
+        errors.push(`${f.url.replace("../", "")}: ${e.message}`);
+      }
+    }
+    if (errors.length) {
+      status.className = "status err";
+      status.textContent = location.protocol === "file:"
+        ? "Fonts can't load from a file:// page. Run `make serve` and open the address it prints."
+        : "Couldn't load " + errors.join("; ") + ". Run `make build` first.";
+    } else {
+      status.textContent = "Fonts loaded at " + new Date().toLocaleTimeString() + ".";
+    }
+    render();
+  }
+
+  // ---------- rendering
+  function guideLines() {
+    const g = document.createElement("div");
+    g.className = "guides";
+    // positions relative to the row top; baseline sits at ASC/UPM * size
+    const lines = [["asc", ASC - ASCENDER], ["xh", ASC - XH], ["base", ASC], ["desc", ASC + DESCENDER]];
+    for (const [cls, units] of lines) {
+      const i = document.createElement("i");
+      i.className = cls;
+      i.style.top = `calc(var(--size) * ${units / UPM})`;
+      g.appendChild(i);
+    }
+    return g;
+  }
+
+  function makeRow(line, which, label) {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.appendChild(guideLines());
+    for (const w of which) {
+      const span = document.createElement("div");
+      span.className = "ink " + w;
+      const shown = w === "orig" && $("ghost").checked ? toBase(line) : line;
+      span.textContent = shown.length ? shown : " ";
+      row.appendChild(span);
+    }
+    if (label) {
+      const l = document.createElement("div");
+      l.className = "row-label";
+      l.textContent = label.text;
+      l.style.color = label.color;
+      row.appendChild(l);
+      row.classList.add(which[0] === "orig" ? "only-orig" : "only-new");
+    }
+    return row;
+  }
+
+  function render() {
+    const size = +$("size").value;
+    $("sizeOut").textContent = size + " px";
+    $("opOrigOut").textContent = $("opOrig").value + "%";
+    $("opNewOut").textContent = $("opNew").value + "%";
+    const s = sheet.style;
+    s.setProperty("--size", size + "px");
+    s.setProperty("--line-h", `${(ASC + DESC) / UPM}`);
+    s.setProperty("--row-h", `calc(${size}px * ${(ASC + DESC) / UPM})`);
+    s.setProperty("--row-gap", `${Math.round(size * 0.25)}px`);
+    s.setProperty("--margin-x", "96px");
+    s.setProperty("--c-orig", $("colOrig").value);
+    s.setProperty("--c-new", $("colNew").value);
+    s.setProperty("--o-orig", $("opOrig").value / 100);
+    s.setProperty("--o-new", $("opNew").value / 100);
+    $("ctlOrig").style.setProperty("--swatch", $("colOrig").value);
+    $("ctlNew").style.setProperty("--swatch", $("colNew").value);
+    const fea = FEATURES.map(([t]) => `"${t}" ${$("f_" + t).checked ? 1 : 0}`).join(", ");
+    s.setProperty("--fea", fea);
+    s.setProperty("--kerning", $("f_kern").checked ? "normal" : "none");
+    sheet.classList.toggle("blend", $("blend").checked);
+    sheet.classList.toggle("no-guides", !$("guides").checked);
+    sheet.classList.toggle("hide-orig", !$("showOrig").checked);
+    sheet.classList.toggle("hide-new", !$("showNew").checked);
+
+    const view = document.querySelector("input[name=view]:checked").value;
+    const lines = text.value.split("\n");
+    rows.replaceChildren();
+    if (!text.value.trim()) {
+      const h = document.createElement("div");
+      h.className = "empty-hint";
+      h.textContent = "Type some text in the box on the right to compare the two fonts.";
+      rows.appendChild(h);
+      persist();
+      return;
+    }
+    for (const line of lines) {
+      if (view === "overlay") {
+        rows.appendChild(makeRow(line, ["orig", "new"]));
+      } else {
+        const a = makeRow(line, ["orig"], { text: "Original", color: $("colOrig").value });
+        a.classList.add("stack-first");
+        rows.appendChild(a);
+        rows.appendChild(makeRow(line, ["new"], { text: "New build", color: $("colNew").value }));
+      }
+    }
+    persist();
+  }
+
+  // ---------- events
+  document.querySelector(".panel").addEventListener("input", render);
+  document.querySelector(".panel").addEventListener("change", render);
+  document.querySelectorAll("[data-preset]").forEach(b => b.addEventListener("click", () => {
+    text.value = PRESETS[b.dataset.preset];
+    render();
+  }));
+  $("reload").addEventListener("click", loadFonts);
+
+  render();
+  loadFonts();
+})();
+</script>
+</body>
+</html>

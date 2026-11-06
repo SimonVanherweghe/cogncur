@@ -1,0 +1,7 @@
+(hallo) [test] {abc} "quote" 'single' «guillemets» „dutch“
+word. word, word; word: word! word? word…
+a-b e-mail co-op 1st 2nd 3rd 4th 2024 h2o A4 x2
+don't l'été d'accord rock'n'roll
+a i o u e  I A O
+ABC USA NATO OK
+0123456789 1/2 3.14 €5 $5 £5 50% #1 @home

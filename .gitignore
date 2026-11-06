@@ -1,0 +1,10 @@
+upstream/
+.venv/
+fonts/
+sources/*.ufo/
+tests/report/
+__pycache__/
+.playwright-mcp/
+build/
+.ninja_log
+build.ninja
