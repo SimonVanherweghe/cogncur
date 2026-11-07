@@ -92,8 +92,8 @@
   "accent": "acute",
   "mapping": {
    "r": "racute",
-   "r1": "r1acute",
    "r2": "r2acute",
+   "r1": "r1acute",
    "csn_r": "csn_racute",
    "csi_r1": "csi_r1acute",
    "csn_r2": "csn_r2acute"
@@ -109,19 +109,19 @@
     "how": "inferred"
    },
    {
-    "glyph": "r1",
+    "glyph": "r2",
     "anchor": "topleft",
     "pos": [
-     314,
+     292,
      648
     ],
     "how": "inferred"
    },
    {
-    "glyph": "r2",
+    "glyph": "r1",
     "anchor": "topleft",
     "pos": [
-     292,
+     314,
      648
     ],
     "how": "inferred"
@@ -164,8 +164,8 @@
   "accent": "caron",
   "mapping": {
    "r": "rcaron",
-   "r1": "r1caron",
    "r2": "r2caron",
+   "r1": "r1caron",
    "csn_r": "csn_rcaron",
    "csi_r1": "csi_r1caron",
    "csn_r2": "csn_r2caron"
@@ -181,19 +181,19 @@
     "how": "inferred"
    },
    {
-    "glyph": "r1",
+    "glyph": "r2",
     "anchor": "topmid",
     "pos": [
-     448,
+     426,
      648
     ],
     "how": "inferred"
    },
    {
-    "glyph": "r2",
+    "glyph": "r1",
     "anchor": "topmid",
     "pos": [
-     426,
+     448,
      648
     ],
     "how": "inferred"

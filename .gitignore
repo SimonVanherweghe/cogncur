@@ -1,6 +1,6 @@
 upstream/
 .venv/
-fonts/
+/fonts/
 sources/*.ufo/
 tests/report/
 __pycache__/
