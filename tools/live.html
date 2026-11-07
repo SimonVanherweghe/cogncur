@@ -434,6 +434,13 @@ Amsterdam bijzonder (hallo)</textarea>
   for (const k of ["showOrig", "showNew", "blend", "guides", "ghost"]) if (saved[k] != null) $(k).checked = saved[k];
   if (saved.fea) for (const f of FEATURES) if (f.tag in saved.fea) state[f.tag] = !!saved.fea[f.tag];
   if (location.hash.toLowerCase().startsWith("#vtex")) apply(decodeAny(location.hash).next);
+  // Text from a shared link (?tekst=…, made by the website's feedback button). It wins over the
+  // saved text, and while it is in the address bar it follows the text, so the link stays exact.
+  let TEXT_IN_URL = false;
+  try {
+    const t = new URLSearchParams(location.search).get("tekst");
+    if (t != null) { text.value = t; TEXT_IN_URL = true; }
+  } catch (e) { /* no query string here */ }
   if (!CFG.canReload) $("reload").hidden = true;
 
   // Letters added in the new build (scripts/composites.py). The original font
@@ -548,7 +555,8 @@ Amsterdam bijzonder (hallo)</textarea>
 
     // config code + link
     $("cfgOut").value = encode();
-    try { history.replaceState(null, "", "#" + hashOf()); } catch (e) { /* not allowed here */ }
+    const q = TEXT_IN_URL ? "?tekst=" + encodeURIComponent(text.value) : "";
+    try { history.replaceState(null, "", q + "#" + hashOf()); } catch (e) { /* not allowed here */ }
     const warn = [];
     if (state.ss09 && !state.ss08) warn.push("ss09 werkt alleen samen met ss08.");
     if (!state.calt) warn.push("Zonder calt staan de letters los.");

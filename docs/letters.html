@@ -638,6 +638,7 @@ async function copyOut(text, label) {
   buildKeys();
   readHash();
   syncControls();
+  updateHash();   // the address bar always names the letter shown, so a copied link opens it
   show();
 
   $('play').addEventListener('click', () => setPlaying(!clock.playing));

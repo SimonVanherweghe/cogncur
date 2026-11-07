@@ -9,6 +9,14 @@ const short = (s, n = 40) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 // Pause an animation (woorden/schrijven) so the snapshot shows the frame the person stopped at.
 const pause = () => { const b = $('play'); if (b && /pauze/i.test(b.textContent)) b.click(); };
 
+function textLink(b, text) {
+  const page = location.pathname.split('/').pop() || 'proberen.html';
+  // keep the link well under feedback()'s 1500-character cap per field (accents encode to 6 chars)
+  const rel = `${page}?tekst=${encodeURIComponent([...text].slice(0, 200).join(''))}${location.hash}`;
+  try { return b.siteUrl ? new URL(rel, b.siteUrl).href : new URL(rel, location.href).href; }
+  catch (e) { return location.href; }
+}
+
 async function live() {
   const state = location.hash.toLowerCase().startsWith('#vtex') ? decode(location.hash) : defaults();
   const text = $('text').value.replace(/\s+$/, '');
@@ -17,7 +25,8 @@ async function live() {
   return {
     template: 'algemeen.yml',
     title: `[Opmerking] ${short(lines[0] || '')}`,
-    fields: { tekst: text, instellingen: encode(state) },
+    // link with the text in it (?tekst=…, read by live.html), not only the settings in the hash
+    fields: { tekst: text, instellingen: encode(state), link: textLink(b, text) },
     snapshot: () => renderLines(F, lines.map(t => ({ text: t, state })), { size: 90, caption: `${versionText(b)} · ${encode(state)}` }),
   };
 }
