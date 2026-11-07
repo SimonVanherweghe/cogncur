@@ -3,6 +3,8 @@
 // after the field ids (inputs/textareas only). Labels are set in the forms themselves: the
 // `labels` URL parameter gives a 404 to anyone without triage rights.
 import { BUILD, versionText } from './build';
+import { showIssues } from './issue-list';
+import type { IssueRef } from './issues';
 
 export type Template = 'teken.yml' | 'verbinding.yml' | 'schrijfroute.yml' | 'algemeen.yml';
 type Maybe<T> = T | Promise<T>;
@@ -13,6 +15,8 @@ export interface FeedbackRequest {
   /** Form field id → value (teken, tekst, instellingen, link…). versie and link are added by default. */
   fields?: Maybe<Record<string, string | undefined>>;
   snapshot?: () => Maybe<HTMLCanvasElement | null>;
+  /** Open issues about the same thing: listed first in the dialog, so people can react there. */
+  existing?: IssueRef[];
 }
 
 const MAX_FIELD = 1500;   // keeps the whole URL far below GitHub's limit
@@ -64,6 +68,7 @@ async function showDialog(req: FeedbackRequest, blobP: Promise<Blob | null>, cop
   open.removeAttribute('href');
   open.setAttribute('aria-disabled', 'true');
   step.dataset.state = req.snapshot ? 'busy' : 'none';
+  showIssues(dlg.querySelector<HTMLElement>('[data-existing]')!, (req.existing ?? []).filter((i) => i.state === 'open'));
   dlg.showModal();
 
   const [template, title, given] = await Promise.all([req.template, req.title, req.fields]);

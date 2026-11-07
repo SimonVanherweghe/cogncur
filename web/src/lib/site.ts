@@ -12,7 +12,6 @@ export interface CharInfo {
   base?: string;
   accent?: string;
   inferred?: boolean;
-  issue?: { number: number; title: string; url: string };
 }
 
 export { BUILD, REPO_URL, versionText, type BuildInfo } from './build';

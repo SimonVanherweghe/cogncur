@@ -1,0 +1,46 @@
+{
+ "schets-eth": {
+  "title": "Schets: ð (eth)",
+  "chars": "ð"
+ },
+ "schets-thorn": {
+  "title": "Schets: þ (thorn)",
+  "chars": "þ"
+ },
+ "schets-Thorn": {
+  "title": "Schets: Þ (hoofdletter thorn)",
+  "chars": "Þ"
+ },
+ "schets-scharfes-s": {
+  "title": "Schets: ẞ (hoofdletter ringel-s)",
+  "chars": "ẞ"
+ },
+ "accent-ogonek": {
+  "title": "Nieuw accent: ogonek (ą ę į ų)",
+  "chars": "ąęįųĄĘĮŲ"
+ },
+ "accent-dubbele-aigu": {
+  "title": "Nieuw accent: dubbele accent aigu (ő ű)",
+  "chars": "őűŐŰ"
+ },
+ "accent-komma-onder": {
+  "title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
+  "chars": "șțķļņģȘȚĶĻŅ"
+ },
+ "accent-punt-boven": {
+  "title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
+  "chars": "ċėġżĊĖĠŻİ"
+ },
+ "accent-apostrof-haacek": {
+  "title": "Nieuw accent: haček als apostrof (ď ľ ť Ľ)",
+  "chars": "ďľťĽ"
+ },
+ "streep-letters": {
+  "title": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
+  "chars": "ĐÐđĦħŁł"
+ },
+ "losse-tekens": {
+  "title": "Schets: losse accenten, … en −",
+  "chars": "¯ˆˇ˘˙˚˛˜˝…−"
+ }
+}

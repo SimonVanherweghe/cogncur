@@ -139,3 +139,7 @@ table.matrix td button[aria-pressed="true"] { background: #CFE0FF; }
 .tile[hidden], .group[hidden] { display: none; }
 .variant > span:last-child { display: block; }
 .detail .lbl { margin: 14px 0 6px; }
+.tile .iss { position: absolute; top: 3px; left: 4px; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px; background: #B45309; color: #fff; font: 700 10px/16px var(--font-ui); }
+.issues-box { margin-top: 12px; }
+.issues-box .lbl { margin: 0 0 6px; }
+table.matrix td button.has-issue { box-shadow: inset 3px 0 0 #B45309; }

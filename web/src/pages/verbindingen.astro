@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import FeatureToggles from '../components/FeatureToggles.astro';
 import { PAIR_SETS } from '../lib/pairs';
+import { byPair } from '../lib/issue-index';
 
 const [, rows, cols] = PAIR_SETS.klein;
 ---
@@ -32,7 +33,7 @@ const [, rows, cols] = PAIR_SETS.klein;
             <tbody>
               {[...rows].map((r) => (
                 <tr><th scope="row">{r}</th>{[...cols].map((c) => (
-                  <td><button type="button" data-pair={r + c} aria-pressed="false" aria-label={`${r} gevolgd door ${c}`}>{r + c}</button></td>
+                  <td><button type="button" data-pair={r + c} aria-pressed="false" aria-label={`${r} gevolgd door ${c}`} class={byPair.has(r + c) ? 'has-issue' : undefined}>{r + c}</button></td>
                 ))}</tr>
               ))}
             </tbody>
@@ -47,7 +48,11 @@ const [, rows, cols] = PAIR_SETS.klein;
           <div class="sheet" data-sheet></div>
           <label class="lbl" for="words">In woorden (je mag dit aanpassen)</label>
           <input type="text" id="words" spellcheck="false">
-          <p class="hint">Tip: zet lettervormen aan of uit bovenaan. Dan verandert de hele tabel mee.</p>
+          <div class="issues-box" data-issues hidden>
+            <p class="lbl">Al gemeld (reageer gerust daar)</p>
+            <ul class="issues"></ul>
+          </div>
+          <p class="hint">Tip: zet lettervormen aan of uit bovenaan. Dan verandert de hele tabel mee. Een oranje streepje in de tabel: daarover is al iets gemeld.</p>
           <button type="button" class="btn-feedback" id="fb-pair">Feedback op deze verbinding</button>
         </div>
       </aside>
@@ -64,6 +69,8 @@ const [, rows, cols] = PAIR_SETS.klein;
   import { feedback, onFeedback, type FeedbackRequest } from '../lib/feedback';
   import { bindToggles } from '../lib/toggles';
   import { hashParams, setHash } from '../lib/url';
+  import { byPair } from '../lib/issue-index';
+  import { showIssues } from '../lib/issue-list';
 
   const $ = <T extends HTMLElement = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
   const hp = hashParams();
@@ -96,6 +103,7 @@ const [, rows, cols] = PAIR_SETS.klein;
       for (const c of C) {
         const b = Object.assign(document.createElement('button'), { type: 'button', textContent: r + c });
         b.dataset.pair = r + c;
+        if (byPair.has(r + c)) b.classList.add('has-issue');
         b.setAttribute('aria-label', `${r} gevolgd door ${c}`);
         const td = document.createElement('td');
         td.append(b);
@@ -135,6 +143,7 @@ const [, rows, cols] = PAIR_SETS.klein;
     big.style.fontFeatureSettings = cssFeatures(state);
     const [first, ...rest] = [...pair];
     $('[data-title]', detail).textContent = `${first} → ${rest.join('')}`;
+    showIssues($('[data-issues]', detail), byPair.get(pair) ?? []);
     drawSheet();
   }
   function drawSheet() {
@@ -162,6 +171,7 @@ const [, rows, cols] = PAIR_SETS.klein;
       title: `[Verbinding] ${pair}`,
       fields: { tekst: words.trim() ? `${pair} (in: ${words})` : pair, instellingen: encode(state) },
       snapshot: async () => renderLines(F ?? (await loadFont()), lines, { size: 120, caption: `${versionText()} · ${encode(state)}` }),
+      existing: byPair.get(pair),
     };
   }
   onFeedback(request);

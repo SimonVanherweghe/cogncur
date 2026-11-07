@@ -2,6 +2,10 @@
 import Base from '../layouts/Base.astro';
 import FeatureToggles from '../components/FeatureToggles.astro';
 import { CHARS, GROUP_NAMES, STATUS_TEXT, hexU, showChar, type CharGroup, type Status } from '../lib/site';
+import { byChar } from '../lib/issue-index';
+import { openOnly } from '../lib/issues';
+
+const openCount = (c: string) => openOnly(byChar.get(c)).length;
 
 const groups = Object.keys(GROUP_NAMES) as CharGroup[];
 const statuses = (Object.keys(STATUS_TEXT) as Status[]).filter((s) => CHARS.some((c) => c.status === s));
@@ -45,6 +49,7 @@ const statuses = (Object.keys(STATUS_TEXT) as Status[]).filter((s) => CHARS.some
                     <span class="g">{showChar(c.c)}</span>
                     <span class="u">{hexU(c.c).slice(2)}</span>
                     <span class={`st st-${c.status}`}></span>
+                    {openCount(c.c) > 0 && <span class="iss" title={`${openCount(c.c)} open melding(en)`}>{openCount(c.c)}</span>}
                   </button>
                 ))}
               </div>
@@ -66,7 +71,10 @@ const statuses = (Object.keys(STATUS_TEXT) as Status[]).filter((s) => CHARS.some
             <p class="lbl">Andere vormen (lettervormen aan- of uitzetten):</p>
             <div class="variants" data-variant-list></div>
           </div>
-          <p class="hint" data-issue hidden>Hierover loopt al een vraag: <a target="_blank" rel="noopener"></a>. Reageer daar gerust.</p>
+          <div class="issues-box" data-issues hidden>
+            <p class="lbl">Al gemeld (reageer gerust daar)</p>
+            <ul class="issues"></ul>
+          </div>
           <button type="button" class="btn-feedback" id="fb-char">Feedback op dit teken</button>
         </div>
       </aside>
@@ -82,6 +90,8 @@ const statuses = (Object.keys(STATUS_TEXT) as Status[]).filter((s) => CHARS.some
   import { feedback, onFeedback, type FeedbackRequest } from '../lib/feedback';
   import { bindToggles } from '../lib/toggles';
   import { hashParams, setHash } from '../lib/url';
+  import { byChar as issuesByChar } from '../lib/issue-index';
+  import { showIssues } from '../lib/issue-list';
 
   const $ = <T extends HTMLElement = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
   const byChar = new Map(CHARS.map((c) => [c.c, c]));
@@ -174,13 +184,7 @@ const statuses = (Object.keys(STATUS_TEXT) as Status[]).filter((s) => CHARS.some
     if (c.base) desc += ` Gemaakt van ${c.base}${c.accent ? ' + ' + c.accent : ''}.`;
     if (c.inferred) desc += ' De plaats van het accent is geschat.';
     $('[data-desc]', detail).textContent = desc;
-    const issue = $('[data-issue]', detail);
-    issue.hidden = !c.issue;
-    if (c.issue) {
-      const a = $<HTMLAnchorElement>('a', issue);
-      a.href = c.issue.url;
-      a.textContent = `#${c.issue.number} ${c.issue.title}`;
-    }
+    showIssues($('[data-issues]', detail), issuesByChar.get(c.c) ?? []);
     drawSheet();
     drawVariants();
   }
@@ -245,6 +249,7 @@ const statuses = (Object.keys(STATUS_TEXT) as Status[]).filter((s) => CHARS.some
       title: `[Teken] ${c.c} (${hexU(c.c)})`,
       fields: { teken: `${c.c} (${hexU(c.c)}, ${c.name}, ${STATUS_TEXT[c.status][0].toLowerCase()})`, tekst: words, instellingen: encode(state) },
       snapshot: async () => renderLines(F ?? (await loadFont()), lines, { size: 120, caption: `${versionText()} · ${encode(state)}` }),
+      existing: issuesByChar.get(c.c),
     };
   }
   onFeedback(request);

@@ -6,8 +6,10 @@ The website itself is the Astro project in web/; it is built and published by Gi
 Actions, which can't run FontForge. So everything that comes out of the font pipeline is
 written here and committed:
   web/public/fonts/   Vtex-Regular.ttf, the original cogncur.ttf, LICENSE.txt (OFL travels with them)
-  web/public/data/    tekens.json   every encoded character: group, origin (status), decision issue
-                      build.json    repo, font version, commit, date, counts
+  web/public/data/    tekens.json     every encoded character: group, origin (status)
+                      decisions.json  decision id -> title + the characters it is about (scripts/issues.py);
+                                      the website links issues to characters with it (web/scripts/fetch-issues.ts)
+                      build.json      repo, font version, commit, date, counts
                       composites.json, routes.json (make routes), cogncur_shapes.svg (stroke order)
 """
 import datetime
@@ -83,30 +85,17 @@ def group_of(ch):
     return None   # spaces, controls, private use: not shown
 
 
-def decision_files():
-    """char -> (decision id, title), from the designer issues' "bestanden" (scripts/issues.py)."""
+def decisions():
+    """decision id -> {title, chars}, for the designer issues that list characters ("bestanden")."""
     import issues
-    out = {}
-    for d in issues.DECISIONS:
-        for ch in d.get("bestanden", ""):
-            out[ch] = (d["id"], d["titel"])
-    return out, issues
-
-
-def issue_numbers(issues):
-    try:
-        return issues.existing_markers()
-    except Exception as e:  # offline or no gh: the site works without issue links
-        print("  (no issue numbers: %s)" % e.__class__.__name__)
-        return {}
+    return {d["id"]: {"title": d["titel"], "chars": d["bestanden"]} for d in issues.DECISIONS if d.get("bestanden")}
 
 
 def characters():
     cmap = TTFont(FONT).getBestCmap()
     ref = set(TTFont(REF).getBestCmap())
     comps = {int(c["unicode"], 16): c for c in json.loads(COMPOSITES.read_text())}
-    files, issues = decision_files()
-    numbers = issue_numbers(issues)
+    drafts = {ch for d in decisions().values() for ch in d["chars"]}
     chars = []
     for cp, name in sorted(cmap.items()):
         ch = chr(cp)
@@ -115,7 +104,7 @@ def characters():
             continue
         c = {"c": ch, "name": name, "group": group}
         comp = comps.get(cp)
-        if ch in files:
+        if ch in drafts:
             c["status"] = "schets"
         elif comp and comp["kind"] == "accented":
             c["status"] = "samengesteld"
@@ -129,11 +118,6 @@ def characters():
                 c["accent"] = comp["accent"]
             if comp["kind"] == "accented" and comp.get("inferred"):
                 c["inferred"] = True
-        if ch in files:
-            did, title = files[ch]
-            if did in numbers:
-                n = numbers[did]
-                c["issue"] = {"number": n, "title": title, "url": f"https://github.com/{REPO}/issues/{n}"}
         chars.append(c)
     return chars
 
@@ -162,6 +146,7 @@ def main():
     build = {"repo": REPO, "siteUrl": SITE_URL, "version": f"{head.fontRevision:.3f}", "commit": commit,
              "date": datetime.date.today().isoformat(), "counts": counts}
     (OUT / "data" / "tekens.json").write_text(json.dumps({"chars": chars}, ensure_ascii=False, indent=0))
+    (OUT / "data" / "decisions.json").write_text(json.dumps(decisions(), ensure_ascii=False, indent=1))
     (OUT / "data" / "build.json").write_text(json.dumps(build, ensure_ascii=False, indent=1))
     print(f"web/public: {counts['total']} tekens ({counts['origineel']} origineel, "
           f"{counts['samengesteld']} samengesteld, {counts['nieuw']} nieuw, {counts['schets']} schets), "

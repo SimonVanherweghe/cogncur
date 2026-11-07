@@ -11,3 +11,4 @@ build.ninja
 web/node_modules/
 web/dist/
 web/.astro/
+web/src/generated/

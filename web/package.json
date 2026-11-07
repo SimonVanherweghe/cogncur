@@ -4,11 +4,14 @@
   "type": "module",
   "description": "Website for the Cogncur Google Fonts conversion: characters, joins, writing animations and pre-filled feedback issues.",
   "scripts": {
+    "predev": "node scripts/fetch-issues.ts",
     "dev": "astro dev",
+    "prebuild": "node scripts/fetch-issues.ts",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "vitest run"
+    "test": "vitest run",
+    "fetch-issues": "node scripts/fetch-issues.ts"
   },
   "dependencies": {
     "astro": "^7.4.7",
@@ -16,6 +19,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@types/node": "^24.19.2",
     "typescript": "^6.0.3",
     "vitest": "^5.1.0"
   }

@@ -59,3 +59,12 @@
 .fb-dialog [data-step][data-state="save"] > .s-save,
 .fb-dialog [data-step][data-state="failed"] > .s-failed { display: inline; }
 .fb-dialog .btn[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+.fb-dialog .fb-existing { border: 1px solid var(--fb-line); border-left: 4px solid #B45309; border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; }
+.fb-dialog .fb-existing p { margin: 0 0 6px; }
+
+/* "Al gemeld" lists (dialog and panels) */
+ul.issues { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; }
+ul.issues .state { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; border-radius: 999px; padding: 0 7px; background: #1D7A3A; color: #fff; }
+ul.issues .closed .state { background: #6E40C9; }
+ul.issues .closed a { color: inherit; opacity: .75; }
+ul.issues .milestone { font-size: 12px; border: 1px solid currentColor; border-radius: 999px; padding: 0 6px; opacity: .8; }

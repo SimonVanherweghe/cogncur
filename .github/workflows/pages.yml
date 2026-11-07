@@ -1,18 +1,23 @@
 # Builds the website (web/, Astro) and publishes it on GitHub Pages:
 # https://simonvanherweghe.github.io/cogncur-tex/
 # Fonts and data come from the font pipeline (make web-data) and are committed in web/public/,
-# because FontForge can't run here. Skipped while the repository is private (Pages needs it
-# public on the free plan); in the repository settings, Pages → Source must be "GitHub Actions".
+# because FontForge can't run here. The issues are read here (web/scripts/fetch-issues.ts), and the
+# site is rebuilt whenever an issue changes, so "Al gemeld" stays current.
+# Skipped while the repository is private (Pages needs it public on the free plan); in the
+# repository settings, Pages → Source must be "GitHub Actions".
 name: Website
 
 on:
   push:
     branches: [main]
     paths: ["web/**", ".github/workflows/pages.yml"]
+  issues:
+    types: [opened, edited, closed, reopened, deleted, labeled, unlabeled, milestoned, demilestoned]
   workflow_dispatch:
 
 permissions:
   contents: read
+  issues: read
   pages: write
   id-token: write
 
@@ -29,11 +34,13 @@ jobs:
       - name: Unit tests
         working-directory: web
         run: npm ci && npm test
-      - name: Build (astro check + build) and upload
+      - name: Build (fetch issues, astro check + build) and upload
         uses: withastro/action@v6
         with:
           path: web
           node-version: 24
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     needs: build

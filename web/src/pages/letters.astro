@@ -75,6 +75,11 @@ import '../styles/animation.css';
         <p class="hint">Een doorlopende lijn schrijf je zonder de pen op te tillen. Een keerpunt is een plek waar de pen omdraait en over de eigen lijn terugloopt.</p>
       </div>
 
+      <div class="group" data-issues hidden>
+        <h2>Al gemeld</h2>
+        <ul class="issues"></ul>
+      </div>
+
       <div class="group">
         <h2>Lijn exporteren</h2>
         <div class="row">
@@ -96,6 +101,8 @@ import '../styles/animation.css';
   import { svgToCanvas } from '../lib/snapshot';
   import { createPlayer, segmented } from '../lib/player';
   import { choiceOf, letterId, parseShapes, pickerKeys, variantsOf, type LetterChoice, type Letters } from '../lib/strokes/letters';
+  import { byWord } from '../lib/issue-index';
+  import { showIssues } from '../lib/issue-list';
   import { buildLetterScene, exportLetterJSON, exportLetterSVG, letterStats, renderLetterAt, type LetterScene } from '../lib/strokes/scene';
 
   const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -124,6 +131,7 @@ import '../styles/animation.css';
     const id = currentId();
     scene = buildLetterScene(svg, id, letters.get(id)!, slant);
     $('badge').textContent = id;
+    showIssues(document.querySelector<HTMLElement>('[data-issues]')!, byWord.get(choice.base) ?? []);
     applyVisibility();
     $('stats').replaceChildren(...letterStats(scene).flatMap(([k, v]) => {
       const dt = document.createElement('dt'); dt.textContent = k;
@@ -223,6 +231,7 @@ import '../styles/animation.css';
       title: `[Schrijfroute] letter ${choice.base}`,
       fields: { tekst: `${choice.base} (${variant}${choice.entry ? '' : ', zonder aanloop'}; model: ${id})`, instellingen: `schrijfmodel van de ontwerper, helling ${slant}°` },
       snapshot: () => svgToCanvas(svg, { caption: `${versionText()} · ${id} · ${$('time').textContent}` }),
+      existing: byWord.get(choice.base),
     };
   });
 </script>

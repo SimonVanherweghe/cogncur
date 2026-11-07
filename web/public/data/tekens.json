@@ -647,12 +647,7 @@
 "name": "macron",
 "group": "mark",
 "status": "schets",
-"base": "uni0304",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "uni0304"
 },
 {
 "c": "°",
@@ -847,12 +842,7 @@
 "status": "schets",
 "base": "D",
 "accent": "bar",
-"inferred": true,
-"issue": {
-"number": 11,
-"title": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/11"
-}
+"inferred": true
 },
 {
 "c": "Ñ",
@@ -937,12 +927,7 @@
 "name": "Thorn",
 "group": "upper",
 "status": "schets",
-"base": "P",
-"issue": {
-"number": 4,
-"title": "Schets: Þ (hoofdletter thorn)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/4"
-}
+"base": "P"
 },
 {
 "c": "ß",
@@ -1051,12 +1036,7 @@
 "name": "eth",
 "group": "lower",
 "status": "schets",
-"base": "d",
-"issue": {
-"number": 2,
-"title": "Schets: ð (eth)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/2"
-}
+"base": "d"
 },
 {
 "c": "ñ",
@@ -1141,12 +1121,7 @@
 "name": "thorn",
 "group": "lower",
 "status": "schets",
-"base": "p",
-"issue": {
-"number": 3,
-"title": "Schets: þ (thorn)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/3"
-}
+"base": "p"
 },
 {
 "c": "ÿ",
@@ -1185,12 +1160,7 @@
 "status": "schets",
 "base": "A",
 "accent": "ogonek",
-"inferred": true,
-"issue": {
-"number": 6,
-"title": "Nieuw accent: ogonek (ą ę į ų)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/6"
-}
+"inferred": true
 },
 {
 "c": "ą",
@@ -1199,12 +1169,7 @@
 "status": "schets",
 "base": "a",
 "accent": "ogonek",
-"inferred": true,
-"issue": {
-"number": 6,
-"title": "Nieuw accent: ogonek (ą ę į ų)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/6"
-}
+"inferred": true
 },
 {
 "c": "Ć",
@@ -1230,12 +1195,7 @@
 "status": "schets",
 "base": "C",
 "accent": "dotaccent",
-"inferred": true,
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"inferred": true
 },
 {
 "c": "ċ",
@@ -1243,12 +1203,7 @@
 "group": "lower",
 "status": "schets",
 "base": "c",
-"accent": "dotaccent",
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"accent": "dotaccent"
 },
 {
 "c": "Č",
@@ -1283,12 +1238,7 @@
 "status": "schets",
 "base": "d",
 "accent": "caronvert",
-"inferred": true,
-"issue": {
-"number": 10,
-"title": "Nieuw accent: haček als apostrof (ď ľ ť Ľ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/10"
-}
+"inferred": true
 },
 {
 "c": "Đ",
@@ -1297,12 +1247,7 @@
 "status": "schets",
 "base": "D",
 "accent": "bar",
-"inferred": true,
-"issue": {
-"number": 11,
-"title": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/11"
-}
+"inferred": true
 },
 {
 "c": "đ",
@@ -1311,12 +1256,7 @@
 "status": "schets",
 "base": "d",
 "accent": "bar",
-"inferred": true,
-"issue": {
-"number": 11,
-"title": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/11"
-}
+"inferred": true
 },
 {
 "c": "Ē",
@@ -1348,12 +1288,7 @@
 "group": "upper",
 "status": "schets",
 "base": "E",
-"accent": "dotaccent",
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"accent": "dotaccent"
 },
 {
 "c": "ė",
@@ -1361,12 +1296,7 @@
 "group": "lower",
 "status": "schets",
 "base": "e",
-"accent": "dotaccent",
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"accent": "dotaccent"
 },
 {
 "c": "Ę",
@@ -1375,12 +1305,7 @@
 "status": "schets",
 "base": "E",
 "accent": "ogonek",
-"inferred": true,
-"issue": {
-"number": 6,
-"title": "Nieuw accent: ogonek (ą ę į ų)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/6"
-}
+"inferred": true
 },
 {
 "c": "ę",
@@ -1389,12 +1314,7 @@
 "status": "schets",
 "base": "e",
 "accent": "ogonek",
-"inferred": true,
-"issue": {
-"number": 6,
-"title": "Nieuw accent: ogonek (ą ę į ų)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/6"
-}
+"inferred": true
 },
 {
 "c": "Ě",
@@ -1435,12 +1355,7 @@
 "status": "schets",
 "base": "G",
 "accent": "dotaccent",
-"inferred": true,
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"inferred": true
 },
 {
 "c": "ġ",
@@ -1449,12 +1364,7 @@
 "status": "schets",
 "base": "g",
 "accent": "dotaccent",
-"inferred": true,
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"inferred": true
 },
 {
 "c": "Ģ",
@@ -1472,12 +1382,7 @@
 "status": "schets",
 "base": "g",
 "accent": "commaabove",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "Ħ",
@@ -1486,12 +1391,7 @@
 "status": "schets",
 "base": "H",
 "accent": "bar",
-"inferred": true,
-"issue": {
-"number": 11,
-"title": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/11"
-}
+"inferred": true
 },
 {
 "c": "ħ",
@@ -1500,12 +1400,7 @@
 "status": "schets",
 "base": "h",
 "accent": "bar",
-"inferred": true,
-"issue": {
-"number": 11,
-"title": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/11"
-}
+"inferred": true
 },
 {
 "c": "Ĩ",
@@ -1552,12 +1447,7 @@
 "status": "schets",
 "base": "I",
 "accent": "ogonek",
-"inferred": true,
-"issue": {
-"number": 6,
-"title": "Nieuw accent: ogonek (ą ę į ų)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/6"
-}
+"inferred": true
 },
 {
 "c": "į",
@@ -1566,12 +1456,7 @@
 "status": "schets",
 "base": "i",
 "accent": "ogonek",
-"inferred": true,
-"issue": {
-"number": 6,
-"title": "Nieuw accent: ogonek (ą ę į ų)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/6"
-}
+"inferred": true
 },
 {
 "c": "İ",
@@ -1579,12 +1464,7 @@
 "group": "upper",
 "status": "schets",
 "base": "I",
-"accent": "dotaccent",
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"accent": "dotaccent"
 },
 {
 "c": "ı",
@@ -1611,12 +1491,7 @@
 "status": "schets",
 "base": "K",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "ķ",
@@ -1625,12 +1500,7 @@
 "status": "schets",
 "base": "k",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "Ĺ",
@@ -1657,12 +1527,7 @@
 "status": "schets",
 "base": "L",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "ļ",
@@ -1671,12 +1536,7 @@
 "status": "schets",
 "base": "l",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "Ľ",
@@ -1685,12 +1545,7 @@
 "status": "schets",
 "base": "L",
 "accent": "caronvert",
-"inferred": true,
-"issue": {
-"number": 10,
-"title": "Nieuw accent: haček als apostrof (ď ľ ť Ľ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/10"
-}
+"inferred": true
 },
 {
 "c": "ľ",
@@ -1699,12 +1554,7 @@
 "status": "schets",
 "base": "l",
 "accent": "caronvert",
-"inferred": true,
-"issue": {
-"number": 10,
-"title": "Nieuw accent: haček als apostrof (ď ľ ť Ľ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/10"
-}
+"inferred": true
 },
 {
 "c": "Ł",
@@ -1713,12 +1563,7 @@
 "status": "schets",
 "base": "L",
 "accent": "slash",
-"inferred": true,
-"issue": {
-"number": 11,
-"title": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/11"
-}
+"inferred": true
 },
 {
 "c": "ł",
@@ -1727,12 +1572,7 @@
 "status": "schets",
 "base": "l",
 "accent": "slash",
-"inferred": true,
-"issue": {
-"number": 11,
-"title": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/11"
-}
+"inferred": true
 },
 {
 "c": "Ń",
@@ -1757,12 +1597,7 @@
 "status": "schets",
 "base": "N",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "ņ",
@@ -1771,12 +1606,7 @@
 "status": "schets",
 "base": "n",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "Ň",
@@ -1824,12 +1654,7 @@
 "group": "upper",
 "status": "schets",
 "base": "O",
-"accent": "hungarumlaut",
-"issue": {
-"number": 7,
-"title": "Nieuw accent: dubbele accent aigu (ő ű)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/7"
-}
+"accent": "hungarumlaut"
 },
 {
 "c": "ő",
@@ -1837,12 +1662,7 @@
 "group": "lower",
 "status": "schets",
 "base": "o",
-"accent": "hungarumlaut",
-"issue": {
-"number": 7,
-"title": "Nieuw accent: dubbele accent aigu (ő ű)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/7"
-}
+"accent": "hungarumlaut"
 },
 {
 "c": "Œ",
@@ -1954,12 +1774,7 @@
 "status": "schets",
 "base": "t",
 "accent": "caronvert",
-"inferred": true,
-"issue": {
-"number": 10,
-"title": "Nieuw accent: haček als apostrof (ď ľ ť Ľ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/10"
-}
+"inferred": true
 },
 {
 "c": "Ũ",
@@ -2015,12 +1830,7 @@
 "group": "upper",
 "status": "schets",
 "base": "U",
-"accent": "hungarumlaut",
-"issue": {
-"number": 7,
-"title": "Nieuw accent: dubbele accent aigu (ő ű)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/7"
-}
+"accent": "hungarumlaut"
 },
 {
 "c": "ű",
@@ -2028,12 +1838,7 @@
 "group": "lower",
 "status": "schets",
 "base": "u",
-"accent": "hungarumlaut",
-"issue": {
-"number": 7,
-"title": "Nieuw accent: dubbele accent aigu (ő ű)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/7"
-}
+"accent": "hungarumlaut"
 },
 {
 "c": "Ų",
@@ -2042,12 +1847,7 @@
 "status": "schets",
 "base": "U",
 "accent": "ogonek",
-"inferred": true,
-"issue": {
-"number": 6,
-"title": "Nieuw accent: ogonek (ą ę į ų)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/6"
-}
+"inferred": true
 },
 {
 "c": "ų",
@@ -2056,12 +1856,7 @@
 "status": "schets",
 "base": "u",
 "accent": "ogonek",
-"inferred": true,
-"issue": {
-"number": 6,
-"title": "Nieuw accent: ogonek (ą ę į ų)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/6"
-}
+"inferred": true
 },
 {
 "c": "Ŵ",
@@ -2121,12 +1916,7 @@
 "group": "upper",
 "status": "schets",
 "base": "Z",
-"accent": "dotaccent",
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"accent": "dotaccent"
 },
 {
 "c": "ż",
@@ -2134,12 +1924,7 @@
 "group": "lower",
 "status": "schets",
 "base": "z",
-"accent": "dotaccent",
-"issue": {
-"number": 9,
-"title": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/9"
-}
+"accent": "dotaccent"
 },
 {
 "c": "Ž",
@@ -2216,12 +2001,7 @@
 "status": "schets",
 "base": "S",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "ș",
@@ -2230,12 +2010,7 @@
 "status": "schets",
 "base": "s",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "Ț",
@@ -2244,12 +2019,7 @@
 "status": "schets",
 "base": "T",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "ț",
@@ -2258,12 +2028,7 @@
 "status": "schets",
 "base": "t",
 "accent": "commaaccent",
-"inferred": true,
-"issue": {
-"number": 8,
-"title": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/8"
-}
+"inferred": true
 },
 {
 "c": "Ȳ",
@@ -2290,96 +2055,56 @@
 "name": "circumflex",
 "group": "mark",
 "status": "schets",
-"base": "uni0302",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "uni0302"
 },
 {
 "c": "ˇ",
 "name": "caron",
 "group": "mark",
 "status": "schets",
-"base": "uni030C",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "uni030C"
 },
 {
 "c": "˘",
 "name": "breve",
 "group": "mark",
 "status": "schets",
-"base": "uni0306",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "uni0306"
 },
 {
 "c": "˙",
 "name": "dotaccent",
 "group": "mark",
 "status": "schets",
-"base": "uni0307",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "uni0307"
 },
 {
 "c": "˚",
 "name": "ring",
 "group": "mark",
 "status": "schets",
-"base": "uni030A",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "uni030A"
 },
 {
 "c": "˛",
 "name": "ogonek",
 "group": "mark",
 "status": "schets",
-"base": "uni0328",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "uni0328"
 },
 {
 "c": "˜",
 "name": "tilde",
 "group": "mark",
 "status": "schets",
-"base": "tildecomb",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "tildecomb"
 },
 {
 "c": "˝",
 "name": "hungarumlaut",
 "group": "mark",
 "status": "schets",
-"base": "uni030B",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "uni030B"
 },
 {
 "c": "̀",
@@ -2530,12 +2255,7 @@
 "name": "uni1E9E",
 "group": "upper",
 "status": "schets",
-"base": "B",
-"issue": {
-"number": 5,
-"title": "Schets: ẞ (hoofdletter ringel-s)",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/5"
-}
+"base": "B"
 },
 {
 "c": "Ẽ",
@@ -2650,12 +2370,7 @@
 "name": "ellipsis",
 "group": "punct",
 "status": "schets",
-"base": "period",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "period"
 },
 {
 "c": "‹",
@@ -2686,12 +2401,7 @@
 "name": "minus",
 "group": "symbol",
 "status": "schets",
-"base": "plus",
-"issue": {
-"number": 12,
-"title": "Schets: losse accenten, … en −",
-"url": "https://github.com/SimonVanherweghe/cogncur-tex/issues/12"
-}
+"base": "plus"
 },
 {
 "c": "◌",
