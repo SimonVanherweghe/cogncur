@@ -10,6 +10,7 @@ import { asset, page } from '../lib/url';
 const dev = buildFor(DEV);
 const fmtDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' });
 const segment = (slug: string) => (slug === LATEST?.slug ? undefined : slug);
+const tekens = (n: number) => `${n} ${n === 1 ? 'teken' : 'tekens'}`;
 ---
 <Base title="Versies · Cogncur" current="versies"
       description="Alle versies van het lettertype: wat er beslist is, welke tekens veranderden, en downloads.">
@@ -25,11 +26,11 @@ const segment = (slug: string) => (slug === LATEST?.slug ? undefined : slug);
       <p>Wat er na de laatste versie al veranderd is, maar nog niet uitgebracht.
         {dev.changedSince
           ? dev.changedSince.chars.length
-            ? <> Sinds versie {dev.changedSince.version} veranderden <a href={page('tekens', DEV) + '#herkomst=veranderd'}>{dev.changedSince.chars.length} tekens</a>.</>
+            ? <> Sinds versie {dev.changedSince.version} veranderden <a href={page('tekens', DEV) + '#herkomst=veranderd'}>{tekens(dev.changedSince.chars.length)}</a>.</>
             : <> Sinds versie {dev.changedSince.version} zijn er nog geen tekens veranderd.</>
           : null}
       </p>
-      <p><a href={page('tekens', DEV)}>Bekijk de tekens in ontwikkeling</a> · <a href={`${REPO_URL}/milestones`} target="_blank" rel="noopener">Wat staat er gepland?</a></p>
+      <p><a href={page('tekens', DEV)}>Bekijk de tekens in ontwikkeling</a>{' · '}<a href={`${REPO_URL}/milestones`} target="_blank" rel="noopener">Wat staat er gepland?</a></p>
     </section>
 
     {RELEASES.length === 0 && (
@@ -50,12 +51,12 @@ const segment = (slug: string) => (slug === LATEST?.slug ? undefined : slug);
         ) : <p class="hint">Geen afgesloten vragen in deze versie.</p>}
         {r.previous && (
           <p>{r.changed.length
-            ? <><a href={page('tekens', segment(r.slug)) + '#herkomst=veranderd'}>{r.changed.length} tekens veranderd</a> sinds versie {r.previous}: <span class="changed-chars">{r.changed.slice(0, 40).join(' ')}{r.changed.length > 40 && ' …'}</span></>
+            ? <><a href={page('tekens', segment(r.slug)) + '#herkomst=veranderd'}>{tekens(r.changed.length)} veranderd</a> sinds versie {r.previous}: <span class="changed-chars">{r.changed.slice(0, 40).join(' ')}{r.changed.length > 40 && ' …'}</span></>
             : <>Geen tekens veranderd sinds versie {r.previous}.</>}</p>
         )}
         <p>
-          <a href={page('tekens', segment(r.slug))}>Bekijk deze versie</a> ·
-          <a href={asset(`versions/${r.slug}/fonts/Vtex-Regular.ttf`)} download={`Vtex-Regular-${r.version}.ttf`}>Download het lettertype</a> ·
+          <a href={page('tekens', segment(r.slug))}>Bekijk deze versie</a>{' · '}
+          <a href={asset(`versions/${r.slug}/fonts/Vtex-Regular.ttf`)} download={`Vtex-Regular-${r.version}.ttf`}>Download het lettertype</a>{' · '}
           <a href={`${REPO_URL}/releases/tag/${r.tag}`} target="_blank" rel="noopener">Op GitHub</a>
         </p>
       </section>

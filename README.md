@@ -38,3 +38,16 @@ De issues voor de ontwerper (label `ontwerper`) linken naar bewerkbare SVG- en E
 Komt er een nieuw issue voor de ontwerper bij? Zet de tekens in `"bestanden"` in
 `scripts/issues.py`, doe stap 1 en 2, en daarna `.venv/bin/python scripts/issues.py --files`
 (dat plaatst de reactie met de links, maar nooit twee keer).
+
+## Een nieuwe versie uitbrengen
+
+De website toont standaard de nieuwste versie. Wat er nog in ontwikkeling is, staat ernaast en
+oudere versies blijven bekijkbaar (pagina **Versies**).
+
+1. Maak een mijlpaal: `.venv/bin/python scripts/release.py milestone 1.001`. Zet op GitHub de
+   issues die in die versie komen in de mijlpaal "Versie 1.001", en sluit ze als ze klaar zijn.
+2. `make release V=1.001`: verhoogt het versienummer, bouwt en test het lettertype, bewaart een
+   kopie voor de website, schrijft de lijst met afgesloten issues en de veranderde tekens, en
+   maakt een commit en een tag. Dit blijft op je eigen computer.
+3. `make publish V=1.001`: zet alles op GitHub, maakt de release met het lettertype en sluit de
+   mijlpaal. De website wordt daarna vanzelf bijgewerkt.

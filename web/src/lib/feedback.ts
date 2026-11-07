@@ -21,9 +21,14 @@ export interface FeedbackRequest {
 
 const MAX_FIELD = 1500;   // keeps the whole URL far below GitHub's limit
 
-/** The public address (GitHub Pages) of a page of this site, also when testing locally. */
+/** The public address (GitHub Pages) of a page of this site, also when testing locally.
+    On a versioned page the version is always named (/v1.002/tekens/, not /tekens/ = "the latest"),
+    so the link in an issue keeps showing what was seen after the next release. */
 export function publicLink(u: URL = new URL(location.href)): string {
-  const rel = u.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '').replace(/^\//, '');
+  let rel = u.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '').replace(/^\//, '');
+  const html = document.documentElement;
+  const slug = html.dataset.version;
+  if (html.dataset.versioned !== undefined && slug && !rel.startsWith(`${slug}/`)) rel = `${slug}/${rel}`;
   try {
     return new URL(rel + u.search + u.hash, BUILD.siteUrl).href;
   } catch {
