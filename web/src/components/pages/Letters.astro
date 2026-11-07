@@ -1,9 +1,12 @@
 ---
 // The designer's stroke order per letter, animated (formerly tools/schrijven.html).
-import Base from '../layouts/Base.astro';
-import '../styles/animation.css';
+import Base from '../../layouts/Base.astro';
+import '../../styles/animation.css';
+interface Props { slug: string; segment?: string }
+const { slug, segment } = Astro.props;
+
 ---
-<Base title="Letters schrijven · Cogncur" current="letters"
+<Base slug={slug} segment={segment} title="Letters schrijven · Cogncur" current="letters"
       description="Hoe de pen beweegt in Cogncur: waar je begint, welke kant je op gaat, waar je terugkeert en waar je de pen optilt, letter per letter.">
   <div class="anim">
     <div class="main">
@@ -95,15 +98,15 @@ import '../styles/animation.css';
 </Base>
 
 <script>
-  import { asset } from '../lib/url';
-  import { versionText } from '../lib/build';
-  import { onFeedback } from '../lib/feedback';
-  import { svgToCanvas } from '../lib/snapshot';
-  import { createPlayer, segmented } from '../lib/player';
-  import { choiceOf, letterId, parseShapes, pickerKeys, variantsOf, type LetterChoice, type Letters } from '../lib/strokes/letters';
-  import { byWord } from '../lib/issue-index';
-  import { showIssues } from '../lib/issue-list';
-  import { buildLetterScene, exportLetterJSON, exportLetterSVG, letterStats, renderLetterAt, type LetterScene } from '../lib/strokes/scene';
+  import { asset } from '../../lib/url';
+  import { versionText } from '../../lib/build';
+  import { onFeedback } from '../../lib/feedback';
+  import { svgToCanvas } from '../../lib/snapshot';
+  import { createPlayer, segmented } from '../../lib/player';
+  import { choiceOf, letterId, parseShapes, pickerKeys, variantsOf, type LetterChoice, type Letters } from '../../lib/strokes/letters';
+  import { byWord } from '../../lib/issue-index';
+  import { showIssues } from '../../lib/issue-list';
+  import { buildLetterScene, exportLetterJSON, exportLetterSVG, letterStats, renderLetterAt, type LetterScene } from '../../lib/strokes/scene';
 
   const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
   const svg = document.getElementById('stage') as unknown as SVGSVGElement;

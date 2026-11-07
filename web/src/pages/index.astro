@@ -1,11 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
-import { BUILD, REPO_URL } from '../lib/site';
+import { REPO_URL } from '../lib/build';
+import { buildFor } from '../lib/version-data';
+import { DEFAULT_SLUG, LATEST } from '../lib/versions';
 import { page } from '../lib/url';
+
+const BUILD = buildFor(DEFAULT_SLUG);
 
 const c = BUILD.counts;
 const facts: [string, string][] = [
-  ['Versie', BUILD.version],
+  ['Versie', LATEST ? `${LATEST.version} (de nieuwste)` : `${BUILD.version} (nog in ontwikkeling, er is nog geen versie uitgebracht)`],
   ['Gemaakt op', BUILD.date],
   ['Code', BUILD.commit],
   ['Tekens', `${c.total}: ${c.origineel} origineel, ${c.samengesteld} samengesteld, ${c.nieuw + c.schets} nieuw (${c.schets} nog als schets)`],
@@ -16,6 +20,7 @@ const cards: [string, string, string][] = [
   ['proberen', 'Proberen', 'Typ je eigen tekst en vergelijk met het originele Cogncur.'],
   ['letters', 'Letters schrijven', 'De schrijfvolgorde van elke letter, zoals de ontwerper ze tekende.'],
   ['schrijven', 'Woorden schrijven', 'Zie hoe de pen een woord schrijft, in één beweging.'],
+  ['versies', 'Versies', 'Wat er in elke versie beslist en veranderd is, en downloads.'],
 ];
 ---
 <Base title="Cogncur voor Google Fonts" current="index"
@@ -44,6 +49,16 @@ const cards: [string, string, string][] = [
       </ol>
       <p class="hint">Je hebt een (gratis) GitHub-account nodig. Over grotere keuzes, zoals welke lettervormen standaard worden, stemmen we in de <a href={`${REPO_URL}/issues?q=is%3Aopen+label%3Abeslissing`} target="_blank" rel="noopener">open vragen</a>.</p>
     </section>
+
+    {LATEST && (
+      <section class="card prose" style="margin-top: 20px">
+        <h2>Wat is er nieuw in versie {LATEST.version}?</h2>
+        {LATEST.notes.length > 0
+          ? <ul>{LATEST.notes.slice(0, 8).map((n) => <li><a href={`${REPO_URL}/issues/${n.number}`} target="_blank" rel="noopener">#{n.number}</a> {n.title}</li>)}</ul>
+          : <p class="hint">Geen afgesloten vragen in deze versie.</p>}
+        <p><a href={page('versies')}>Alle versies</a></p>
+      </section>
+    )}
 
     <section class="prose" style="margin-top: 20px">
       <h2>Deze versie</h2>

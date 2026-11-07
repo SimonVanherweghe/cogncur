@@ -1,0 +1,9 @@
+---
+// /proberen/ (default version), /ontwikkeling/proberen/, /v1.001/proberen/ … (lib/versions.ts)
+import Page from '../../components/pages/Proberen.astro';
+import { slugOf, versionPaths } from '../../lib/versions';
+
+export const getStaticPaths = versionPaths;
+const { v } = Astro.params;
+---
+<Page slug={slugOf(v)} segment={v} />

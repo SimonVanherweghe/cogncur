@@ -1,0 +1,73 @@
+---
+// Every release: date, what was decided (issues closed in its milestone), which characters changed,
+// download. Plus the work in progress on main.
+import Base from '../layouts/Base.astro';
+import { REPO_URL } from '../lib/build';
+import { buildFor } from '../lib/version-data';
+import { DEV, LATEST, RELEASES } from '../lib/versions';
+import { asset, page } from '../lib/url';
+
+const dev = buildFor(DEV);
+const fmtDate = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' });
+const segment = (slug: string) => (slug === LATEST?.slug ? undefined : slug);
+---
+<Base title="Versies · Cogncur" current="versies"
+      description="Alle versies van het lettertype: wat er beslist is, welke tekens veranderden, en downloads.">
+  <main class="page prose">
+    <header class="page-head">
+      <h1>Versies</h1>
+      <p>We verzamelen beslissingen en verbeteringen en brengen ze samen uit als een nieuwe versie. De website toont standaard de nieuwste versie. Bovenaan elke pagina kan je een andere versie kiezen, of kijken naar wat er nu in ontwikkeling is.</p>
+    </header>
+
+    <section class="card release">
+      <h2>In ontwikkeling</h2>
+      <p class="meta">Lettertype {dev.version} · {dev.commit} · {dev.date}</p>
+      <p>Wat er na de laatste versie al veranderd is, maar nog niet uitgebracht.
+        {dev.changedSince
+          ? dev.changedSince.chars.length
+            ? <> Sinds versie {dev.changedSince.version} veranderden <a href={page('tekens', DEV) + '#herkomst=veranderd'}>{dev.changedSince.chars.length} tekens</a>.</>
+            : <> Sinds versie {dev.changedSince.version} zijn er nog geen tekens veranderd.</>
+          : null}
+      </p>
+      <p><a href={page('tekens', DEV)}>Bekijk de tekens in ontwikkeling</a> · <a href={`${REPO_URL}/milestones`} target="_blank" rel="noopener">Wat staat er gepland?</a></p>
+    </section>
+
+    {RELEASES.length === 0 && (
+      <p class="hint">Er is nog geen versie uitgebracht. Tot dan toont de website wat er in ontwikkeling is.</p>
+    )}
+
+    {RELEASES.map((r) => (
+      <section class="card release">
+        <h2>Versie {r.version}{r === LATEST && <span class="badge latest">nieuwste</span>}</h2>
+        <p class="meta">{fmtDate(r.date)}{r.milestone && <> · mijlpaal “{r.milestone}”</>}</p>
+        {r.notes.length > 0 ? (
+          <>
+            <h3>Wat er beslist en verbeterd is</h3>
+            <ul>
+              {r.notes.map((n) => <li><a href={`${REPO_URL}/issues/${n.number}`} target="_blank" rel="noopener">#{n.number}</a> {n.title}</li>)}
+            </ul>
+          </>
+        ) : <p class="hint">Geen afgesloten vragen in deze versie.</p>}
+        {r.previous && (
+          <p>{r.changed.length
+            ? <><a href={page('tekens', segment(r.slug)) + '#herkomst=veranderd'}>{r.changed.length} tekens veranderd</a> sinds versie {r.previous}: <span class="changed-chars">{r.changed.slice(0, 40).join(' ')}{r.changed.length > 40 && ' …'}</span></>
+            : <>Geen tekens veranderd sinds versie {r.previous}.</>}</p>
+        )}
+        <p>
+          <a href={page('tekens', segment(r.slug))}>Bekijk deze versie</a> ·
+          <a href={asset(`versions/${r.slug}/fonts/Vtex-Regular.ttf`)} download={`Vtex-Regular-${r.version}.ttf`}>Download het lettertype</a> ·
+          <a href={`${REPO_URL}/releases/tag/${r.tag}`} target="_blank" rel="noopener">Op GitHub</a>
+        </p>
+      </section>
+    ))}
+  </main>
+</Base>
+
+<style>
+  .release { margin-bottom: 16px; }
+  .release h2 { margin: 0; display: flex; gap: 10px; align-items: center; }
+  .release h3 { font-size: 16px; margin: 12px 0 4px; }
+  .release .meta { color: var(--ui-muted); margin: 2px 0 8px; font-size: 14px; }
+  .badge.latest { background: var(--st-veranderd); font-size: 12px; }
+  .changed-chars { font-family: Vtex, var(--font-ui); font-size: 22px; }
+</style>

@@ -1,0 +1,9 @@
+---
+// /verbindingen/ (default version), /ontwikkeling/verbindingen/, /v1.001/verbindingen/ … (lib/versions.ts)
+import Page from '../../components/pages/Verbindingen.astro';
+import { slugOf, versionPaths } from '../../lib/versions';
+
+export const getStaticPaths = versionPaths;
+const { v } = Astro.params;
+---
+<Page slug={slugOf(v)} segment={v} />

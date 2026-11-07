@@ -9,7 +9,8 @@ written here and committed:
   web/public/data/    tekens.json     every encoded character: group, origin (status)
                       decisions.json  decision id -> title + the characters it is about (scripts/issues.py);
                                       the website links issues to characters with it (web/scripts/fetch-issues.ts)
-                      build.json      repo, font version, commit, date, counts
+                      build.json      repo, font version, commit, date, counts, and the characters
+                                      changed since the latest release (scripts/fontdiff.py)
                       composites.json, routes.json (make routes), cogncur_shapes.svg (stroke order)
 """
 import datetime
@@ -122,10 +123,19 @@ def characters():
     return chars
 
 
+def latest_release():
+    """The newest entry of web/public/data/releases.json (written by scripts/release.py), or None."""
+    path = OUT / "data" / "releases.json"
+    rel = json.loads(path.read_text()) if path.exists() else []
+    return max(rel, key=lambda r: [int(x) for x in r["version"].split(".")], default=None)
+
+
 def main():
+    releases = (OUT / "data" / "releases.json").read_text() if (OUT / "data" / "releases.json").exists() else "[]\n"
     for sub in ("fonts", "data"):
         shutil.rmtree(OUT / sub, ignore_errors=True)
         (OUT / sub).mkdir(parents=True)
+    (OUT / "data" / "releases.json").write_text(releases)   # owned by release.py: keep it
     shutil.copyfile(FONT, OUT / "fonts" / "Vtex-Regular.ttf")
     shutil.copyfile(REF, OUT / "fonts" / "cogncur.ttf")
     shutil.copyfile(ROOT / "LICENSE.txt", OUT / "fonts" / "LICENSE.txt")
@@ -145,6 +155,11 @@ def main():
         commit += "+wijzigingen"
     build = {"repo": REPO, "siteUrl": SITE_URL, "version": f"{head.fontRevision:.3f}", "commit": commit,
              "date": datetime.date.today().isoformat(), "counts": counts}
+    last = latest_release()
+    if last:
+        from fontdiff import changed
+        build["changedSince"] = {"version": last["version"],
+                                 "chars": changed(OUT / "versions" / last["slug"] / "fonts" / "Vtex-Regular.ttf", FONT)}
     (OUT / "data" / "tekens.json").write_text(json.dumps({"chars": chars}, ensure_ascii=False, indent=0))
     (OUT / "data" / "decisions.json").write_text(json.dumps(decisions(), ensure_ascii=False, indent=1))
     (OUT / "data" / "build.json").write_text(json.dumps(build, ensure_ascii=False, indent=1))

@@ -68,3 +68,10 @@ ul.issues .state { display: inline-block; font-size: 11px; font-weight: 700; tex
 ul.issues .closed .state { background: #6E40C9; }
 ul.issues .closed a { color: inherit; opacity: .75; }
 ul.issues .milestone { font-size: 12px; border: 1px solid currentColor; border-radius: 999px; padding: 0 6px; opacity: .8; }
+.site-nav .version-switch select {
+  font: inherit; font-size: 14px; color: var(--nav-fg); background: transparent;
+  border: 1px solid var(--nav-muted); border-radius: 999px; padding: 4px 10px; cursor: pointer;
+}
+.site-nav .version-switch option { color: #1B2433; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 640px) { .site-nav .version-switch { order: 2; } }

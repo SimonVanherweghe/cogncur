@@ -1,5 +1,4 @@
-// Characters written by scripts/export_web.py (public/data/tekens.json), imported at build time.
-import tekensJson from '../../public/data/tekens.json';
+// Character info (public/data/tekens.json per version, see version-data.ts) and how it is shown.
 
 export type Status = 'origineel' | 'samengesteld' | 'nieuw' | 'schets';
 export type CharGroup = 'lower' | 'upper' | 'digit' | 'punct' | 'symbol' | 'mark';
@@ -15,8 +14,6 @@ export interface CharInfo {
 }
 
 export { BUILD, REPO_URL, versionText, type BuildInfo } from './build';
-
-export const CHARS = (tekensJson as { chars: CharInfo[] }).chars;
 
 export const GROUP_NAMES: Record<CharGroup, string> = {
   lower: 'Kleine letters', upper: 'Hoofdletters', digit: 'Cijfers', punct: 'Leestekens', symbol: 'Symbolen', mark: 'Accenten',

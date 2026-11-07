@@ -1,8 +1,11 @@
 ---
 // The original Cogncur and the new version on the same writing lines (formerly tools/live.html),
 // overlaid or stacked, with every OpenType feature and a shareable config code.
-import Base from '../layouts/Base.astro';
-import { FEATURES, GROUPS, cssFeatures, defaults } from '../lib/features';
+import Base from '../../layouts/Base.astro';
+import { FEATURES, GROUPS, cssFeatures, defaults } from '../../lib/features';
+interface Props { slug: string; segment?: string }
+const { slug, segment } = Astro.props;
+
 
 const DEFAULTS = defaults();
 // The feature table: left = this feature off, right = on (plus what it needs), the rest default.
@@ -20,7 +23,7 @@ const PRESETS: [string, string][] = [
   ['punct', 'Leestekens'], ['numbers', 'Cijfers'], ['newletters', 'Nieuwe letters'],
 ];
 ---
-<Base title="Proberen · Cogncur" current="proberen"
+<Base slug={slug} segment={segment} title="Proberen · Cogncur" current="proberen"
       description="Typ je eigen tekst en vergelijk het originele Cogncur met de nieuwe versie, met alle lettervormen.">
   <div class="proberen">
     <div class="main">
@@ -129,12 +132,12 @@ Amsterdam bijzonder (hallo)</textarea>
 </Base>
 
 <script>
-  import { FEATURES, cssFeatures, decode, defaults, encode, linkCode, warnings, type FeatureState } from '../lib/features';
-  import { ASC, ASCENDER, DESC, DESCENDER, UPM, XH, loadFont } from '../lib/font';
-  import { renderLines } from '../lib/sheet';
-  import { versionText } from '../lib/build';
-  import { onFeedback, publicLink } from '../lib/feedback';
-  import composites from '../../public/data/composites.json';
+  import { FEATURES, cssFeatures, decode, defaults, encode, linkCode, warnings, type FeatureState } from '../../lib/features';
+  import { ASC, ASCENDER, DESC, DESCENDER, UPM, XH, loadFont } from '../../lib/font';
+  import { renderLines } from '../../lib/sheet';
+  import { versionText } from '../../lib/build';
+  import { onFeedback, publicLink } from '../../lib/feedback';
+  import { versionAsset } from '../../lib/url';
 
   const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
   const paper = $('paper'), rows = $('rows'), text = $<HTMLTextAreaElement>('text');
@@ -151,7 +154,11 @@ Amsterdam bijzonder (hallo)</textarea>
   };
 
   // Letters added in the new build: the original font doesn't have them; optionally show their base letter there.
-  const NEW_CHARS = new Set((composites as { char: string }[]).map((x) => x.char));
+  let NEW_CHARS = new Set<string>();
+  fetch(versionAsset('data/composites.json'))
+    .then((r) => (r.ok ? r.json() : []))
+    .then((m: { char: string }[]) => { NEW_CHARS = new Set(m.map((x) => x.char)); render(); })
+    .catch(() => { /* the ghost letters are a nicety */ });
   const toBase = (line: string) => [...line].map((c) => (NEW_CHARS.has(c) ? c.normalize('NFD')[0] : c)).join('');
 
   const featureBoxes = [...document.querySelectorAll<HTMLInputElement>('.fea input[data-tag]')];

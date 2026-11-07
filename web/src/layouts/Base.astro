@@ -4,17 +4,32 @@ import FeedbackDialog from '../components/FeedbackDialog.astro';
 import '../styles/global.css';
 import '../styles/nav.css';
 
-interface Props { title: string; description: string; current: string }
-const { title, description, current } = Astro.props;
+import { DEFAULT_SLUG, assetDir, versionInfo } from '../lib/versions';
+import { buildFor } from '../lib/version-data';
+import type { PageData } from '../lib/build';
+
+interface Props {
+  title: string;
+  description: string;
+  current: string;
+  /** Versioned pages: the version shown ("ontwikkeling" or a release slug) and the URL segment (none for the default). */
+  slug?: string;
+  segment?: string;
+}
+const { title, description, current, slug, segment } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const shown = slug ?? DEFAULT_SLUG;
+const assets = assetDir(shown);
+const info = versionInfo(shown);
+const pageData: PageData = { slug: shown, label: info.label, build: buildFor(shown) };
 // Same vertical metrics for both fonts (UPM 2048, ascent 1768, descent 703), so baselines line up.
 const metrics = 'ascent-override: 86.3281%; descent-override: 34.3262%; line-gap-override: 0%; font-display: block;';
 const fontFaces = `
-@font-face { font-family: "Vtex"; src: url("${base}fonts/Vtex-Regular.ttf") format("truetype"); ${metrics} }
+@font-face { font-family: "Vtex"; src: url("${base}${assets}fonts/Vtex-Regular.ttf") format("truetype"); ${metrics} }
 @font-face { font-family: "Cogncur"; src: url("${base}fonts/cogncur.ttf") format("truetype"); ${metrics} }`;
 ---
 <!doctype html>
-<html lang="nl">
+<html lang="nl" data-assets={assets} data-version={shown}>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -25,11 +40,12 @@ const fontFaces = `
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style is:inline set:html={fontFaces}></style>
-    <link rel="preload" href={`${base}fonts/Vtex-Regular.ttf`} as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href={`${base}${assets}fonts/Vtex-Regular.ttf`} as="font" type="font/ttf" crossorigin>
     <slot name="head" />
   </head>
   <body>
-    <Nav current={current} />
+    <Nav current={current} slug={slug} segment={segment} />
+    <script type="application/json" id="page-data" set:html={JSON.stringify(pageData)}></script>
     <slot />
     <FeedbackDialog />
     <script>

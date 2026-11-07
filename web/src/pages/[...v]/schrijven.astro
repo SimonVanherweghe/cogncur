@@ -1,0 +1,9 @@
+---
+// /schrijven/ (default version), /ontwikkeling/schrijven/, /v1.001/schrijven/ … (lib/versions.ts)
+import Page from '../../components/pages/Schrijven.astro';
+import { slugOf, versionPaths } from '../../lib/versions';
+
+export const getStaticPaths = versionPaths;
+const { v } = Astro.params;
+---
+<Page slug={slugOf(v)} segment={v} />

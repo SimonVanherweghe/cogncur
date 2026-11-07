@@ -3,7 +3,7 @@
   --ui-bg: #EEF2F7; --ui-fg: #1B2433; --ui-muted: #5B6577; --ui-line: #CCD5E1; --ui-panel: #FFFFFF;
   --ui-focus: #1E4FB8; --ui-chip: #E3E9F2;
   --paper: #FAFCFF; --paper-ink: #1B2433; --rule: #A9C3E8; --rule-strong: #6F93C9; --margin: #E8838F;
-  --st-origineel: #5B6577; --st-samengesteld: #1D7A3A; --st-schets: #B45309; --st-nieuw: #7C3AED;
+  --st-origineel: #5B6577; --st-samengesteld: #1D7A3A; --st-schets: #B45309; --st-nieuw: #7C3AED; --st-veranderd: #0E7490;
   --font-ui: "Atkinson Hyperlegible", system-ui, sans-serif;
   --font-code: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
@@ -143,3 +143,5 @@ table.matrix td button[aria-pressed="true"] { background: #CFE0FF; }
 .issues-box { margin-top: 12px; }
 .issues-box .lbl { margin: 0 0 6px; }
 table.matrix td button.has-issue { box-shadow: inset 3px 0 0 #B45309; }
+.st-veranderd { background: var(--st-veranderd); }
+.tile[data-changed]::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: 15px; height: 2px; border-radius: 1px; background: var(--st-veranderd); }

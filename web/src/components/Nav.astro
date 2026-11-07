@@ -1,22 +1,46 @@
 ---
-// Site header. The 💬 button is wired in Base.astro; a page says what it reports with onFeedback().
+// Site header: pages, the version switch (on versioned pages) and the 💬 button.
+// The button is wired in Base.astro; a page says what it reports with onFeedback().
 import { page } from '../lib/url';
+import { ALL_VERSIONS, DEFAULT_SLUG } from '../lib/versions';
 
-interface Props { current: string }
-const { current } = Astro.props;
+interface Props { current: string; slug?: string; segment?: string }
+const { current, slug, segment } = Astro.props;
+const VERSIONED = ['tekens', 'verbindingen', 'proberen', 'letters', 'schrijven'];
 const items: [string, string][] = [
   ['index', 'Overzicht'], ['tekens', 'Tekens'], ['verbindingen', 'Verbindingen'],
-  ['proberen', 'Proberen'], ['letters', 'Letters schrijven'], ['schrijven', 'Woorden schrijven'],
+  ['proberen', 'Proberen'], ['letters', 'Letters schrijven'], ['schrijven', 'Woorden schrijven'], ['versies', 'Versies'],
 ];
+const href = (id: string) => page(id, VERSIONED.includes(id) ? segment : undefined);
 ---
 <nav class="site-nav" aria-label="Website">
   <div class="in">
     <a class="brand" href={page('index')}>Cogncur <small>voor Google Fonts</small></a>
     <ul>
       {items.map(([id, label]) => (
-        <li><a href={page(id)} aria-current={id === current ? 'page' : undefined}>{label}</a></li>
+        <li><a href={href(id)} aria-current={id === current ? 'page' : undefined}>{label}</a></li>
       ))}
     </ul>
+    {slug && (
+      <label class="version-switch">
+        <span class="sr-only">Versie van het lettertype</span>
+        <select id="version-switch" data-current={current} data-default={DEFAULT_SLUG}>
+          {ALL_VERSIONS.map((v) => (
+            <option value={v.slug} selected={v.slug === slug}>{v.latest && v.release ? `Nieuwste: ${v.release.version}` : v.label}</option>
+          ))}
+        </select>
+      </label>
+    )}
     <button type="button" class="fb-btn" id="fb-nav">💬 Feedback</button>
   </div>
 </nav>
+
+<script>
+  import { page } from '../lib/url';
+  // Same page, same hash and query, other version.
+  const sel = document.getElementById('version-switch') as HTMLSelectElement | null;
+  sel?.addEventListener('change', () => {
+    const v = sel.value;
+    location.href = page(sel.dataset.current!, v === sel.dataset.default ? undefined : v) + location.search + location.hash;
+  });
+</script>

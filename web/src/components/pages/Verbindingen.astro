@@ -1,12 +1,15 @@
 ---
-import Base from '../layouts/Base.astro';
-import FeatureToggles from '../components/FeatureToggles.astro';
-import { PAIR_SETS } from '../lib/pairs';
-import { byPair } from '../lib/issue-index';
+import Base from '../../layouts/Base.astro';
+import FeatureToggles from '../FeatureToggles.astro';
+import { PAIR_SETS } from '../../lib/pairs';
+import { byPair } from '../../lib/issue-index';
+interface Props { slug: string; segment?: string }
+const { slug, segment } = Astro.props;
+
 
 const [, rows, cols] = PAIR_SETS.klein;
 ---
-<Base title="Verbindingen · Cogncur" current="verbindingen"
+<Base slug={slug} segment={segment} title="Verbindingen · Cogncur" current="verbindingen"
       description="Elke combinatie van twee letters in de nieuwste versie van Cogncur. Geef feedback op een verbinding.">
   <main class="page">
     <header class="page-head">
@@ -61,16 +64,16 @@ const [, rows, cols] = PAIR_SETS.klein;
 </Base>
 
 <script>
-  import { PAIR_SETS, contextFor, type PairSet } from '../lib/pairs';
-  import { cssFeatures, decode, encode, linkCode } from '../lib/features';
-  import { loadFont, type LoadedFont } from '../lib/font';
-  import { renderLines } from '../lib/sheet';
-  import { versionText } from '../lib/build';
-  import { feedback, onFeedback, type FeedbackRequest } from '../lib/feedback';
-  import { bindToggles } from '../lib/toggles';
-  import { hashParams, setHash } from '../lib/url';
-  import { byPair } from '../lib/issue-index';
-  import { showIssues } from '../lib/issue-list';
+  import { PAIR_SETS, contextFor, type PairSet } from '../../lib/pairs';
+  import { cssFeatures, decode, encode, linkCode } from '../../lib/features';
+  import { loadFont, type LoadedFont } from '../../lib/font';
+  import { renderLines } from '../../lib/sheet';
+  import { versionText } from '../../lib/build';
+  import { feedback, onFeedback, type FeedbackRequest } from '../../lib/feedback';
+  import { bindToggles } from '../../lib/toggles';
+  import { hashParams, setHash } from '../../lib/url';
+  import { byPair } from '../../lib/issue-index';
+  import { showIssues } from '../../lib/issue-list';
 
   const $ = <T extends HTMLElement = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
   const hp = hashParams();

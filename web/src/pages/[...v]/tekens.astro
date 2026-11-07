@@ -1,0 +1,9 @@
+---
+// /tekens/ (default version), /ontwikkeling/tekens/, /v1.001/tekens/ … (lib/versions.ts)
+import Page from '../../components/pages/Tekens.astro';
+import { slugOf, versionPaths } from '../../lib/versions';
+
+export const getStaticPaths = versionPaths;
+const { v } = Astro.params;
+---
+<Page slug={slugOf(v)} segment={v} />

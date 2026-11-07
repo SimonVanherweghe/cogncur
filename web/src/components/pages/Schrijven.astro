@@ -1,12 +1,15 @@
 ---
 // Typed text animated as one pen line, connectors included (formerly tools/woorden.html).
-import Base from '../layouts/Base.astro';
-import '../styles/animation.css';
-import { STYLISTIC } from '../lib/features';
+import Base from '../../layouts/Base.astro';
+import '../../styles/animation.css';
+import { STYLISTIC } from '../../lib/features';
+interface Props { slug: string; segment?: string }
+const { slug, segment } = Astro.props;
+
 
 const EXAMPLES = ['hond', 'minimum', 'kiwi', 'café', 'Brugge', 'vliegtuig', 'ijsje', 'Ève à Noël'];
 ---
-<Base title="Woorden schrijven · Cogncur" current="schrijven"
+<Base slug={slug} segment={segment} title="Woorden schrijven · Cogncur" current="schrijven"
       description="Typ een woord en zie hoe je het in één beweging schrijft in Cogncur: letters, verbindingen, waar de pen terugloopt en waar je hem optilt.">
   <div class="anim">
     <div class="main">
@@ -102,17 +105,17 @@ const EXAMPLES = ['hond', 'minimum', 'kiwi', 'café', 'Brugge', 'vliegtuig', 'ij
 </Base>
 
 <script>
-  import { loadFont } from '../lib/font';
-  import { asset } from '../lib/url';
-  import { defaults, encode } from '../lib/features';
-  import { versionText } from '../lib/build';
-  import { onFeedback } from '../lib/feedback';
-  import { svgToCanvas } from '../lib/snapshot';
-  import { createPlayer, segmented } from '../lib/player';
-  import { buildScene, exportPoints, exportSVG, renderAt, type Scene } from '../lib/routes/scene';
-  import type { Extras, RoutesFile } from '../lib/routes/plan';
-  import { issuesForText } from '../lib/issue-index';
-  import { showIssues } from '../lib/issue-list';
+  import { loadFont } from '../../lib/font';
+  import { versionAsset } from '../../lib/url';
+  import { defaults, encode } from '../../lib/features';
+  import { versionText } from '../../lib/build';
+  import { onFeedback } from '../../lib/feedback';
+  import { svgToCanvas } from '../../lib/snapshot';
+  import { createPlayer, segmented } from '../../lib/player';
+  import { buildScene, exportPoints, exportSVG, renderAt, type Scene } from '../../lib/routes/scene';
+  import type { Extras, RoutesFile } from '../../lib/routes/plan';
+  import { issuesForText } from '../../lib/issue-index';
+  import { showIssues } from '../../lib/issue-list';
 
   const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
   const svg = document.getElementById('stage') as unknown as SVGSVGElement;
@@ -184,7 +187,7 @@ const EXAMPLES = ['hond', 'minimum', 'kiwi', 'café', 'Brugge', 'vliegtuig', 'ij
   try {
     const [F, R] = await Promise.all([
       loadFont(),
-      fetch(asset('data/routes.json')).then((r) => { if (!r.ok) throw new Error('data/routes.json niet gevonden (make routes + make web-data).'); return r.json() as Promise<RoutesFile>; }),
+      fetch(versionAsset('data/routes.json')).then((r) => { if (!r.ok) throw new Error('data/routes.json niet gevonden (make routes + make web-data).'); return r.json() as Promise<RoutesFile>; }),
     ]);
     const show = (autoplay = true) => {
       scene = buildScene(svg, F, R, state);

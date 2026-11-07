@@ -2,7 +2,7 @@
 // into HarfBuzz (for drawing on canvas/SVG with exactly the shaping of the test bank).
 import * as hb from 'harfbuzzjs';
 import { FEATURES, type FeatureState } from './features';
-import { asset } from './url';
+import { versionAsset } from './url';
 
 export const UPM = 2048, ASC = 1768, DESC = 703;
 export const XH = 682, ASCENDER = 1364, DESCENDER = 682;
@@ -25,7 +25,7 @@ let vtex: Promise<LoadedFont> | undefined;
 /** The new font in HarfBuzz. Loaded once per page (the browser cache shares it with the CSS font). */
 export function loadFont(): Promise<LoadedFont> {
   vtex ??= (async () => {
-    const res = await fetch(asset('fonts/Vtex-Regular.ttf'));
+    const res = await fetch(versionAsset('fonts/Vtex-Regular.ttf'));
     if (!res.ok) throw new Error(`Lettertype niet gevonden (${res.status}).`);
     const data = await res.arrayBuffer();
     const font = new hb.Font(new hb.Face(new hb.Blob(data)));
