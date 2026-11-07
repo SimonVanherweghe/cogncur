@@ -1,0 +1,13 @@
+---
+// Collapsible list of all OpenType features; wired by lib/toggles.ts (bindToggles).
+import { FEATURES } from '../lib/features';
+---
+<details class="feats" data-toggles>
+  <summary>Lettervormen (<span data-count>standaard</span>)</summary>
+  <div class="feat-list">
+    {FEATURES.map((f) => (
+      <label title={f.desc}><input type="checkbox" data-tag={f.tag} checked={!!f.on}> {f.tag} · {f.name}</label>
+    ))}
+  </div>
+  <p class="code-out">Code: <span data-code>vtex: standaard</span></p>
+</details>

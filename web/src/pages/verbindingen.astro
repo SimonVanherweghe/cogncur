@@ -1,0 +1,191 @@
+---
+import Base from '../layouts/Base.astro';
+import FeatureToggles from '../components/FeatureToggles.astro';
+import { PAIR_SETS } from '../lib/pairs';
+
+const [, rows, cols] = PAIR_SETS.klein;
+---
+<Base title="Verbindingen · Cogncur" current="verbindingen"
+      description="Elke combinatie van twee letters in de nieuwste versie van Cogncur. Geef feedback op een verbinding.">
+  <main class="page">
+    <header class="page-head">
+      <h1>Verbindingen</h1>
+      <p>Elke letter verbindt anders, afhankelijk van de letter ervoor. In de tabel staat elke combinatie van twee letters: de rij is de eerste letter, de kolom de tweede. Klik op een combinatie om ze groot en in woorden te zien.</p>
+    </header>
+
+    <div class="toolbar">
+      <div class="chips" id="sets" aria-label="Welke letters">
+        {Object.entries(PAIR_SETS).map(([id, [label]]) => (
+          <button type="button" class="chip" data-set={id} aria-pressed={id === 'klein' ? 'true' : 'false'}>{label}</button>
+        ))}
+      </div>
+      <label>Eerste letter <input type="text" id="rows" spellcheck="false" size="16" value={rows}></label>
+      <label>Tweede letter <input type="text" id="cols" spellcheck="false" size="16" value={cols}></label>
+      <FeatureToggles />
+    </div>
+
+    <div class="layout">
+      <section aria-label="Tabel met combinaties">
+        <div class="matrix-wrap">
+          <table class="matrix" id="matrix">
+            <thead><tr><th>↓ →</th>{[...cols].map((c) => <th scope="col">{c}</th>)}</tr></thead>
+            <tbody>
+              {[...rows].map((r) => (
+                <tr><th scope="row">{r}</th>{[...cols].map((c) => (
+                  <td><button type="button" data-pair={r + c} aria-pressed="false" aria-label={`${r} gevolgd door ${c}`}>{r + c}</button></td>
+                ))}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="detail card" id="detail" aria-live="polite">
+        <p class="empty" data-empty>Kies een combinatie in de tabel.</p>
+        <div data-full hidden>
+          <h2><span class="big" data-big></span><span data-title></span></h2>
+          <div class="sheet" data-sheet></div>
+          <label class="lbl" for="words">In woorden (je mag dit aanpassen)</label>
+          <input type="text" id="words" spellcheck="false">
+          <p class="hint">Tip: zet lettervormen aan of uit bovenaan. Dan verandert de hele tabel mee.</p>
+          <button type="button" class="btn-feedback" id="fb-pair">Feedback op deze verbinding</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</Base>
+
+<script>
+  import { PAIR_SETS, contextFor, type PairSet } from '../lib/pairs';
+  import { cssFeatures, decode, encode, linkCode } from '../lib/features';
+  import { loadFont, type LoadedFont } from '../lib/font';
+  import { renderLines } from '../lib/sheet';
+  import { versionText } from '../lib/build';
+  import { feedback, onFeedback, type FeedbackRequest } from '../lib/feedback';
+  import { bindToggles } from '../lib/toggles';
+  import { hashParams, setHash } from '../lib/url';
+
+  const $ = <T extends HTMLElement = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
+  const hp = hashParams();
+  const state = decode(hp.get('code')).state;
+  const askedSet = hp.get('set') ?? '';
+  let set: PairSet = Object.hasOwn(PAIR_SETS, askedSet) ? (askedSet as PairSet) : 'klein';
+  let rows = hp.get('rij') || PAIR_SETS[set][1];
+  let cols = hp.get('kolom') || PAIR_SETS[set][2];
+  let pair = hp.get('paar') ?? '';
+  let words = hp.get('woorden') ?? (pair ? contextFor(pair) : '');
+  let F: LoadedFont | null = null;
+  const matrix = $<HTMLTableElement>('#matrix'), detail = $('#detail');
+
+  const toggles = bindToggles($('[data-toggles]'), state, () => { styleMatrix(); if (pair) drawDetail(); syncHash(); });
+
+  function styleMatrix() {
+    matrix.style.fontFeatureSettings = cssFeatures(state);
+    matrix.style.fontKerning = state.kern ? 'normal' : 'none';
+  }
+
+  function buildMatrix() {
+    const R = [...rows.replace(/\s/g, '')], C = [...cols.replace(/\s/g, '')];
+    const head = document.createElement('tr');
+    head.append(Object.assign(document.createElement('th'), { textContent: '↓ →' }));
+    for (const c of C) head.append(Object.assign(document.createElement('th'), { scope: 'col', textContent: c }));
+    const body = document.createElement('tbody');
+    for (const r of R) {
+      const tr = document.createElement('tr');
+      tr.append(Object.assign(document.createElement('th'), { scope: 'row', textContent: r }));
+      for (const c of C) {
+        const b = Object.assign(document.createElement('button'), { type: 'button', textContent: r + c });
+        b.dataset.pair = r + c;
+        b.setAttribute('aria-label', `${r} gevolgd door ${c}`);
+        const td = document.createElement('td');
+        td.append(b);
+        tr.append(td);
+      }
+      body.append(tr);
+    }
+    matrix.tHead!.replaceChildren(head);
+    matrix.tBodies[0].replaceWith(body);
+    markPair();
+    for (const b of document.querySelectorAll<HTMLElement>('#sets .chip')) {
+      const [, r, c] = PAIR_SETS[b.dataset.set as PairSet];
+      b.setAttribute('aria-pressed', String(b.dataset.set === set && rows === r && cols === c));
+    }
+    $<HTMLInputElement>('#rows').value = rows;
+    $<HTMLInputElement>('#cols').value = cols;
+  }
+
+  const markPair = () => matrix.querySelectorAll<HTMLElement>('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.pair === pair)));
+
+  function select(p: string, fromClick: boolean) {
+    pair = p;
+    if (fromClick) words = contextFor(p);
+    $<HTMLInputElement>('#words').value = words;
+    markPair();
+    drawDetail();
+    syncHash();
+    if (fromClick && matchMedia('(max-width: 900px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function drawDetail() {
+    F ??= await loadFont();
+    $('[data-empty]', detail).hidden = true;
+    $('[data-full]', detail).hidden = false;
+    const big = $('[data-big]', detail);
+    big.textContent = pair;
+    big.style.fontFeatureSettings = cssFeatures(state);
+    const [first, ...rest] = [...pair];
+    $('[data-title]', detail).textContent = `${first} → ${rest.join('')}`;
+    drawSheet();
+  }
+  function drawSheet() {
+    if (!F) return;
+    const lines = [{ text: pair, state }, ...(words.trim() ? [{ text: words, state }] : [])];
+    $('[data-sheet]', detail).replaceChildren(renderLines(F, lines, { size: 110 }));
+  }
+
+  function syncHash() {
+    setHash([
+      ['set', set === 'klein' ? '' : set],
+      ['rij', rows === PAIR_SETS[set][1] ? '' : rows],
+      ['kolom', cols === PAIR_SETS[set][2] ? '' : cols],
+      ['paar', pair],
+      ['woorden', pair && words !== contextFor(pair) ? words : ''],
+      ['code', linkCode(state) === 'vtex' ? '' : linkCode(state)],
+    ]);
+  }
+
+  function request(): FeedbackRequest {
+    if (!pair) return { template: 'algemeen.yml', title: '[Opmerking] ', fields: { instellingen: encode(state) } };
+    const lines = [{ text: pair, state: { ...state } }, ...(words.trim() ? [{ text: words, state: { ...state } }] : [])];
+    return {
+      template: 'verbinding.yml',
+      title: `[Verbinding] ${pair}`,
+      fields: { tekst: words.trim() ? `${pair} (in: ${words})` : pair, instellingen: encode(state) },
+      snapshot: async () => renderLines(F ?? (await loadFont()), lines, { size: 120, caption: `${versionText()} · ${encode(state)}` }),
+    };
+  }
+  onFeedback(request);
+  $('#fb-pair').addEventListener('click', () => feedback(request()));
+
+  matrix.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('button[data-pair]');
+    if (b) select(b.dataset.pair!, true);
+  });
+  $('#sets').addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('.chip');
+    if (!b) return;
+    set = b.dataset.set as PairSet;
+    [, rows, cols] = PAIR_SETS[set];
+    buildMatrix(); syncHash();
+  });
+  $('#rows').addEventListener('change', (e) => { rows = (e.target as HTMLInputElement).value || PAIR_SETS[set][1]; buildMatrix(); syncHash(); });
+  $('#cols').addEventListener('change', (e) => { cols = (e.target as HTMLInputElement).value || PAIR_SETS[set][2]; buildMatrix(); syncHash(); });
+  $('#words').addEventListener('input', (e) => { words = (e.target as HTMLInputElement).value; drawSheet(); syncHash(); });
+
+  // ---------- start
+  toggles.sync();
+  styleMatrix();
+  if (set !== 'klein' || rows !== PAIR_SETS.klein[1] || cols !== PAIR_SETS.klein[2]) buildMatrix();
+  if (pair) select(pair, false);
+  loadFont();
+</script>

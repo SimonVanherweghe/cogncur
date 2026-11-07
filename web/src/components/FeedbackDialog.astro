@@ -1,0 +1,26 @@
+---
+// Filled in by lib/feedback.ts. The step line switches text on data-state.
+---
+<dialog class="fb-dialog" id="fb-dialog" aria-labelledby="fb-title">
+  <form method="dialog" class="fb-close-form"><button class="fb-close" aria-label="Sluiten">×</button></form>
+  <h2 id="fb-title">Feedback geven</h2>
+  <p data-step role="status">
+    <span class="s-busy">Afbeelding maken…</span>
+    <span class="s-copied">✅ De afbeelding is <strong>gekopieerd</strong>. Plak ze op GitHub in het vak <em>Afbeelding</em> met <kbd>Cmd</kbd>+<kbd>V</kbd> (Mac) of <kbd>Ctrl</kbd>+<kbd>V</kbd> (Windows).</span>
+    <span class="s-save">Kopiëren lukte niet in deze browser. Bewaar de afbeelding met de knop hieronder en sleep ze op GitHub in het vak <em>Afbeelding</em>.</span>
+    <span class="s-failed">Er kon geen afbeelding gemaakt worden. Je kan op GitHub zelf een schermafbeelding toevoegen.</span>
+  </p>
+  <img class="fb-preview" data-preview alt="Voorbeeld van de afbeelding" hidden>
+  <p>Op GitHub staat het formulier al ingevuld: het teken of de tekst, de instellingen, de versie en een link naar dit scherm. Jij schrijft alleen wat je ziet.</p>
+  <div class="fb-actions">
+    <a class="btn primary" data-open target="_blank" rel="noopener">Formulier openen op GitHub ↗</a>
+    <a class="btn" data-save hidden>Afbeelding bewaren</a>
+  </div>
+  <p class="fb-note">Je hebt een GitHub-account nodig. Lukt het niet? Laat het Simon weten.</p>
+</dialog>
+
+<script>
+  const dlg = document.getElementById('fb-dialog') as HTMLDialogElement;
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg.querySelector('[data-open]')!.addEventListener('click', () => setTimeout(() => dlg.close(), 300));
+</script>

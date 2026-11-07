@@ -8,4 +8,6 @@ __pycache__/
 build/
 .ninja_log
 build.ninja
-!docs/fonts/
+web/node_modules/
+web/dist/
+web/.astro/

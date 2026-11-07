@@ -1,0 +1,260 @@
+---
+import Base from '../layouts/Base.astro';
+import FeatureToggles from '../components/FeatureToggles.astro';
+import { CHARS, GROUP_NAMES, STATUS_TEXT, hexU, showChar, type CharGroup, type Status } from '../lib/site';
+
+const groups = Object.keys(GROUP_NAMES) as CharGroup[];
+const statuses = (Object.keys(STATUS_TEXT) as Status[]).filter((s) => CHARS.some((c) => c.status === s));
+---
+<Base title="Alle tekens · Cogncur" current="tekens"
+      description="Elk teken in de nieuwste versie van Cogncur, met waar het vandaan komt. Geef feedback op één teken.">
+  <main class="page">
+    <header class="page-head">
+      <h1>Alle tekens</h1>
+      <p>Elk teken in de nieuwste versie van het lettertype. Klik op een teken om het groot en in woorden te zien. Klopt er iets niet? Gebruik de knop <strong>Feedback op dit teken</strong>.</p>
+    </header>
+
+    <div class="toolbar">
+      <div class="chips" data-filter="group" aria-label="Soort tekens">
+        <button type="button" class="chip" data-v="all" aria-pressed="true">Alles</button>
+        {groups.map((g) => <button type="button" class="chip" data-v={g} aria-pressed="false">{GROUP_NAMES[g]}</button>)}
+      </div>
+      <div class="chips" data-filter="status" aria-label="Herkomst">
+        <button type="button" class="chip" data-v="all" aria-pressed="true">Alle herkomst</button>
+        {statuses.map((s) => (
+          <button type="button" class="chip" data-v={s} aria-pressed="false" title={STATUS_TEXT[s][1]}>
+            <span class={`dot st-${s}`}></span>{STATUS_TEXT[s][0]} ({CHARS.filter((c) => c.status === s).length})
+          </button>
+        ))}
+      </div>
+      <input type="search" id="find" placeholder="Zoek een teken…" aria-label="Zoek een teken" size="14">
+      <FeatureToggles />
+    </div>
+
+    <div class="layout">
+      <section id="grid" aria-label="Tekens">
+        {groups.map((g) => {
+          const list = CHARS.filter((c) => c.group === g);
+          return list.length > 0 && (
+            <div class="group" data-group={g}>
+              <h2 class="group-title">{GROUP_NAMES[g]} · <span data-n>{list.length}</span></h2>
+              <div class="grid">
+                {list.map((c) => (
+                  <button type="button" class="tile" data-c={c.c} data-status={c.status} data-name={c.name.toLowerCase()}
+                          aria-pressed="false" aria-label={`${c.c} ${hexU(c.c)} ${STATUS_TEXT[c.status][0]}`}>
+                    <span class="g">{showChar(c.c)}</span>
+                    <span class="u">{hexU(c.c).slice(2)}</span>
+                    <span class={`st st-${c.status}`}></span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+        <p class="empty" id="none" hidden>Geen tekens gevonden.</p>
+      </section>
+
+      <aside class="detail card" id="detail" aria-live="polite">
+        <p class="empty" data-empty>Kies een teken.</p>
+        <div data-full hidden>
+          <h2><span class="big" data-big></span><span data-title></span></h2>
+          <p class="meta"><span class="badge" data-badge></span> <span data-desc></span></p>
+          <div class="sheet" data-sheet></div>
+          <label class="lbl" for="words">In woorden (je mag dit aanpassen)</label>
+          <input type="text" id="words" spellcheck="false">
+          <div data-variants hidden>
+            <p class="lbl">Andere vormen (lettervormen aan- of uitzetten):</p>
+            <div class="variants" data-variant-list></div>
+          </div>
+          <p class="hint" data-issue hidden>Hierover loopt al een vraag: <a target="_blank" rel="noopener"></a>. Reageer daar gerust.</p>
+          <button type="button" class="btn-feedback" id="fb-char">Feedback op dit teken</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</Base>
+
+<script>
+  import { CHARS, STATUS_TEXT, hexU, showChar, versionText, type CharInfo } from '../lib/site';
+  import { STYLISTIC, cssFeatures, decode, defaults, encode, linkCode } from '../lib/features';
+  import { loadFont, shapeKey, type LoadedFont } from '../lib/font';
+  import { renderLines } from '../lib/sheet';
+  import { feedback, onFeedback, type FeedbackRequest } from '../lib/feedback';
+  import { bindToggles } from '../lib/toggles';
+  import { hashParams, setHash } from '../lib/url';
+
+  const $ = <T extends HTMLElement = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
+  const byChar = new Map(CHARS.map((c) => [c.c, c]));
+  const hp = hashParams();
+  const state = decode(hp.get('code')).state;
+  const filter = { group: hp.get('groep') ?? 'all', status: 'all' };
+  let current: CharInfo | null = null;
+  let words = '';
+  let F: LoadedFont | null = null;
+  const detail = $('#detail');
+
+  // ---------- filters
+  function applyFilters() {
+    const q = $<HTMLInputElement>('#find').value.trim().toLowerCase();
+    let shown = 0;
+    for (const grp of document.querySelectorAll<HTMLElement>('#grid .group')) {
+      let n = 0;
+      for (const t of grp.querySelectorAll<HTMLElement>('.tile')) {
+        const c = t.dataset.c!;
+        const ok = (filter.group === 'all' || filter.group === grp.dataset.group) &&
+          (filter.status === 'all' || filter.status === t.dataset.status) &&
+          (!q || c.toLowerCase() === q || c.normalize('NFD')[0].toLowerCase() === q || t.dataset.name!.includes(q) ||
+            hexU(c).toLowerCase() === q || hexU(c).slice(2).toLowerCase() === q);
+        t.hidden = !ok;
+        if (ok) n++;
+      }
+      grp.hidden = n === 0;
+      $('[data-n]', grp).textContent = String(n);
+      shown += n;
+    }
+    $('#none').hidden = shown > 0;
+    for (const box of document.querySelectorAll<HTMLElement>('[data-filter]')) {
+      const v = filter[box.dataset.filter as 'group' | 'status'];
+      box.querySelectorAll('.chip').forEach((b) => b.setAttribute('aria-pressed', String((b as HTMLElement).dataset.v === v)));
+    }
+    syncHash();
+  }
+  for (const box of document.querySelectorAll<HTMLElement>('[data-filter]')) {
+    box.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>('.chip');
+      if (!b) return;
+      filter[box.dataset.filter as 'group' | 'status'] = b.dataset.v!;
+      applyFilters();
+    });
+  }
+  $('#find').addEventListener('input', applyFilters);
+
+  // ---------- features
+  const toggles = bindToggles($('[data-toggles]'), state, () => redraw());
+  const grid = $('#grid');
+  function redraw() {
+    grid.style.fontFeatureSettings = cssFeatures(state);
+    if (current) drawDetail();
+    syncHash();
+  }
+
+  // ---------- detail
+  function contextFor(c: CharInfo): string {
+    const x = c.c;
+    switch (c.group) {
+      case 'lower': return `n${x}n a${x}e o${x}o ${x}${x}`;
+      case 'upper': return `${x}an ${x}o ${x}${x.toLowerCase() === x ? '' : x.toLowerCase()}`;
+      case 'digit': return `${x}0 1${x}2 ${x}${x}${x}`;
+      case 'mark': return `a${x} n${x}`;
+      default: return `woord${x} ${x}woord n${x}n`;
+    }
+  }
+
+  function select(c: CharInfo, fromClick: boolean) {
+    current = c;
+    words = fromClick ? contextFor(c) : (hp.get('woorden') ?? contextFor(c));
+    for (const t of grid.querySelectorAll<HTMLElement>('.tile')) t.setAttribute('aria-pressed', String(t.dataset.c === c.c));
+    $<HTMLInputElement>('#words').value = words;
+    drawDetail();
+    syncHash();
+    if (fromClick && matchMedia('(max-width: 900px)').matches) detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function drawDetail() {
+    const c = current!;
+    F ??= await loadFont();
+    $('[data-empty]', detail).hidden = true;
+    $('[data-full]', detail).hidden = false;
+    $('[data-big]', detail).textContent = showChar(c.c);
+    $('[data-title]', detail).textContent = `${hexU(c.c)} · ${c.name}`;
+    const badge = $('[data-badge]', detail);
+    badge.className = `badge st-${c.status}`;
+    badge.textContent = STATUS_TEXT[c.status][0];
+    let desc = STATUS_TEXT[c.status][1];
+    if (c.base) desc += ` Gemaakt van ${c.base}${c.accent ? ' + ' + c.accent : ''}.`;
+    if (c.inferred) desc += ' De plaats van het accent is geschat.';
+    $('[data-desc]', detail).textContent = desc;
+    const issue = $('[data-issue]', detail);
+    issue.hidden = !c.issue;
+    if (c.issue) {
+      const a = $<HTMLAnchorElement>('a', issue);
+      a.href = c.issue.url;
+      a.textContent = `#${c.issue.number} ${c.issue.title}`;
+    }
+    drawSheet();
+    drawVariants();
+  }
+
+  function drawSheet() {
+    if (!F || !current) return;
+    const lines = [{ text: current.c, state }, ...(words.trim() ? [{ text: words, state }] : [])];
+    $('[data-sheet]', detail).replaceChildren(renderLines(F, lines, { size: 110 }));
+  }
+
+  /** The stylistic sets that change something in the sample words. */
+  function drawVariants() {
+    if (!F || !current) return;
+    const base = shapeKey(F, words, state);
+    const list = $('[data-variant-list]', detail);
+    list.replaceChildren();
+    for (const f of STYLISTIC) {
+      const flipped = { ...state, [f.tag]: !state[f.tag] };
+      if (shapeKey(F, words, flipped) === base) continue;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'variant' + (state[f.tag] ? ' on' : '');
+      b.title = f.desc;
+      const v = document.createElement('span');
+      v.className = 'v';
+      v.textContent = words.split(' ')[0] || current.c;
+      v.style.fontFeatureSettings = cssFeatures(state[f.tag] ? state : flipped);
+      const t = document.createElement('span');
+      t.textContent = `${f.tag}${state[f.tag] ? ' (aan)' : ''} · ${f.name}`;
+      b.append(v, t);
+      b.addEventListener('click', () => { state[f.tag] = !state[f.tag]; toggles.sync(); redraw(); });
+      list.appendChild(b);
+    }
+    $('[data-variants]', detail).hidden = list.children.length === 0;
+  }
+
+  $('#words').addEventListener('input', (e) => {
+    words = (e.target as HTMLInputElement).value;
+    drawSheet(); drawVariants(); syncHash();
+  });
+  grid.addEventListener('click', (e) => {
+    const t = (e.target as HTMLElement).closest<HTMLElement>('.tile');
+    if (t) select(byChar.get(t.dataset.c!)!, true);
+  });
+
+  function syncHash() {
+    setHash([
+      ['teken', current?.c],
+      ['woorden', current && words !== contextFor(current) ? words : ''],
+      ['groep', filter.group === 'all' ? '' : filter.group],
+      ['code', linkCode(state) === 'vtex' ? '' : linkCode(state)],
+    ]);
+  }
+
+  // ---------- feedback
+  function request(): FeedbackRequest {
+    const c = current;
+    if (!c) return { template: 'algemeen.yml', title: '[Opmerking] ', fields: { instellingen: encode(state) } };
+    const lines = [{ text: c.c, state: { ...state } }, ...(words.trim() ? [{ text: words, state: { ...state } }] : [])];
+    return {
+      template: 'teken.yml',
+      title: `[Teken] ${c.c} (${hexU(c.c)})`,
+      fields: { teken: `${c.c} (${hexU(c.c)}, ${c.name}, ${STATUS_TEXT[c.status][0].toLowerCase()})`, tekst: words, instellingen: encode(state) },
+      snapshot: async () => renderLines(F ?? (await loadFont()), lines, { size: 120, caption: `${versionText()} · ${encode(state)}` }),
+    };
+  }
+  onFeedback(request);
+  $('#fb-char').addEventListener('click', () => feedback(request()));
+
+  // ---------- start
+  if (JSON.stringify(state) !== JSON.stringify(defaults())) toggles.sync();
+  grid.style.fontFeatureSettings = cssFeatures(state);
+  applyFilters();
+  const start = byChar.get(hp.get('teken') ?? '');
+  if (start) select(start, false);
+  loadFont();   // warm up HarfBuzz before the first click
+</script>

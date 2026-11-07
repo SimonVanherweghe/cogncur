@@ -14,7 +14,7 @@ TTF    := fonts/ttf/$(FAMILY)-$(STYLE).ttf
 REPORT := tests/report
 
 .DEFAULT_GOAL := all
-.PHONY: all venv upstream sources build test selftest qa corpus serve artifact designer schrijven routes site
+.PHONY: all venv upstream sources build test selftest qa corpus serve artifact designer schrijven routes web-data web
 
 serve:  ## live comparison tool at http://127.0.0.1:8765/tools/live.html
 	@echo "Open http://127.0.0.1:8765/tools/live.html  (Ctrl+C to stop)"
@@ -64,8 +64,11 @@ routes:  ## draft pen routes per glyph -> build/routes.json + tests/report/route
 schrijven:  ## package tools/schrijven.html + stripped stroke model for the private artifact (build/schrijven/)
 	$(PY) scripts/build_schrijven.py
 
-site:  ## static website in docs/ (GitHub Pages); open http://127.0.0.1:8765/docs/ via make serve; then commit + push docs/
-	$(PY) scripts/build_site.py
+web-data:  ## fonts + data for the website -> web/public/ (commit them; CI can't run FontForge)
+	$(PY) scripts/export_web.py
+
+web: web-data  ## build the website (Astro) into web/dist/; GitHub Actions does this on every push
+	npm --prefix web ci && npm --prefix web run build
 
 artifact:  ## package tools/live.html + fonts for the private Claude artifact (build/artifact/)
 	$(PY) scripts/build_artifact.py

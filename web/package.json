@@ -1,0 +1,22 @@
+{
+  "name": "cogncur-web",
+  "private": true,
+  "type": "module",
+  "description": "Website for the Cogncur Google Fonts conversion: characters, joins, writing animations and pre-filled feedback issues.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "astro": "^7.4.7",
+    "harfbuzzjs": "^1.6.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}
