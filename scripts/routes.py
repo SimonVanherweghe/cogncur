@@ -447,16 +447,25 @@ def route_from_shape(geo, strokes, use_entry, dx):
             cur.append(step)
     if cur:
         runs.append(cur)
-    # an entry stroke only counts for pieces no other stroke covers (the first leg of m);
-    # elsewhere it merely runs alongside the letter's own lines
-    own = {s["p"] for r in runs for s in r if "p" in s and not s["entry"]}
+    # an entry stroke only counts where no other stroke draws the same piece in the same direction
+    # (the first leg of m); elsewhere it merely runs alongside the letter's own lines. The direction
+    # matters: upstream's n puts "down the stem" in the entry stroke and "back up" in the next one.
+    # Running the other way, it is only dropped where that keeps the line unbroken.
+    own = {(s["p"], s["r"]) for r in runs for s in r if "p" in s and not s["entry"]}
+    own_p = {p for p, _ in own}
     out = []
     for r in runs:
         kept = []
-        for s in r:
+        for j, s in enumerate(r):
             if "p" in s:
-                if s.pop("entry") and s["p"] in own:
-                    continue
+                if s.pop("entry") and s["p"] in own_p:
+                    if (s["p"], s["r"]) in own:
+                        continue
+                    prev = kept[-1] if kept and "p" in kept[-1] else None
+                    nxt = next((t for t in r[j + 1:] if "p" in t), None)
+                    if (prev is None or nxt is None
+                            or math.dist(step_ends(geo, prev)[1], step_ends(geo, nxt)[0]) <= GAP_TOL):
+                        continue
                 if kept and "p" in kept[-1] and (kept[-1]["p"], kept[-1]["r"]) == (s["p"], s["r"]):
                     continue
             kept.append(s)
@@ -824,6 +833,45 @@ def fit_run(geo, run, entry, exit_):
     return run if score(best) <= score(run) else best
 
 
+def mend_runs(geo, runs):
+    """A run is one pen-down line. Where a step does not start where the previous one ended, walk
+    the shortest way over the centre lines (noted, so the glyph goes to review), or lift the pen."""
+    out = []
+    for run in runs:
+        cur = []
+        for s in run:
+            if cur and "p" in s and "p" in cur[-1]:
+                a, b = step_ends(geo, cur[-1])[1], step_ends(geo, s)[0]
+                if math.dist(a, b) > GAP_TOL:
+                    w = shortest_walk(geo, a, b)
+                    if w:
+                        cur += w[0]
+                        geo.notes.append(f"gap of {math.dist(a, b):.0f} units inside a stroke (stroke model "
+                                         "mapped badly here), closed along the centre lines")
+                    else:
+                        out.append(cur)
+                        cur = []
+                        geo.notes.append(f"gap of {math.dist(a, b):.0f} units inside a stroke: pen lifted")
+            cur.append(s)
+        if cur:
+            out.append(cur)
+    # a closed gap can leave "there and straight back" on a piece the route draws elsewhere anyway
+    for run in out:
+        i = 0
+        while i + 1 < len(run):
+            a, b = run[i], run[i + 1]
+            if "p" in a and "p" in b and a["p"] == b["p"] and a["r"] != b["r"]:
+                elsewhere = sum(1 for r in out for t in r if t.get("p") == a["p"]) > 2
+                before = step_ends(geo, run[i - 1])[1] if i > 0 and "p" in run[i - 1] else None
+                after = step_ends(geo, run[i + 2])[0] if i + 2 < len(run) and "p" in run[i + 2] else None
+                if elsewhere and (before is None or after is None or math.dist(before, after) <= GAP_TOL):
+                    del run[i:i + 2]
+                    i = max(0, i - 1)
+                    continue
+            i += 1
+    return out
+
+
 def attach_contacts(geo, rec, contact):
     ins, outs = clusters(contact["in"]), clusters(contact["out"])
     if not ins and not outs:
@@ -953,6 +1001,9 @@ def main():
     for n, c in contacts.items():
         if n in geos and recs[n]["runs"]:
             attach_contacts(geos[n], recs[n], c)
+    for n in order:
+        if recs[n]["runs"]:
+            recs[n]["runs"] = mend_runs(geos[n], recs[n]["runs"])
     issues, checked, ncfg, _ = word_check(TTF, geos, recs)
     for n in order:
         geo, rec = geos[n], recs[n]
@@ -961,7 +1012,7 @@ def main():
             geo.notes.append(f"word check: {len(worst)} join(s) with a gap, e.g. next to {worst[0][0]} "
                              f"({worst[0][1]} units{', ' + worst[0][2] if worst[0][2] else ''}) in “{worst[0][3]}”")
         if "status" not in rec:
-            partial = any("walked automatically" in x or "retracing" in x for x in geo.notes)
+            partial = any("walked automatically" in x or "retracing" in x or "inside a stroke" in x for x in geo.notes)
             bad = rec["cover"] < 0.96 or n in issues or partial
             if bad:
                 rec["status"] = "review"
@@ -973,6 +1024,7 @@ def main():
 
     out = {"version": 1, "upm": ufo.info.unitsPerEm, "pen": PEN, "font": TTF.name,
            "metrics": {"xheight": ufo.info.xHeight, "ascender": ufo.info.ascender, "descender": ufo.info.descender},
+           "glyphOrder": order,   # glyph id -> name (the browser HarfBuzz build has no glyph names)
            "glyphs": {}}
     for n in order:
         geo, rec = geos[n], recs[n]
