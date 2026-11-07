@@ -1,0 +1,645 @@
+<meta charset="utf-8">
+<title>Schrijfroute Cogncur</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: writing sheet + letter picker on the left, settings panel on the right; one column on phones.
+   Tokens follow tools/live.html so both tools look like one family. */
+:root {
+  --ui-bg: #EEF2F7;
+  --ui-fg: #1B2433;
+  --ui-muted: #5B6577;
+  --ui-line: #CCD5E1;
+  --ui-panel: #FFFFFF;
+  --ui-focus: #1E4FB8;
+  --ui-chip: #E3E9F2;
+  --paper: #FAFCFF;
+  --paper-ink: #1B2433;
+  --rule: #A9C3E8;
+  --rule-strong: #6F93C9;
+  --ghost: #DCE5F2;
+  --tip: #2E9E3E;
+  --route: #C2410C;
+  --turn: #7C3AED;
+  --air: #8A96A8;
+  --font-ui: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --font-code: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ui-bg: #121A24; --ui-fg: #E6EBF2; --ui-muted: #9AA6B8; --ui-line: #2C3A4C;
+    --ui-panel: #1A2431; --ui-focus: #8FB3FF; --ui-chip: #243245;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ui-bg: #121A24; --ui-fg: #E6EBF2; --ui-muted: #9AA6B8; --ui-line: #2C3A4C;
+  --ui-panel: #1A2431; --ui-focus: #8FB3FF; --ui-chip: #243245;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ui-bg);
+  color: var(--ui-fg);
+  font: 16px/1.5 var(--font-ui);
+}
+.app {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 20px;
+  padding-block: 20px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  max-width: 1500px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) { .app { grid-template-columns: minmax(0, 1fr); } }
+.main { display: grid; gap: 16px; min-width: 0; align-content: start; }
+h1 { font-size: 1.5rem; margin: 0; text-wrap: balance; }
+.lede { margin: 2px 0 0; color: var(--ui-muted); max-width: 65ch; }
+
+/* sheet: always paper, also in dark mode */
+.sheet {
+  background: var(--paper);
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgba(27, 36, 51, .08), 0 8px 24px -12px rgba(27, 36, 51, .25);
+  padding: 12px;
+  position: relative;
+}
+.sheet svg { display: block; width: 100%; height: min(62vh, 560px); }
+.sheet .badge-letter {
+  position: absolute; top: 10px; left: 14px;
+  font: 700 .8rem/1 var(--font-code); color: #5B6577; letter-spacing: .04em;
+}
+
+.transport { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.transport input[type=range] { flex: 1 1 200px; min-width: 0; accent-color: var(--tip); }
+.time { font: .85rem var(--font-code); color: var(--ui-muted); font-variant-numeric: tabular-nums; min-width: 9ch; text-align: right; }
+
+button, select {
+  font: inherit; color: inherit;
+  background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 6px;
+  padding: 6px 12px; cursor: pointer;
+}
+button:hover, select:hover { border-color: var(--ui-focus); }
+button.primary { background: var(--ui-fg); color: var(--ui-bg); border-color: var(--ui-fg); min-width: 7.5em; }
+:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
+
+.picker { display: grid; gap: 10px; }
+.picker h2, .panel h2 { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ui-muted); margin: 0; }
+.keys { display: flex; flex-wrap: wrap; gap: 6px; }
+.keys button {
+  width: 2.6em; height: 2.6em; padding: 0; font-size: 1.05rem;
+  background: var(--ui-panel);
+}
+.keys button[aria-pressed="true"] { background: var(--ui-fg); color: var(--ui-bg); border-color: var(--ui-fg); }
+
+.panel {
+  background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 8px;
+  padding: 16px; display: grid; gap: 18px; align-content: start;
+  position: sticky; top: max(16px, env(safe-area-inset-top, 0px)); min-width: 0;
+}
+@media (max-width: 900px) { .panel { position: static; } }
+.group { display: grid; gap: 8px; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.row label { flex: 1; }
+.check { display: flex; gap: 10px; align-items: center; cursor: pointer; }
+.check input { accent-color: var(--ui-fg); width: 18px; height: 18px; }
+.swatch { width: 14px; height: 14px; border-radius: 50%; flex: none; }
+.seg { display: inline-flex; border: 1px solid var(--ui-line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; padding: 5px 10px; }
+.seg button + button { border-left: 1px solid var(--ui-line); }
+.seg button[aria-pressed="true"] { background: var(--ui-fg); color: var(--ui-bg); }
+
+.stats { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 0; }
+.stats dt { color: var(--ui-muted); }
+.stats dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; }
+.hint { font-size: .85rem; color: var(--ui-muted); margin: 0; }
+textarea {
+  width: 100%; min-height: 120px; resize: vertical;
+  font: .75rem/1.4 var(--font-code); color: var(--ui-fg);
+  background: var(--ui-bg); border: 1px solid var(--ui-line); border-radius: 6px; padding: 8px;
+}
+.status { font-size: .85rem; color: var(--tip); min-height: 1.3em; margin: 0; }
+.error { color: #B42318; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="app">
+  <div class="main">
+    <header>
+      <h1>Schrijfroute</h1>
+      <p class="lede">Hoe de pen beweegt in Cogncur: waar je begint, welke kant je op gaat, waar je terugkeert over je eigen lijn en waar je de pen optilt.</p>
+    </header>
+
+    <div class="sheet">
+      <span class="badge-letter" id="badge"></span>
+      <svg id="stage" role="img" aria-label="Animatie van de letter"></svg>
+    </div>
+
+    <div class="transport">
+      <button class="primary" id="play" type="button">▶ Afspelen</button>
+      <button id="restart" type="button">↺ Opnieuw</button>
+      <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Tijdlijn">
+      <span class="time" id="time">0,0 / 0,0 s</span>
+    </div>
+
+    <section class="picker" aria-label="Letter kiezen">
+      <h2>Kleine letters</h2>
+      <div class="keys" id="keys-lower"></div>
+      <h2>Hoofdletters</h2>
+      <div class="keys" id="keys-upper"></div>
+    </section>
+  </div>
+
+  <aside class="panel">
+    <div class="group">
+      <h2>Lettervorm</h2>
+      <div class="row">
+        <label for="variant">Variant</label>
+        <select id="variant"></select>
+      </div>
+      <label class="check"><input type="checkbox" id="entry" checked> Met aanloop vanaf de schrijflijn</label>
+      <div class="row">
+        <span>Helling</span>
+        <span class="seg" id="slant">
+          <button type="button" data-v="0" aria-pressed="true">0°</button>
+          <button type="button" data-v="7.5" aria-pressed="false">7,5°</button>
+          <button type="button" data-v="15" aria-pressed="false">15°</button>
+        </span>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Tonen</h2>
+      <label class="check"><input type="checkbox" id="show-lines" checked> Schrijflijnen</label>
+      <label class="check"><input type="checkbox" id="show-ghost" checked><span class="swatch" style="background:var(--ghost);border:1px solid var(--rule)"></span> Spoor om over te schrijven</label>
+      <label class="check"><input type="checkbox" id="show-route"><span class="swatch" style="background:var(--route)"></span> Richting en startpunten</label>
+      <label class="check"><input type="checkbox" id="show-turns"><span class="swatch" style="background:var(--turn)"></span> Keerpunten</label>
+      <label class="check"><input type="checkbox" id="show-air" checked><span class="swatch" style="border:2px dashed var(--air)"></span> Pen in de lucht</label>
+    </div>
+
+    <div class="group">
+      <h2>Tempo</h2>
+      <span class="seg" id="speed">
+        <button type="button" data-v="0.5" aria-pressed="false">½×</button>
+        <button type="button" data-v="1" aria-pressed="true">1×</button>
+        <button type="button" data-v="2" aria-pressed="false">2×</button>
+      </span>
+      <label class="check"><input type="checkbox" id="loop"> Herhalen</label>
+    </div>
+
+    <div class="group">
+      <h2>Deze letter</h2>
+      <dl class="stats" id="stats"></dl>
+      <p class="hint">Een doorlopende lijn schrijf je zonder de pen op te tillen. Een keerpunt is een plek waar de pen omdraait en over de eigen lijn terugloopt.</p>
+    </div>
+
+    <div class="group">
+      <h2>Lijn exporteren</h2>
+      <div class="row">
+        <button type="button" id="copy-svg">Kopieer SVG</button>
+        <button type="button" id="copy-json">Kopieer punten</button>
+      </div>
+      <p class="hint">SVG: één pad per doorlopende lijn. Punten: JSON met pen omlaag/omhoog, elke 10 eenheden, voor plotters, robots of vliegroutes.</p>
+      <textarea id="out" readonly hidden aria-label="Export"></textarea>
+      <p class="status" id="status" aria-live="polite"></p>
+    </div>
+  </aside>
+</div>
+
+<script>
+'use strict';
+/* Data: the stroke model from upstream (syboor/cogncur, webapps/imgen/cogncur_shapes.svg).
+   Each letter is a <g id="letter-…"> with ordered <path id="stroke-…"> elements in font units (y up,
+   baseline 0, x-height 683, ascender 1365, descender -683). data-lift = pen lifted before this stroke,
+   data-dot = the stroke is a dot, data-entry = the entry stroke from the baseline. class="overlap"
+   marks self-overlaps and is not part of the route. */
+const SHAPE_URLS = ['cogncur_shapes.svg', '../upstream/webapps/imgen/cogncur_shapes.svg'];
+const NS = 'http://www.w3.org/2000/svg';
+const PEN = 68;                   // round pen, same as the font's style layers
+const LINES = { asc: 1365, x: 683, base: 0, desc: -683 };
+
+const $ = (id) => document.getElementById(id);
+const el = (tag, attrs = {}, parent) => {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+};
+
+let letters = new Map();          // id -> {width, strokes:[{d, entry, lift, dot}]}
+const state = { base: 'a', alt: '', entry: true, slant: 0, speed: 1, loop: false };
+let scene = null;                 // built per letter
+let clock = { t: 0, playing: false, last: 0 };
+
+/* ---------- loading ---------- */
+async function loadShapes() {
+  for (const url of SHAPE_URLS) {
+    try {
+      const r = await fetch(url);
+      if (r.ok) return await r.text();
+    } catch (e) { /* try next */ }
+  }
+  throw new Error('cogncur_shapes.svg niet gevonden. Start de pagina via "make serve".');
+}
+
+function parseShapes(text) {
+  const doc = new DOMParser().parseFromString(text.replace(/^﻿/, ''), 'image/svg+xml');
+  for (const g of doc.querySelectorAll('g[id^="letter-"]')) {
+    const id = g.id.slice(7);
+    if (letters.has(id) || id === 'empty') continue;     // the file repeats a few ids; first one wins
+    const strokes = [...g.querySelectorAll('.strokes > path')]
+      .filter(p => (p.id || '').startsWith('stroke') && p.getAttribute('class') !== 'overlap')
+      .map(p => ({ d: p.getAttribute('d'), entry: p.hasAttribute('data-entry'), lift: p.hasAttribute('data-lift'), dot: p.hasAttribute('data-dot') }));
+    letters.set(id, { width: +g.getAttribute('data-width') || 1000, strokes });
+  }
+}
+
+const baseOf = (id) => id.replace(/-noentry$/, '').replace(/-alt\d+$/, '');
+const currentId = () => {
+  const core = state.base + (state.alt ? '-' + state.alt : '');
+  if (!state.entry && letters.has(core + '-noentry')) return core + '-noentry';
+  return core;
+};
+
+/* ---------- geometry helpers ---------- */
+function cusps(path, len) {
+  // turning points inside one stroke: direction flips by more than ~140° over a short distance
+  const out = [], step = 6, span = 14;
+  let prevDir = null;
+  for (let s = span; s <= len - span; s += step) {
+    const a = path.getPointAtLength(s - span), b = path.getPointAtLength(s), c = path.getPointAtLength(s + span);
+    const d1 = norm(b.x - a.x, b.y - a.y), d2 = norm(c.x - b.x, c.y - b.y);
+    if (!d1 || !d2) continue;
+    if (d1.x * d2.x + d1.y * d2.y < -0.75) {
+      if (!out.length || Math.hypot(out[out.length - 1].x - b.x, out[out.length - 1].y - b.y) > 60) out.push({ x: b.x, y: b.y });
+    }
+  }
+  return out;
+}
+function norm(x, y) { const l = Math.hypot(x, y); return l < 1e-6 ? null : { x: x / l, y: y / l }; }
+function dirAt(path, s, len) {
+  const a = path.getPointAtLength(Math.max(0, s - 4)), b = path.getPointAtLength(Math.min(len, s + 4));
+  return norm(b.x - a.x, b.y - a.y);
+}
+
+/* cubic-bezier(.22,0,.78,1): the easing upstream uses; the pen slows at every start and turn */
+function bezierEase(p1x, p1y, p2x, p2y) {
+  const cx = 3 * p1x, bx = 3 * (p2x - p1x) - cx, ax = 1 - cx - bx;
+  const cy = 3 * p1y, by = 3 * (p2y - p1y) - cy, ay = 1 - cy - by;
+  const X = (t) => ((ax * t + bx) * t + cx) * t, Y = (t) => ((ay * t + by) * t + cy) * t;
+  const dX = (t) => (3 * ax * t + 2 * bx) * t + cx;
+  return (x) => {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    let t = x;
+    for (let i = 0; i < 8; i++) { const e = X(t) - x, d = dX(t); if (Math.abs(e) < 1e-5 || !d) break; t -= e / d; }
+    return Y(Math.min(1, Math.max(0, t)));
+  };
+}
+const ease = bezierEase(.22, 0, .78, 1);
+const easeAir = bezierEase(.42, 0, .58, 1);
+
+/* ---------- scene ---------- */
+function buildScene() {
+  const id = currentId();
+  const L = letters.get(id);
+  const svg = $('stage');
+  svg.replaceChildren();
+  const tan = Math.tan(state.slant * Math.PI / 180);
+  const x0 = -80 - tan * 700, x1 = L.width + 80 + tan * 1400;
+  const yTop = -60, h = LINES.asc - LINES.desc + 120;     // screen coords: y_s = 1365 - y
+  svg.setAttribute('viewBox', `${x0} ${yTop} ${x1 - x0} ${h}`);
+  svg.setAttribute('aria-label', `Animatie van de schrijfroute van ${id}`);
+
+  const guides = el('g', { id: 'guides' }, svg);
+  for (const [y, cls] of [[LINES.asc, 'asc'], [LINES.x, 'x'], [LINES.base, 'base'], [LINES.desc, 'desc']]) {
+    el('line', {
+      x1: x0, x2: x1, y1: LINES.asc - y, y2: LINES.asc - y,
+      stroke: cls === 'base' ? 'var(--rule-strong)' : 'var(--rule)',
+      'stroke-width': cls === 'base' ? 12 : 8,
+      'stroke-dasharray': cls === 'x' ? '60 50' : 'none',
+    }, guides);
+  }
+
+  const slantG = el('g', { transform: `translate(${tan * LINES.asc} 0) skewX(${-state.slant})` }, svg);
+  const g = el('g', { transform: `matrix(1 0 0 -1 0 ${LINES.asc})` }, slantG);
+  const ghost = el('g', { id: 'ghost', fill: 'none', stroke: 'var(--ghost)', 'stroke-width': PEN, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+  const air = el('g', { id: 'air', fill: 'none', stroke: 'var(--air)', 'stroke-width': 14, 'stroke-dasharray': '36 30', 'stroke-linecap': 'round' }, g);
+  const ink = el('g', { id: 'ink', fill: 'none', stroke: 'var(--paper-ink)', 'stroke-width': PEN, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+  const route = el('g', { id: 'route' }, g);
+  const turns = el('g', { id: 'turns', fill: 'none', stroke: 'var(--turn)', 'stroke-width': 12 }, g);
+  const tip = el('circle', { r: 40, fill: 'var(--tip)' }, g);
+
+  // strokes + lengths
+  const strokes = L.strokes.map((s, i) => {
+    el('path', { d: s.d }, ghost);
+    const p = el('path', { d: s.d }, ink);
+    const len = Math.max(1, p.getTotalLength());
+    const start = p.getPointAtLength(0), end = p.getPointAtLength(len);
+    return { ...s, i, el: p, len, start, end };
+  });
+
+  // runs: pen-down sequences between lifts
+  const runs = [];
+  for (const s of strokes) {
+    if (!runs.length || s.lift || s.dot) runs.push([]);
+    runs[runs.length - 1].push(s);
+  }
+
+  // timeline (upstream timing: 0.5 s lead-in, 1.5 s per lift, duration from length, 0.1 s overlap)
+  const segs = [];
+  let t = 0.5, prev = null;
+  for (const s of strokes) {
+    if (prev && (s.lift || s.dot)) {
+      const line = el('line', { x1: prev.end.x, y1: prev.end.y, x2: prev.end.x, y2: prev.end.y }, air);
+      segs.push({ kind: 'air', from: prev.end, to: s.start, start: t + 0.2, dur: 1.0, line });
+      t += 1.5;
+    }
+    if (s.dot) {
+      segs.push({ kind: 'dot', s, start: t, dur: 0.3 });
+      t += 0.4;
+    } else {
+      const dur = Math.ceil(s.len / 60) / 10 + 0.3;
+      segs.push({ kind: 'draw', s, start: t, dur });
+      t += dur - 0.1;
+    }
+    prev = s;
+  }
+  const total = t + 0.4;
+
+  // route: arrows beside each stroke, on the right-hand side of the direction of travel,
+  // so a retraced stretch shows up-arrows on one side and down-arrows on the other
+  const SIDE = PEN / 2 + 52;
+  for (const s of strokes) {
+    if (s.dot) continue;
+    const n = Math.max(1, Math.round(s.len / 320));
+    for (let k = 0; k < n; k++) {
+      const at = s.len * (k + 0.5) / n;
+      const pt = s.el.getPointAtLength(at), d = dirAt(s.el, at, s.len);
+      if (!d) continue;
+      const ang = Math.atan2(d.y, d.x) * 180 / Math.PI;
+      const ox = pt.x + d.y * SIDE, oy = pt.y - d.x * SIDE;   // right-hand normal (y up)
+      el('path', {
+        d: 'M-30,-32 L16,0 L-30,32', transform: `translate(${ox} ${oy}) rotate(${ang})`,
+        fill: 'none', stroke: 'var(--route)', 'stroke-width': 16, 'stroke-linecap': 'round', 'stroke-linejoin': 'round',
+      }, route);
+    }
+  }
+  runs.forEach((run, k) => {
+    const s0 = run[0];
+    el('circle', { cx: s0.start.x, cy: s0.start.y, r: 30, fill: 'var(--route)' }, route);
+    const tx = el('text', {
+      transform: `translate(${s0.start.x - 70} ${s0.start.y + 70}) scale(1 -1)`,
+      'font-size': 120, 'font-weight': 700, 'font-family': 'Atkinson Hyperlegible, system-ui, sans-serif',
+      fill: 'var(--route)', 'text-anchor': 'middle', 'dominant-baseline': 'middle',
+    }, route);
+    tx.textContent = String(k + 1);
+  });
+
+  // turning points: inside strokes and at stroke joins inside a run
+  const turnPts = [];
+  for (const run of runs) {
+    run.forEach((s, j) => {
+      if (!s.dot) turnPts.push(...cusps(s.el, s.len));
+      if (j > 0 && !s.dot) {
+        const p = run[j - 1];
+        const a = dirAt(p.el, p.len - 6, p.len), b = dirAt(s.el, 6, s.len);
+        if (a && b && a.x * b.x + a.y * b.y < -0.5) turnPts.push({ x: s.start.x, y: s.start.y });
+      }
+    });
+  }
+  for (const pt of turnPts) el('circle', { cx: pt.x, cy: pt.y, r: 58 }, turns);
+
+  for (const s of strokes) {
+    s.el.setAttribute('stroke-dasharray', `${s.len} ${s.len + 200}`);
+    s.el.style.visibility = 'hidden';
+  }
+
+  scene = { id, L, strokes, runs, segs, total, tip, turnPts, layers: { ghost, air, route, turns, guides } };
+  $('badge').textContent = id;
+  applyVisibility();
+  renderStats();
+}
+
+function render(time) {
+  if (!scene) return;
+  let pen = null, down = true;
+  for (const seg of scene.segs) {
+    const p = Math.min(1, Math.max(0, (time - seg.start) / seg.dur));
+    if (seg.kind === 'draw') {
+      const e = ease(p), s = seg.s;
+      s.el.style.visibility = e > 0 ? 'visible' : 'hidden';
+      s.el.setAttribute('stroke-dashoffset', s.len * (1 - e));
+      if (time >= seg.start || !pen) { pen = s.el.getPointAtLength(s.len * e); down = true; }
+    } else if (seg.kind === 'dot') {
+      seg.s.el.style.visibility = time >= seg.start ? 'visible' : 'hidden';
+      if (time >= seg.start) { pen = seg.s.end; down = true; }
+    } else {
+      const e = easeAir(p);
+      const x = seg.from.x + (seg.to.x - seg.from.x) * e, y = seg.from.y + (seg.to.y - seg.from.y) * e;
+      seg.line.setAttribute('x2', x); seg.line.setAttribute('y2', y);
+      seg.line.style.visibility = p > 0 ? 'visible' : 'hidden';
+      if (time >= seg.start && p < 1) { pen = { x, y }; down = false; }
+      else if (p >= 1 && time >= seg.start) { pen = seg.to; down = false; }
+    }
+  }
+  if (!pen) pen = scene.strokes[0].start;
+  const tip = scene.tip;
+  tip.setAttribute('cx', pen.x); tip.setAttribute('cy', pen.y);
+  tip.setAttribute('r', down ? 40 : 54);
+  tip.setAttribute('fill', down ? 'var(--tip)' : 'none');
+  tip.setAttribute('stroke', down ? 'none' : 'var(--tip)');
+  tip.setAttribute('stroke-width', down ? 0 : 14);
+  tip.style.visibility = time >= scene.total - 0.05 ? 'hidden' : 'visible';
+
+  $('scrub').value = Math.round(1000 * time / scene.total);
+  $('time').textContent = `${fmt(time)} / ${fmt(scene.total)} s`;
+}
+const fmt = (s) => s.toFixed(1).replace('.', ',');
+
+/* ---------- clock ---------- */
+function tick(now) {
+  if (!clock.playing) return;
+  const dt = (now - clock.last) / 1000; clock.last = now;
+  clock.t += dt * state.speed;
+  if (clock.t >= scene.total) {
+    if (state.loop) clock.t = 0;
+    else { clock.t = scene.total; setPlaying(false); }
+  }
+  render(clock.t);
+  if (clock.playing) requestAnimationFrame(tick);
+}
+function setPlaying(on) {
+  clock.playing = on;
+  $('play').textContent = on ? '❚❚ Pauze' : '▶ Afspelen';
+  if (on) {
+    if (clock.t >= scene.total) clock.t = 0;
+    clock.last = performance.now();
+    requestAnimationFrame(tick);
+  }
+}
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function show(autoplay = true) {
+  setPlaying(false);
+  buildScene();
+  clock.t = (reduceMotion || !autoplay) ? scene.total : 0;
+  render(clock.t);
+  if (autoplay && !reduceMotion) setPlaying(true);
+}
+
+/* ---------- UI ---------- */
+function applyVisibility() {
+  if (!scene) return;
+  const v = (id) => $(id).checked ? 'visible' : 'hidden';
+  scene.layers.guides.style.visibility = v('show-lines');
+  scene.layers.ghost.style.visibility = v('show-ghost');
+  scene.layers.route.style.visibility = v('show-route');
+  scene.layers.turns.style.visibility = v('show-turns');
+  scene.layers.air.style.display = $('show-air').checked ? '' : 'none';
+}
+
+function renderStats() {
+  const s = scene, lifts = s.runs.length - 1;
+  const len = s.strokes.reduce((a, x) => a + (x.dot ? 0 : x.len), 0);
+  const rows = [
+    ['Halen in het model', s.strokes.length],
+    ['Doorlopende lijnen', s.runs.length],
+    ['Pen optillen', lifts],
+    ['Keerpunten', s.turnPts.length],
+    ['Lengte van de lijn', `${Math.round(len).toLocaleString('nl-BE')} eenheden`],
+  ];
+  $('stats').replaceChildren(...rows.flatMap(([k, v]) => {
+    const dt = document.createElement('dt'); dt.textContent = k;
+    const dd = document.createElement('dd'); dd.textContent = v;
+    return [dt, dd];
+  }));
+}
+
+function buildKeys() {
+  const bases = [...new Set([...letters.keys()].map(baseOf))];
+  const lower = bases.filter(b => /^[a-z]+$/.test(b));
+  const upper = bases.filter(b => /^[A-Z]$/.test(b)).sort();
+  const make = (b) => {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.textContent = b === 'ij' ? 'ij' : b; btn.dataset.base = b;
+    btn.setAttribute('aria-pressed', 'false');
+    btn.addEventListener('click', () => { state.base = b; state.alt = ''; syncControls(); updateHash(); show(); });
+    return btn;
+  };
+  $('keys-lower').replaceChildren(...lower.map(make));
+  $('keys-upper').replaceChildren(...upper.map(make));
+}
+
+function syncControls() {
+  for (const b of document.querySelectorAll('.keys button')) b.setAttribute('aria-pressed', String(b.dataset.base === state.base));
+  const alts = [...letters.keys()].filter(id => baseOf(id) === state.base && !id.endsWith('-noentry'))
+    .map(id => id === state.base ? '' : id.slice(state.base.length + 1))
+    .sort((a, b) => (+a.slice(3) || 0) - (+b.slice(3) || 0));
+  const sel = $('variant');
+  sel.replaceChildren(...alts.map(a => {
+    const o = document.createElement('option'); o.value = a;
+    o.textContent = a ? `variant ${a.slice(3)}` : 'standaard';
+    return o;
+  }));
+  sel.value = state.alt; sel.disabled = alts.length < 2;
+  const core = state.base + (state.alt ? '-' + state.alt : '');
+  const hasNoEntry = letters.has(core + '-noentry');
+  const hasEntry = letters.get(core).strokes.some(s => s.entry);
+  $('entry').disabled = !hasNoEntry;
+  $('entry').checked = hasNoEntry ? state.entry : hasEntry;
+}
+
+function updateHash() {
+  try { history.replaceState(null, '', '#' + currentId()); } catch (e) { location.hash = currentId(); }
+}
+function readHash() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (!h || !letters.has(h)) return false;
+  state.base = baseOf(h);
+  state.entry = !h.endsWith('-noentry');
+  const m = h.match(/-(alt\d+)/); state.alt = m ? m[1] : '';
+  return true;
+}
+
+function segmented(id, key, after) {
+  $(id).addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    for (const x of $(id).querySelectorAll('button')) x.setAttribute('aria-pressed', String(x === b));
+    state[key] = +b.dataset.v;
+    after && after();
+  });
+}
+
+/* ---------- export ---------- */
+function sample(path, len, step = 10) {
+  const pts = [];
+  for (let s = 0; s < len; s += step) { const p = path.getPointAtLength(s); pts.push([+p.x.toFixed(1), +p.y.toFixed(1)]); }
+  const e = path.getPointAtLength(len); pts.push([+e.x.toFixed(1), +e.y.toFixed(1)]);
+  return pts;
+}
+function exportJSON() {
+  const out = [];
+  let prevEnd = null;
+  for (const run of scene.runs) {
+    const first = run[0];
+    if (prevEnd) out.push({ pen: 'up', points: [[+prevEnd.x.toFixed(1), +prevEnd.y.toFixed(1)], [+first.start.x.toFixed(1), +first.start.y.toFixed(1)]] });
+    const pts = [];
+    for (const s of run) { const p = sample(s.el, s.len); if (pts.length) p.shift(); pts.push(...p); }
+    out.push({ pen: 'down', points: pts });
+    prevEnd = run[run.length - 1].end;
+  }
+  return JSON.stringify({
+    letter: scene.id, source: 'syboor/cogncur cogncur_shapes.svg',
+    units: 'font units, y up', lines: LINES, pen: PEN, slant: state.slant, path: out,
+  }, null, 1).replace(/\[\n\s+(-?[\d.]+),\n\s+(-?[\d.]+)\n\s+\]/g, '[$1,$2]');
+}
+function exportSVG() {
+  // one subpath per run: the leading moveto of a continuing stroke becomes a lineto (the stroke data
+  // sometimes leaves a gap of ~1 unit), so the line really is one path and relative commands stay exact
+  const ds = scene.runs.map(run => run.map((s, j) => {
+    if (j === 0) return s.d.trim();
+    return s.d.trim().replace(/^M/, 'L');
+  }).join(' '));
+  const w = Math.ceil(scene.L.width);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -${LINES.asc} ${w} ${LINES.asc - LINES.desc}">\n` +
+    `  <!-- ${scene.id}: one path per continuous line, font units, y up (flipped below) -->\n` +
+    `  <g transform="scale(1 -1)" fill="none" stroke="#000" stroke-width="${PEN}" stroke-linecap="round" stroke-linejoin="round">\n` +
+    ds.map((d, i) => `    <path id="lijn-${i + 1}" d="${d}"/>`).join('\n') + '\n  </g>\n</svg>';
+}
+async function copyOut(text, label) {
+  const ta = $('out'); ta.hidden = false; ta.value = text;
+  try { await navigator.clipboard.writeText(text); $('status').textContent = `${label} gekopieerd.`; }
+  catch (e) { ta.focus(); ta.select(); $('status').textContent = 'Kopiëren lukte niet automatisch; de tekst is geselecteerd.'; }
+}
+
+/* ---------- boot ---------- */
+(async function boot() {
+  try { parseShapes(await loadShapes()); }
+  catch (e) {
+    const p = document.createElement('p'); p.className = 'error'; p.textContent = e.message;
+    document.querySelector('.sheet').replaceChildren(p); return;
+  }
+  buildKeys();
+  readHash();
+  syncControls();
+  show();
+
+  $('play').addEventListener('click', () => setPlaying(!clock.playing));
+  $('restart').addEventListener('click', () => { clock.t = 0; render(0); setPlaying(true); });
+  $('scrub').addEventListener('input', (e) => { setPlaying(false); clock.t = scene.total * e.target.value / 1000; render(clock.t); });
+  $('variant').addEventListener('change', (e) => { state.alt = e.target.value; syncControls(); updateHash(); show(); });
+  $('entry').addEventListener('change', (e) => { state.entry = e.target.checked; updateHash(); show(); });
+  $('loop').addEventListener('change', (e) => { state.loop = e.target.checked; });
+  for (const id of ['show-lines', 'show-ghost', 'show-route', 'show-turns', 'show-air']) $(id).addEventListener('change', applyVisibility);
+  segmented('slant', 'slant', () => { const t = clock.t, playing = clock.playing; setPlaying(false); buildScene(); clock.t = Math.min(t, scene.total); render(clock.t); if (playing) setPlaying(true); });
+  segmented('speed', 'speed');
+  $('copy-svg').addEventListener('click', () => copyOut(exportSVG(), 'SVG'));
+  $('copy-json').addEventListener('click', () => copyOut(exportJSON(), 'Punten'));
+  addEventListener('hashchange', () => { if (readHash()) { syncControls(); show(); } });
+})();
+</script>
