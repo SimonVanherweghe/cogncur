@@ -151,7 +151,8 @@ def main():
     counts["total"] = len(chars)
     head = TTFont(FONT)["head"]
     commit = git("rev-parse", "--short", "HEAD")
-    if git("status", "--porcelain", "--", "scripts", "sources"):
+    # uncommitted changes to the font sources; the version number (release.py bump) doesn't count
+    if git("status", "--porcelain", "--", "scripts", "sources", ":!scripts/config.py"):
         commit += "+wijzigingen"
     build = {"repo": REPO, "siteUrl": SITE_URL, "version": f"{head.fontRevision:.3f}", "commit": commit,
              "date": datetime.date.today().isoformat(), "counts": counts}

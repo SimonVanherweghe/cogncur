@@ -139,6 +139,11 @@ def cmd_prepare(version, tag=True):
         if (PUBLIC / "data" / name).exists():
             shutil.copyfile(PUBLIC / "data" / name, dest / "data" / name)
 
+    # this version's stamp ("Versie 1.001 · v1.001 · date" in feedback issues) is its tag
+    build = json.loads((dest / "data" / "build.json").read_text())
+    build["commit"] = slug
+    (dest / "data" / "build.json").write_text(json.dumps(build, ensure_ascii=False, indent=1))
+
     diff = changed(PUBLIC / "versions" / prev["slug"] / "fonts" / "Vtex-Regular.ttf", FONT) if prev else []
     notes, milestone = notes_from_milestone(version)
     rel.append({"version": version, "slug": slug, "date": datetime.date.today().isoformat(), "tag": slug,
