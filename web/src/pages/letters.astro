@@ -1,6 +1,228 @@
 ---
+// Port of tools/schrijven.html: the designer's stroke order per letter, animated.
 import Base from '../layouts/Base.astro';
+import '../styles/animation.css';
 ---
-<Base title="Letters schrijven · Cogncur" current="letters" description="Letters schrijven">
-  <main class="page"><h1>Letters schrijven</h1><p class="hint">Deze pagina wordt nog overgezet.</p></main>
+<Base title="Letters schrijven · Cogncur" current="letters"
+      description="Hoe de pen beweegt in Cogncur: waar je begint, welke kant je op gaat, waar je terugkeert en waar je de pen optilt, letter per letter.">
+  <div class="anim">
+    <div class="main">
+      <header>
+        <h1>Letters schrijven</h1>
+        <p class="lede">Hoe de pen beweegt in Cogncur: waar je begint, welke kant je op gaat, waar je terugkeert over je eigen lijn en waar je de pen optilt. Dit is de schrijfvolgorde zoals de ontwerper ze tekende.</p>
+      </header>
+
+      <div class="stage-wrap fixed" id="sheet">
+        <span class="badge-letter" id="badge"></span>
+        <svg id="stage" role="img" aria-label="Animatie van de letter"></svg>
+      </div>
+
+      <div class="transport">
+        <button class="primary" id="play" type="button">▶ Afspelen</button>
+        <button id="restart" type="button">↺ Opnieuw</button>
+        <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Tijdlijn">
+        <span class="time" id="time">0,0 / 0,0 s</span>
+      </div>
+
+      <section class="picker" aria-label="Letter kiezen">
+        <h2>Kleine letters</h2>
+        <div class="keys" id="keys-lower"></div>
+        <h2>Hoofdletters</h2>
+        <div class="keys" id="keys-upper"></div>
+      </section>
+    </div>
+
+    <aside class="panel">
+      <div class="group">
+        <h2>Lettervorm</h2>
+        <div class="row">
+          <label for="variant">Variant</label>
+          <select id="variant"></select>
+        </div>
+        <label class="check"><input type="checkbox" id="entry" checked> Met aanloop vanaf de schrijflijn</label>
+        <div class="row">
+          <span>Helling</span>
+          <span class="seg" id="slant">
+            <button type="button" data-v="0" aria-pressed="true">0°</button>
+            <button type="button" data-v="7.5" aria-pressed="false">7,5°</button>
+            <button type="button" data-v="15" aria-pressed="false">15°</button>
+          </span>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Tonen</h2>
+        <label class="check"><input type="checkbox" id="show-lines" checked> Schrijflijnen</label>
+        <label class="check"><input type="checkbox" id="show-ghost" checked><span class="swatch" style="background:var(--ghost);border:1px solid var(--rule)"></span> Spoor om over te schrijven</label>
+        <label class="check"><input type="checkbox" id="show-route"><span class="swatch" style="background:var(--route)"></span> Richting en startpunten</label>
+        <label class="check"><input type="checkbox" id="show-turns"><span class="swatch" style="background:var(--turn)"></span> Keerpunten</label>
+        <label class="check"><input type="checkbox" id="show-air" checked><span class="swatch" style="border:2px dashed var(--air)"></span> Pen in de lucht</label>
+      </div>
+
+      <div class="group">
+        <h2>Tempo</h2>
+        <span class="seg" id="speed">
+          <button type="button" data-v="0.5" aria-pressed="false">½×</button>
+          <button type="button" data-v="1" aria-pressed="true">1×</button>
+          <button type="button" data-v="2" aria-pressed="false">2×</button>
+        </span>
+        <label class="check"><input type="checkbox" id="loop"> Herhalen</label>
+      </div>
+
+      <div class="group">
+        <h2>Deze letter</h2>
+        <dl class="stats" id="stats"></dl>
+        <p class="hint">Een doorlopende lijn schrijf je zonder de pen op te tillen. Een keerpunt is een plek waar de pen omdraait en over de eigen lijn terugloopt.</p>
+      </div>
+
+      <div class="group">
+        <h2>Lijn exporteren</h2>
+        <div class="row">
+          <button type="button" id="copy-svg">Kopieer SVG</button>
+          <button type="button" id="copy-json">Kopieer punten</button>
+        </div>
+        <p class="hint">SVG: één pad per doorlopende lijn. Punten: JSON met pen omlaag/omhoog, elke 10 eenheden, voor plotters, robots of vliegroutes.</p>
+        <textarea class="out" id="out" readonly hidden aria-label="Export"></textarea>
+        <p class="status" id="status" aria-live="polite"></p>
+      </div>
+    </aside>
+  </div>
 </Base>
+
+<script>
+  import { asset } from '../lib/url';
+  import { versionText } from '../lib/build';
+  import { onFeedback } from '../lib/feedback';
+  import { svgToCanvas } from '../lib/snapshot';
+  import { createPlayer, segmented } from '../lib/player';
+  import { choiceOf, letterId, parseShapes, pickerKeys, variantsOf, type LetterChoice, type Letters } from '../lib/strokes/letters';
+  import { buildLetterScene, exportLetterJSON, exportLetterSVG, letterStats, renderLetterAt, type LetterScene } from '../lib/strokes/scene';
+
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
+  const svg = document.getElementById('stage') as unknown as SVGSVGElement;
+  const choice: LetterChoice = { base: 'a', alt: '', entry: true };
+  let slant = 0;
+  let letters: Letters = new Map();
+  let scene: LetterScene | null = null;
+
+  const player = createPlayer(
+    { play: $('play') as HTMLButtonElement, restart: $('restart') as HTMLButtonElement, scrub: $<HTMLInputElement>('scrub'), time: $('time') },
+    (t) => { if (scene) renderLetterAt(scene, t); },
+  );
+  const currentId = () => letterId(letters, choice);
+
+  function applyVisibility() {
+    if (!scene) return;
+    const v = (id: string) => ($<HTMLInputElement>(id).checked ? 'visible' : 'hidden');
+    scene.layers.guides.style.visibility = v('show-lines');
+    scene.layers.ghost.style.visibility = v('show-ghost');
+    scene.layers.route.style.visibility = v('show-route');
+    scene.layers.turns.style.visibility = v('show-turns');
+    scene.layers.air.style.display = $<HTMLInputElement>('show-air').checked ? '' : 'none';
+  }
+  function build() {
+    const id = currentId();
+    scene = buildLetterScene(svg, id, letters.get(id)!, slant);
+    $('badge').textContent = id;
+    applyVisibility();
+    $('stats').replaceChildren(...letterStats(scene).flatMap(([k, v]) => {
+      const dt = document.createElement('dt'); dt.textContent = k;
+      const dd = document.createElement('dd'); dd.textContent = String(v);
+      return [dt, dd];
+    }));
+  }
+  function show(autoplay = true) { build(); player.reset(scene!.total, autoplay); }
+
+  function syncControls() {
+    for (const b of document.querySelectorAll<HTMLElement>('.keys button')) b.setAttribute('aria-pressed', String(b.dataset.base === choice.base));
+    const alts = variantsOf(letters, choice.base);
+    const sel = $<HTMLSelectElement>('variant');
+    sel.replaceChildren(...alts.map((a) => Object.assign(document.createElement('option'), { value: a, textContent: a ? `variant ${a.slice(3)}` : 'standaard' })));
+    sel.value = choice.alt;
+    sel.disabled = alts.length < 2;
+    const core = choice.base + (choice.alt ? '-' + choice.alt : '');
+    const hasNoEntry = letters.has(core + '-noentry');
+    const entry = $<HTMLInputElement>('entry');
+    entry.disabled = !hasNoEntry;
+    entry.checked = hasNoEntry ? choice.entry : letters.get(core)!.strokes.some((s) => s.entry);
+  }
+  // the address bar always names the letter shown, so a copied link opens it
+  function updateHash() {
+    try { history.replaceState(null, '', location.pathname + location.search + '#' + currentId()); } catch { /* sandboxed */ }
+  }
+  function readHash(): boolean {
+    let h = '';
+    try { h = decodeURIComponent(location.hash.slice(1)); } catch { /* bad escape */ }
+    const c = choiceOf(letters, h);
+    if (c) Object.assign(choice, c);
+    return !!c;
+  }
+  async function copyOut(text: string, label: string) {
+    const ta = $<HTMLTextAreaElement>('out');
+    ta.hidden = false;
+    ta.value = text;
+    try { await navigator.clipboard.writeText(text); $('status').textContent = `${label} gekopieerd.`; }
+    catch { ta.focus(); ta.select(); $('status').textContent = 'Kopiëren lukte niet automatisch; de tekst is geselecteerd.'; }
+  }
+
+  // ---------- boot
+  try {
+    const res = await fetch(asset('data/cogncur_shapes.svg'));
+    if (!res.ok) throw new Error('data/cogncur_shapes.svg niet gevonden (make web-data).');
+    letters = parseShapes(await res.text());
+
+    const keys = pickerKeys(letters);
+    const key = (b: string) => {
+      const btn = Object.assign(document.createElement('button'), { type: 'button', textContent: b });
+      btn.dataset.base = b;
+      btn.setAttribute('aria-pressed', 'false');
+      btn.addEventListener('click', () => { choice.base = b; choice.alt = ''; syncControls(); updateHash(); show(); });
+      return btn;
+    };
+    $('keys-lower').replaceChildren(...keys.lower.map(key));
+    $('keys-upper').replaceChildren(...keys.upper.map(key));
+
+    readHash();
+    syncControls();
+    updateHash();
+    show();
+
+    $<HTMLSelectElement>('variant').addEventListener('change', (e) => { choice.alt = (e.target as HTMLSelectElement).value; syncControls(); updateHash(); show(); });
+    $('entry').addEventListener('change', (e) => { choice.entry = (e.target as HTMLInputElement).checked; updateHash(); show(); });
+    $('loop').addEventListener('change', (e) => { player.loop = (e.target as HTMLInputElement).checked; });
+    for (const id of ['show-lines', 'show-ghost', 'show-route', 'show-turns', 'show-air']) $(id).addEventListener('change', applyVisibility);
+    // a different slant redraws the same moment
+    segmented($('slant'), (v) => {
+      slant = +v;
+      const t = player.t, playing = player.playing;
+      build();
+      player.reset(scene!.total, false);
+      player.t = Math.min(t, scene!.total);
+      player.draw();
+      if (playing) player.setPlaying(true);
+    });
+    segmented($('speed'), (v) => { player.speed = +v; });
+    $('copy-svg').addEventListener('click', () => scene && copyOut(exportLetterSVG(scene), 'SVG'));
+    $('copy-json').addEventListener('click', () => scene && copyOut(exportLetterJSON(scene), 'Punten'));
+    addEventListener('hashchange', () => { if (readHash()) { syncControls(); show(); } });
+  } catch (e) {
+    const p = document.createElement('p');
+    p.className = 'error';
+    p.textContent = (e as Error).message;
+    $('sheet').replaceChildren(p);
+    console.error(e);
+  }
+
+  // ---------- feedback: the frame on screen (the animation pauses)
+  onFeedback(() => {
+    player.setPlaying(false);
+    const id = currentId();
+    const variant = choice.alt ? `variant ${choice.alt.slice(3)}` : 'standaard';
+    return {
+      template: 'schrijfroute.yml',
+      title: `[Schrijfroute] letter ${choice.base}`,
+      fields: { tekst: `${choice.base} (${variant}${choice.entry ? '' : ', zonder aanloop'}; model: ${id})`, instellingen: `schrijfmodel van de ontwerper, helling ${slant}°` },
+      snapshot: () => svgToCanvas(svg, { caption: `${versionText()} · ${id} · ${$('time').textContent}` }),
+    };
+  });
+</script>
