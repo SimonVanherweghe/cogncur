@@ -14,7 +14,7 @@ TTF    := fonts/ttf/$(FAMILY)-$(STYLE).ttf
 REPORT := tests/report
 
 .DEFAULT_GOAL := all
-.PHONY: all venv upstream sources build test selftest qa corpus serve designer routes web-data web
+.PHONY: all venv upstream sources build test selftest qa corpus serve designer routes web-data web release publish
 
 serve:  ## the website with live reload at http://localhost:4321/cogncur-tex/ (run make web-data first after a font change)
 	npm --prefix web install --no-audit --no-fund
@@ -66,3 +66,16 @@ web-data:  ## fonts + data for the website -> web/public/ (commit them; CI can't
 
 web: web-data  ## build the website (Astro) into web/dist/; GitHub Actions does this on every push
 	npm --prefix web ci && npm --prefix web run build
+
+release:  ## local only: new font version V=1.001 (bump, rebuild, test, archive for the website, commit + tag)
+	@test -n "$(V)" || { echo "Gebruik: make release V=1.001"; exit 1; }
+	$(PY) scripts/release.py check $(V) $(RELEASE_FLAGS)
+	$(PY) scripts/release.py bump $(V)
+	$(MAKE) sources build
+	-$(MAKE) test
+	$(MAKE) web-data
+	$(PY) scripts/release.py prepare $(V)
+
+publish:  ## push main + tag v$(V), GitHub Release with the font, close the milestone (ask first!)
+	@test -n "$(V)" || { echo "Gebruik: make publish V=1.001"; exit 1; }
+	$(PY) scripts/release.py publish $(V)
