@@ -17,15 +17,18 @@ export interface FeedbackRequest {
 
 const MAX_FIELD = 1500;   // keeps the whole URL far below GitHub's limit
 
-/** Public link to this view: the site URL + page path + query + hash (also when testing locally). */
-export function shareLink(): string {
-  const rel = location.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '').replace(/^\//, '');
+/** The public address (GitHub Pages) of a page of this site, also when testing locally. */
+export function publicLink(u: URL = new URL(location.href)): string {
+  const rel = u.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '').replace(/^\//, '');
   try {
-    return new URL(rel + location.search + location.hash, BUILD.siteUrl).href;
+    return new URL(rel + u.search + u.hash, BUILD.siteUrl).href;
   } catch {
-    return location.href;
+    return u.href;
   }
 }
+
+/** Public link to what is on screen now (page + query + hash). */
+export const shareLink = (): string => publicLink();
 
 export function issueUrl(template: Template, title: string, fields: Record<string, string | undefined>): string {
   const q = new URLSearchParams({ template, title });
