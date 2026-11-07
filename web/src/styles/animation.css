@@ -1,5 +1,5 @@
 /* Writing animations (pages/schrijven.astro, pages/letters.astro): sheet + controls on the left,
-   settings panel on the right; one column on phones. From tools/woorden.html and tools/schrijven.html. */
+   settings panel on the right; one column on phones. Formerly tools/woorden.html and tools/schrijven.html. */
 .anim {
   --ghost: #DCE5F2; --tip: #2E9E3E; --route: #C2410C; --turn: #7C3AED; --air: #8A96A8; --warn: #B42318;
   display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 20px;

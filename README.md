@@ -13,13 +13,14 @@ Dit project zet het verbonden schrijfletterfont [Cogncur](https://github.com/syb
 
 ## Gebruik
 
-Vereist: Python 3.13, FontForge (met Python) en HarfBuzz (`hb-shape`, `hb-view`).
+Vereist: Python 3.13, FontForge (met Python) en HarfBuzz (`hb-shape`, `hb-view`). Voor de website: Node 24 met npm.
 
 ```sh
 make venv        # Python-omgeving met de font-tools
 make upstream    # haalt het origineel op (vastgezette versie in upstream.lock)
 make all         # bron maken → bouwen → testen → Google Fonts-controles
-make serve       # vergelijkingstool op http://127.0.0.1:8765/tools/live.html
+make web-data    # lettertype en gegevens voor de website naar web/public/ (daarna committen)
+make serve       # de website lokaal op http://localhost:4321/cogncur-tex/
 make designer    # bestanden voor de ontwerper opnieuw maken (zie hieronder)
 ```
 

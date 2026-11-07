@@ -1,4 +1,4 @@
-/* Pages of the site (index, tekens, verbindingen). Same tokens as tools/live.html. */
+/* Pages of the site (index, tekens, verbindingen). Shared tokens for every page. */
 :root {
   --ui-bg: #EEF2F7; --ui-fg: #1B2433; --ui-muted: #5B6577; --ui-line: #CCD5E1; --ui-panel: #FFFFFF;
   --ui-focus: #1E4FB8; --ui-chip: #E3E9F2;

@@ -14,11 +14,11 @@ TTF    := fonts/ttf/$(FAMILY)-$(STYLE).ttf
 REPORT := tests/report
 
 .DEFAULT_GOAL := all
-.PHONY: all venv upstream sources build test selftest qa corpus serve artifact designer schrijven routes web-data web
+.PHONY: all venv upstream sources build test selftest qa corpus serve designer routes web-data web
 
-serve:  ## live comparison tool at http://127.0.0.1:8765/tools/live.html
-	@echo "Open http://127.0.0.1:8765/tools/live.html  (Ctrl+C to stop)"
-	$(PY) -m http.server 8765 --bind 127.0.0.1
+serve:  ## the website with live reload at http://localhost:4321/cogncur-tex/ (run make web-data first after a font change)
+	npm --prefix web install --no-audit --no-fund
+	npm --prefix web run dev
 
 all: sources build test qa
 
@@ -61,14 +61,8 @@ designer:  ## rebuild + regenerate the designer's SVG/EPS files (docs/ontwerper/
 routes:  ## draft pen routes per glyph -> build/routes.json + tests/report/routes.html (needs sources + build)
 	$(PY) scripts/routes.py
 
-schrijven:  ## package tools/schrijven.html + stripped stroke model for the private artifact (build/schrijven/)
-	$(PY) scripts/build_schrijven.py
-
 web-data:  ## fonts + data for the website -> web/public/ (commit them; CI can't run FontForge)
 	$(PY) scripts/export_web.py
 
 web: web-data  ## build the website (Astro) into web/dist/; GitHub Actions does this on every push
 	npm --prefix web ci && npm --prefix web run build
-
-artifact:  ## package tools/live.html + fonts for the private Claude artifact (build/artifact/)
-	$(PY) scripts/build_artifact.py
