@@ -2,7 +2,7 @@
 
 Dit project zet het verbonden schrijfletterfont [Cogncur](https://github.com/syboor/cogncur) van Liesbeth Flobbe om naar een versie die bij Google Fonts ingediend kan worden. Zo kan het ook gebruikt worden in Google Docs, Google Slides en op websites, zonder installatie.
 
-**Over de naam.** De licentie van het origineel (SIL Open Font License, zie `LICENSE.txt`) reserveert de naam "Cogncur". Een afgeleide versie mag die naam niet dragen zonder toestemming. "Vtex" is daarom voorlopig een werknaam.
+**Over de naam.** De licentie van het origineel (SIL Open Font License, zie `LICENSE.txt`) reserveert de naam "Cogncur". Liesbeth Flobbe, de ontwerper, vindt het goed dat de Google Fonts-versie de naam Cogncur houdt, met een toevoeging voor de varianten. De precieze naam is nog niet gekozen; tot dan is "Vtex" de werknaam.
 
 ## Wat zit erin
 

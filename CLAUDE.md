@@ -30,7 +30,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **`scripts/postprocess_ufo.py`** makes these changes:
   - removes the `[space]` placeholder backtrack from the 4 `msstart*` calt rules (howto step 9). It matches the class by content, because its name (`@ccNN_back_12`) changes between exports.
   - prunes ~6000 references to deleted single-substitution glyphs (FontForge drops them silently; feaLib errors)
-  - sets GF metadata from `scripts/config.py`; the family name `Vtex` is a placeholder
+  - sets GF metadata from `scripts/config.py`; the family name `Vtex` is a placeholder (Liesbeth OK'd keeping "Cogncur" + a suffix per variant on 2026-11-07; the exact name, RFN exception/CLA and credits/license files are still open)
   - applies the small glyph fixes in `fix_glyphs()` (U+00A0, empty U+2010)
   - `clean_outlines()`: RDP-simplifies FontForge stroker glitches, turns straight quadratics into lines and drops 1-unit kinks; open contours (`ccq2s`, `tallestglyph`) are skipped
   - `add_gf_extras()`: meta table, ligature carets, dotted circle

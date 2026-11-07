@@ -30,6 +30,28 @@ IMG = ROOT / "docs" / "img"
 IMG_URL = f"https://github.com/{REPO}/blob/main/docs/img"
 TOOL_URL = "https://claude.ai/artifact/VMeKGZgUarp7qicDM7stXy"  # private artifact (make artifact)
 
+# Footer about the font name. Liesbeth Flobbe OK'd keeping "Cogncur" (2026-11-07); the exact
+# name is not chosen yet. OLD_NAAM_VOETNOTEN are the texts --sync-name replaces in live issues.
+NAAM_VOETNOOT = ("_Werknaam van het lettertype: Vtex. Liesbeth Flobbe, de ontwerper van Cogncur, vindt het goed "
+                 "dat het lettertype de naam Cogncur houdt. De definitieve naam kiezen we later._")
+OLD_NAAM_VOETNOTEN = [
+    '_Werknaam van het lettertype: Vtex. De naam "Cogncur" is voorbehouden aan de oorspronkelijke ontwerper._',
+    '_Werknaam van het nieuwe lettertype: Vtex. De naam "Cogncur" is voorbehouden aan de oorspronkelijke ontwerper._',
+]
+NIEUWS_ISSUE = "stijlen"  # decision id of issue #1
+NIEUWS = """<!-- nieuws:liesbeth -->
+### Nieuws: Liesbeth Flobbe zegt ja
+
+Liesbeth Flobbe, die Cogncur ontwierp, heeft geantwoord. Kort samengevat:
+
+- Ze vindt het goed dat Cogncur naar Google Fonts gaat.
+- Het lettertype mag de naam **Cogncur** houden, met een toevoeging voor de varianten. De precieze naam kiezen we later; tot dan blijft "Vtex" de werknaam.
+- Ze wordt vermeld als ontwerper van het lettertype.
+- Over de extra tekens (ð, þ, ẞ, de nieuwe accenten, …) is ze enthousiast: ze mogen erbij. Hoe die tekens er precies uitzien, beslissen we nog in de issues voor de ontwerper.
+
+Ze heeft zelf geen tijd om mee te werken, dus alle keuzes blijven hier in de issues.
+"""
+
 # Default letterforms: one comment per variant, so a 👍 means exactly one thing.
 # (id, title, description, features, sample) - descriptions follow the designer's documentation.
 FEATURE_OPTIONS = [
@@ -84,7 +106,7 @@ _(Opent de link niet? Vraag Simon om toegang.)_
 
 De gekozen vormen worden de standaardvormen van Vtex. Google doet dat ook bij zijn eigen schoolschrift **Playwrite** (bijvoorbeeld *Playwrite BE VLG* voor Vlaanderen): vaste vormen per land. In Word of LibreOffice kan je de andere vormen nog altijd zelf kiezen.
 
-_Werknaam van het lettertype: Vtex. De naam "Cogncur" is voorbehouden aan de oorspronkelijke ontwerper._
+{NAAM_VOETNOOT}
 """
 
 
@@ -93,7 +115,7 @@ VOTE_DRAFT = [
     ("Aanpassen", "Er moet iets veranderen. Schrijf in een reactie wat, of laat de ontwerper het hertekenen."),
 ]
 
-STYLES_BODY = """<!-- beslissing:stijlen -->
+STYLES_BODY = f"""<!-- beslissing:stijlen -->
 ## Waarover gaat het?
 
 Het originele lettertype Cogncur bestaat in **vijf stijlen**. Op dit moment zetten we alleen **Regular** om voor Google Fonts. Elke extra stijl is extra werk: alle nieuwe tekens en verbindingen moeten ook in die stijl gemaakt en getest worden.
@@ -113,7 +135,7 @@ Hieronder staat **voor elke stijl een aparte reactie** met een voorbeeld.
 - **Edged** heeft een lijn met dik en dun, zoals met een beitelpen.
 - Alle voorbeelden komen uit de *originele* lettertypes van Cogncur.
 
-_Werknaam van het nieuwe lettertype: Vtex. De naam "Cogncur" is voorbehouden aan de oorspronkelijke ontwerper._
+{NAAM_VOETNOOT}
 """
 
 LABELS = [("beslissing", "5319E7", "Open vraag waarover gestemd wordt"),
@@ -352,11 +374,41 @@ def post_files_comments(have):
         print(f"files comment added: #{num}")
 
 
+def sync_name(dry_run):
+    """Swap the old name footer for NAAM_VOETNOOT in live issue bodies (nothing else changes)
+    and post the news comment on issue #1 once."""
+    have = existing_markers()
+    for key, num in sorted(have.items(), key=lambda kv: kv[1]):
+        live = json.loads(gh("issue", "view", str(num), "-R", REPO, "--json", "body"))["body"]
+        new = live
+        for old in OLD_NAAM_VOETNOTEN:
+            new = new.replace(old, NAAM_VOETNOOT)
+        if new == live:
+            continue
+        print(f"{'would edit' if dry_run else 'edited'}: #{num} ({key})")
+        if not dry_run:
+            gh("issue", "edit", str(num), "-R", REPO, "--body-file", "-", input=new)
+    num = str(have[NIEUWS_ISSUE])
+    bodies = gh("issue", "view", num, "-R", REPO, "--json", "comments", "-q", ".comments[].body")
+    if "<!-- nieuws:liesbeth -->" in bodies:
+        print(f"news comment exists: #{num}")
+    elif dry_run:
+        print(f"would comment on #{num}:\n{NIEUWS}")
+    else:
+        gh("issue", "comment", num, "-R", REPO, "--body-file", "-", input=NIEUWS)
+        print(f"news comment added: #{num}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--files", action="store_true", help="add the designer-files comment to designer issues")
+    ap.add_argument("--sync-name", action="store_true",
+                    help="update the name footer in live issue bodies + post the news comment on #1")
     a = ap.parse_args()
+    if a.sync_name:
+        sync_name(a.dry_run)
+        return
     IMG.mkdir(parents=True, exist_ok=True)
     font = Font(FONT)
     for d in DECISIONS:
