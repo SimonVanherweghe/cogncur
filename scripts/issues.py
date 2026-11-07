@@ -141,7 +141,12 @@ Hieronder staat **voor elke stijl een aparte reactie** met een voorbeeld.
 LABELS = [("beslissing", "5319E7", "Open vraag waarover gestemd wordt"),
           ("ontwerper", "D93F0B", "Vooral voor de grafisch ontwerper"),
           ("leerkrachten", "0E8A16", "Vooral voor het team leerkrachten"),
-          ("iedereen", "FBCA04", "Voor ontwerper en leerkrachten")]
+          ("iedereen", "FBCA04", "Voor ontwerper en leerkrachten"),
+          # feedback forms (.github/ISSUE_TEMPLATE/, opened from the website)
+          ("feedback", "1D76DB", "Feedback via de website"),
+          ("teken", "C5DEF5", "Over één teken"),
+          ("verbinding", "BFD4F2", "Over een verbinding tussen letters"),
+          ("schrijfroute", "D4C5F9", "Over de schrijfanimatie")]
 
 DECISIONS = [
     {
@@ -405,7 +410,13 @@ def main():
     ap.add_argument("--files", action="store_true", help="add the designer-files comment to designer issues")
     ap.add_argument("--sync-name", action="store_true",
                     help="update the name footer in live issue bodies + post the news comment on #1")
+    ap.add_argument("--labels", action="store_true", help="only create/update the labels")
     a = ap.parse_args()
+    if a.labels:
+        for name, color, desc in LABELS:
+            gh("label", "create", name, "--color", color, "--description", desc, "-R", REPO, "--force")
+        print(f"{len(LABELS)} labels up to date")
+        return
     if a.sync_name:
         sync_name(a.dry_run)
         return

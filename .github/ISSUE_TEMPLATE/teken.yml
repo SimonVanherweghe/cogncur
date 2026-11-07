@@ -1,0 +1,53 @@
+name: Een teken
+description: Feedback op één letter, cijfer of leesteken
+title: "[Teken] "
+labels: ["feedback", "teken"]
+body:
+  - type: markdown
+    attributes:
+      value: "Bedankt! Open dit formulier liefst via de knop **Feedback** op de website: dan is bijna alles al ingevuld."
+  - type: input
+    id: teken
+    attributes:
+      label: Teken
+      description: Het teken waarover het gaat (met Unicode-code).
+    validations:
+      required: true
+  - type: input
+    id: tekst
+    attributes:
+      label: Voorbeeldwoorden
+      description: Woorden waarin je het teken bekeek.
+  - type: textarea
+    id: afbeelding
+    attributes:
+      label: Afbeelding
+      description: "De knop op de website heeft een afbeelding gekopieerd. Klik in dit vak en plak ze met Cmd+V (Mac) of Ctrl+V (Windows). Je mag ook zelf een foto of schets toevoegen."
+      placeholder: "Plak hier de afbeelding"
+  - type: textarea
+    id: wat
+    attributes:
+      label: Wat zie je?
+      description: Wat klopt er niet, of wat valt je op?
+    validations:
+      required: true
+  - type: textarea
+    id: voorstel
+    attributes:
+      label: Voorstel (mag leeg blijven)
+      description: Hoe zou het beter zijn? Een schets of foto van handschrift mag ook.
+  - type: input
+    id: instellingen
+    attributes:
+      label: Instellingen
+      description: Ingevuld door de website. Plak de code in de website om hetzelfde te zien.
+  - type: input
+    id: versie
+    attributes:
+      label: Versie van het lettertype
+      description: Ingevuld door de website.
+  - type: input
+    id: link
+    attributes:
+      label: Link naar dit scherm
+      description: Ingevuld door de website. Opent precies wat jij zag.

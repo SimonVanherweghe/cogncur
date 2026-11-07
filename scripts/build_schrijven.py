@@ -14,8 +14,8 @@ OUT = ROOT / "build/schrijven"
 SVG = "{http://www.w3.org/2000/svg}"
 
 
-def main():
-    OUT.mkdir(parents=True, exist_ok=True)
+def strip_shapes(dest):
+    """Write the stripped stroke model to dest; returns the number of letters."""
     tree = ET.parse(SRC)
     defs = tree.getroot().find(f"{SVG}defs")
     ET.register_namespace("", SVG[1:-1])
@@ -33,7 +33,13 @@ def main():
                 ET.SubElement(sg, f"{SVG}path", dict(p.attrib))
         n += 1
     ET.indent(out, space=" ")
-    ET.ElementTree(out).write(OUT / "cogncur_shapes.svg", encoding="utf-8", xml_declaration=True)
+    ET.ElementTree(out).write(dest, encoding="utf-8", xml_declaration=True)
+    return n
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    n = strip_shapes(OUT / "cogncur_shapes.svg")
     shutil.copyfile(ROOT / "tools/schrijven.html", OUT / "schrijven.html")
     size = (OUT / "cogncur_shapes.svg").stat().st_size
     print(f"{n} letters, cogncur_shapes.svg {size // 1024} KB -> {OUT.relative_to(ROOT)}/")

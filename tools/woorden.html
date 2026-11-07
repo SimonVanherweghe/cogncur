@@ -203,8 +203,8 @@ details > summary { cursor: pointer; color: var(--ui-muted); font-size: .9rem; }
    Coordinates are font units, y up, already slanted like the font. */
 import * as hb from 'https://cdn.jsdelivr.net/npm/harfbuzzjs@1.6.3/dist/index.mjs';
 
-const FONT_URLS = ['Vtex-Regular.ttf', '../fonts/ttf/Vtex-Regular.ttf'];
-const ROUTE_URLS = ['routes.json', '../build/routes.json'];
+const FONT_URLS = ['fonts/Vtex-Regular.ttf', 'Vtex-Regular.ttf', '../fonts/ttf/Vtex-Regular.ttf'];   // site, artifact, make serve
+const ROUTE_URLS = ['data/routes.json', 'routes.json', '../build/routes.json'];
 const NS = 'http://www.w3.org/2000/svg';
 const JOIN = 25;          // pen positions closer than this are the same point (routes.py GAP_TOL is 20)
 const SPEED = 900;        // font units per second at 1×

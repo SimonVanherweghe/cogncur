@@ -1,0 +1,55 @@
+/* Site header + feedback dialog. Loaded on every page, including the tools
+   (live/woorden/schrijven), so everything is prefixed and has its own tokens. */
+:root {
+  --nav-bg: #1B2433; --nav-fg: #E6EBF2; --nav-muted: #9AA6B8; --nav-accent: #8FB3FF;
+  --fb-bg: #FFFFFF; --fb-fg: #1B2433; --fb-muted: #5B6577; --fb-line: #CCD5E1; --fb-primary: #1E4FB8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --nav-bg: #0B1118; --fb-bg: #1A2431; --fb-fg: #E6EBF2; --fb-muted: #9AA6B8; --fb-line: #2C3A4C; --fb-primary: #8FB3FF; }
+}
+:root[data-theme="dark"] { --nav-bg: #0B1118; --fb-bg: #1A2431; --fb-fg: #E6EBF2; --fb-muted: #9AA6B8; --fb-line: #2C3A4C; --fb-primary: #8FB3FF; }
+
+.site-nav {
+  background: var(--nav-bg); color: var(--nav-fg);
+  font: 15px/1.4 "Atkinson Hyperlegible", system-ui, sans-serif;
+  padding: 0 max(16px, env(safe-area-inset-left, 0px));
+}
+.site-nav .in { max-width: 1600px; margin: 0 auto; display: flex; align-items: center; gap: 4px 18px; flex-wrap: wrap; min-height: 52px; }
+.site-nav .brand { font-weight: 700; color: var(--nav-fg); text-decoration: none; margin-right: 8px; white-space: nowrap; }
+.site-nav .brand small { color: var(--nav-muted); font-weight: 400; margin-left: 6px; }
+.site-nav ul { display: flex; flex-wrap: wrap; gap: 2px; list-style: none; margin: 0; padding: 0; flex: 1; }
+.site-nav ul a { display: block; padding: 14px 10px; color: var(--nav-muted); text-decoration: none; border-bottom: 3px solid transparent; }
+.site-nav ul a:hover { color: var(--nav-fg); }
+.site-nav ul a[aria-current="page"] { color: var(--nav-fg); border-bottom-color: var(--nav-accent); }
+.site-nav .fb-btn {
+  font: inherit; font-weight: 700; cursor: pointer; border: 0; border-radius: 999px;
+  background: var(--nav-accent); color: #0B1118; padding: 7px 16px; white-space: nowrap;
+}
+.site-nav .fb-btn:focus-visible, .site-nav a:focus-visible { outline: 3px solid var(--nav-fg); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .site-nav .in { padding: 8px 0; }
+  .site-nav ul { order: 3; flex-basis: 100%; overflow-x: auto; flex-wrap: nowrap; }
+  .site-nav ul a { padding: 8px 10px; }
+  .site-nav .fb-btn { margin-left: auto; }
+}
+
+.fb-dialog {
+  max-width: min(620px, calc(100vw - 32px)); width: 100%; border: 1px solid var(--fb-line); border-radius: 14px;
+  background: var(--fb-bg); color: var(--fb-fg); padding: 22px 24px;
+  font: 16px/1.5 "Atkinson Hyperlegible", system-ui, sans-serif;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+}
+.fb-dialog::backdrop { background: rgba(11, 17, 24, .55); }
+.fb-dialog h2 { margin: 0 0 10px; font-size: 22px; }
+.fb-dialog p { margin: 0 0 12px; }
+.fb-dialog .fb-note { font-size: 14px; color: var(--fb-muted); margin: 14px 0 0; }
+.fb-dialog kbd { font: 13px ui-monospace, Menlo, monospace; border: 1px solid var(--fb-line); border-radius: 4px; padding: 0 4px; }
+.fb-dialog .fb-preview { display: block; max-width: 100%; max-height: 260px; margin: 0 0 12px; border: 1px solid var(--fb-line); border-radius: 6px; object-fit: contain; background: #FAFCFF; }
+.fb-dialog .fb-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.fb-dialog .btn {
+  display: inline-block; text-decoration: none; font-weight: 700; padding: 9px 16px; border-radius: 8px;
+  border: 1px solid var(--fb-line); color: var(--fb-fg); background: transparent;
+}
+.fb-dialog .btn.primary { background: var(--fb-primary); border-color: var(--fb-primary); color: var(--fb-bg); }
+.fb-dialog .fb-close-form { float: right; margin: -8px -10px 0 0; }
+.fb-dialog .fb-close { font-size: 26px; line-height: 1; border: 0; background: none; color: var(--fb-muted); cursor: pointer; padding: 4px 8px; }

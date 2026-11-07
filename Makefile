@@ -14,7 +14,7 @@ TTF    := fonts/ttf/$(FAMILY)-$(STYLE).ttf
 REPORT := tests/report
 
 .DEFAULT_GOAL := all
-.PHONY: all venv upstream sources build test selftest qa corpus serve artifact designer schrijven routes
+.PHONY: all venv upstream sources build test selftest qa corpus serve artifact designer schrijven routes site
 
 serve:  ## live comparison tool at http://127.0.0.1:8765/tools/live.html
 	@echo "Open http://127.0.0.1:8765/tools/live.html  (Ctrl+C to stop)"
@@ -63,6 +63,9 @@ routes:  ## draft pen routes per glyph -> build/routes.json + tests/report/route
 
 schrijven:  ## package tools/schrijven.html + stripped stroke model for the private artifact (build/schrijven/)
 	$(PY) scripts/build_schrijven.py
+
+site:  ## static website in docs/ (GitHub Pages); open http://127.0.0.1:8765/docs/ via make serve; then commit + push docs/
+	$(PY) scripts/build_site.py
 
 artifact:  ## package tools/live.html + fonts for the private Claude artifact (build/artifact/)
 	$(PY) scripts/build_artifact.py

@@ -1,0 +1,47 @@
+name: Een schrijfroute
+description: Feedback op de animatie (volgorde, richting, startpunt van de pen)
+title: "[Schrijfroute] "
+labels: ["feedback", "schrijfroute"]
+body:
+  - type: markdown
+    attributes:
+      value: "De schrijfroutes zijn automatisch berekend en nog een eerste versie. Bedankt om mee te kijken!"
+  - type: input
+    id: tekst
+    attributes:
+      label: Letter of woord
+    validations:
+      required: true
+  - type: textarea
+    id: afbeelding
+    attributes:
+      label: Afbeelding
+      description: "De knop op de website heeft een afbeelding gekopieerd. Klik in dit vak en plak ze met Cmd+V (Mac) of Ctrl+V (Windows). Je mag ook zelf een foto of schets toevoegen."
+      placeholder: "Plak hier de afbeelding"
+  - type: textarea
+    id: wat
+    attributes:
+      label: Wat zie je?
+      description: Wat klopt er niet, of wat valt je op?
+    validations:
+      required: true
+  - type: textarea
+    id: voorstel
+    attributes:
+      label: Voorstel (mag leeg blijven)
+      description: Hoe zou het beter zijn? Een schets of foto van handschrift mag ook.
+  - type: input
+    id: instellingen
+    attributes:
+      label: Instellingen
+      description: Ingevuld door de website. Plak de code in de website om hetzelfde te zien.
+  - type: input
+    id: versie
+    attributes:
+      label: Versie van het lettertype
+      description: Ingevuld door de website.
+  - type: input
+    id: link
+    attributes:
+      label: Link naar dit scherm
+      description: Ingevuld door de website. Opent precies wat jij zag.
