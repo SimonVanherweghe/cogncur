@@ -1,6 +1,235 @@
 ---
+// Port of tools/woorden.html: typed text animated as one pen line, connectors included.
 import Base from '../layouts/Base.astro';
+import '../styles/animation.css';
+import { STYLISTIC } from '../lib/features';
+
+const EXAMPLES = ['hond', 'minimum', 'kiwi', 'café', 'Brugge', 'vliegtuig', 'ijsje', 'Ève à Noël'];
 ---
-<Base title="Woorden schrijven · Cogncur" current="schrijven" description="Woorden schrijven">
-  <main class="page"><h1>Woorden schrijven</h1><p class="hint">Deze pagina wordt nog overgezet.</p></main>
+<Base title="Woorden schrijven · Cogncur" current="schrijven"
+      description="Typ een woord en zie hoe je het in één beweging schrijft in Cogncur: letters, verbindingen, waar de pen terugloopt en waar je hem optilt.">
+  <div class="anim">
+    <div class="main">
+      <header>
+        <h1>Woorden schrijven</h1>
+        <p class="lede">Typ een woord en zie hoe je het in één beweging schrijft: letters én verbindingen, waar de pen terugloopt over de eigen lijn en waar je hem optilt.</p>
+      </header>
+
+      <div class="input-row">
+        <textarea id="text" aria-label="Tekst" spellcheck="false">hond</textarea>
+      </div>
+      <div class="examples" aria-label="Voorbeelden">
+        {EXAMPLES.map((w) => <button type="button" data-example={w}>{w}</button>)}
+      </div>
+
+      <div class="stage-wrap" id="sheet">
+        <svg id="stage" role="img" aria-label="Animatie van de schrijfroute"></svg>
+      </div>
+
+      <div class="transport">
+        <button class="primary" id="play" type="button">▶ Afspelen</button>
+        <button id="restart" type="button">↺ Opnieuw</button>
+        <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Tijdlijn">
+        <span class="time" id="time">0,0 / 0,0 s</span>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="group">
+        <h2>Puntjes, streepjes en accenten</h2>
+        <span class="seg" id="extras">
+          <button type="button" data-v="word" aria-pressed="true">na het woord</button>
+          <button type="button" data-v="letter" aria-pressed="false">na elke letter</button>
+        </span>
+        <p class="hint">Wat los van de lijn staat (het puntje op de i, accenten, dwarsstreepjes) schrijf je pas als het woord af is, of meteen bij de letter.</p>
+      </div>
+
+      <div class="group">
+        <h2>Lettervorm</h2>
+        <details>
+          <summary>Stilistische varianten (<span id="feat-count">0</span> aan)</summary>
+          <div class="feats">
+            {STYLISTIC.map((f) => (
+              <label class="check"><input type="checkbox" value={f.tag}><span>{f.name} <code>{f.tag}</code></span></label>
+            ))}
+          </div>
+        </details>
+      </div>
+
+      <div class="group">
+        <h2>Tonen</h2>
+        <label class="check"><input type="checkbox" id="show-lines" checked> Schrijflijnen</label>
+        <label class="check"><input type="checkbox" id="show-ghost" checked><span class="swatch" style="background:var(--ghost);border:1px solid var(--rule)"></span> Spoor om over te schrijven</label>
+        <label class="check"><input type="checkbox" id="show-route"><span class="swatch" style="background:var(--route)"></span> Richting en startpunten</label>
+        <label class="check"><input type="checkbox" id="show-turns"><span class="swatch" style="background:var(--turn)"></span> Keerpunten</label>
+        <label class="check"><input type="checkbox" id="show-air" checked><span class="swatch" style="border:2px dashed var(--air)"></span> Pen in de lucht</label>
+        <label class="check"><input type="checkbox" id="show-names"> Glyphnamen (controle)</label>
+      </div>
+
+      <div class="group">
+        <h2>Tempo</h2>
+        <span class="seg" id="speed">
+          <button type="button" data-v="0.5" aria-pressed="false">½×</button>
+          <button type="button" data-v="1" aria-pressed="true">1×</button>
+          <button type="button" data-v="2" aria-pressed="false">2×</button>
+        </span>
+        <label class="check"><input type="checkbox" id="loop"> Herhalen</label>
+      </div>
+
+      <div class="group">
+        <h2>Deze tekst</h2>
+        <dl class="stats" id="stats"></dl>
+        <ul class="warnings" id="warnings"></ul>
+      </div>
+
+      <div class="group">
+        <h2>Lijn exporteren</h2>
+        <div class="row">
+          <button type="button" id="copy-svg">Kopieer SVG</button>
+          <button type="button" id="copy-json">Kopieer punten</button>
+        </div>
+        <p class="hint">SVG: één pad per doorlopende lijn, plus de puntjes. Punten: JSON met pen omlaag/omhoog, elke 10 eenheden.</p>
+        <textarea class="out" id="out" readonly hidden aria-label="Export"></textarea>
+        <p class="status" id="status" aria-live="polite"></p>
+      </div>
+    </aside>
+  </div>
 </Base>
+
+<script>
+  import { loadFont } from '../lib/font';
+  import { asset } from '../lib/url';
+  import { defaults, encode } from '../lib/features';
+  import { versionText } from '../lib/build';
+  import { onFeedback } from '../lib/feedback';
+  import { svgToCanvas } from '../lib/snapshot';
+  import { createPlayer, segmented } from '../lib/player';
+  import { buildScene, exportPoints, exportSVG, renderAt, type Scene } from '../lib/routes/scene';
+  import type { Extras, RoutesFile } from '../lib/routes/plan';
+
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
+  const svg = document.getElementById('stage') as unknown as SVGSVGElement;
+  const textBox = $<HTMLTextAreaElement>('text');
+  const feats = [...document.querySelectorAll<HTMLInputElement>('.feats input')];
+  const state = { text: 'hond', extras: 'word' as Extras, feats: new Set<string>() };
+  let scene: Scene | null = null;
+
+  // hash: the text, then ~ssXX per feature, e.g. #hond~ss03~ss08 (same as the old tool)
+  function updateHash() {
+    const h = '#' + encodeURIComponent(state.text) + [...state.feats].sort().map((f) => '~' + f).join('');
+    try { history.replaceState(null, '', location.pathname + location.search + h); } catch { /* sandboxed */ }
+  }
+  function readHash() {
+    const h = location.hash.slice(1);
+    if (!h) return;
+    const parts = h.split('~');
+    try { state.text = decodeURIComponent(parts[0]) || state.text; } catch { /* keep */ }
+    state.feats = new Set(parts.slice(1).filter((p) => /^ss\d\d$/.test(p)));
+  }
+  function syncControls() {
+    textBox.value = state.text;
+    for (const cb of feats) cb.checked = state.feats.has(cb.value);
+    $('feat-count').textContent = String(state.feats.size);
+  }
+
+  const player = createPlayer(
+    { play: $('play') as HTMLButtonElement, restart: $('restart') as HTMLButtonElement, scrub: $<HTMLInputElement>('scrub'), time: $('time') },
+    (t) => { if (scene) renderAt(scene, t); },
+  );
+
+  function applyVisibility() {
+    if (!scene) return;
+    const v = (id: string) => ($<HTMLInputElement>(id).checked ? 'visible' : 'hidden');
+    scene.layers.guides.style.visibility = v('show-lines');
+    scene.layers.ghost.style.visibility = v('show-ghost');
+    scene.layers.route.style.visibility = v('show-route');
+    scene.layers.turns.style.visibility = v('show-turns');
+    scene.layers.names.style.visibility = v('show-names');
+    scene.layers.air.style.display = $<HTMLInputElement>('show-air').checked ? '' : 'none';
+  }
+  function renderStats(s: Scene) {
+    const n = (v: number) => Math.round(v).toLocaleString('nl-BE');
+    const rows: [string, string | number][] = [
+      ['Doorlopende lijnen', s.stats.strokes],
+      ['Pen optillen', s.stats.lifts],
+      ['Puntjes', s.stats.dots],
+      ['Keerpunten', s.stats.turns],
+      ['Lengte van de lijn', `${n(s.stats.drawLen)} eenheden`],
+      ['Waarvan teruglopen voor een verbinding', `${n(s.stats.walkLen)} eenheden`],
+    ];
+    $('stats').replaceChildren(...rows.flatMap(([k, v]) => {
+      const dt = document.createElement('dt'); dt.textContent = k;
+      const dd = document.createElement('dd'); dd.textContent = String(v);
+      return [dt, dd];
+    }));
+    $('warnings').replaceChildren(...s.issues.map((t) => { const li = document.createElement('li'); li.textContent = t; return li; }));
+  }
+
+  async function copyOut(text: string, label: string) {
+    const ta = $<HTMLTextAreaElement>('out');
+    ta.hidden = false;
+    ta.value = text;
+    try { await navigator.clipboard.writeText(text); $('status').textContent = `${label} gekopieerd.`; }
+    catch { ta.focus(); ta.select(); $('status').textContent = 'Kopiëren lukte niet automatisch; de tekst is geselecteerd.'; }
+  }
+
+  // ---------- boot
+  try {
+    const [F, R] = await Promise.all([
+      loadFont(),
+      fetch(asset('data/routes.json')).then((r) => { if (!r.ok) throw new Error('data/routes.json niet gevonden (make routes + make web-data).'); return r.json() as Promise<RoutesFile>; }),
+    ]);
+    const show = (autoplay = true) => {
+      scene = buildScene(svg, F, R, state);
+      applyVisibility();
+      renderStats(scene);
+      player.reset(scene.total, autoplay);
+    };
+    (window as unknown as { schrijfroute: unknown }).schrijfroute = { get scene() { return scene; }, state };   // for the console
+
+    readHash();
+    syncControls();
+    updateHash();
+    show();
+
+    let debounce = 0;
+    textBox.addEventListener('input', () => {
+      clearTimeout(debounce);
+      debounce = window.setTimeout(() => { state.text = textBox.value; updateHash(); show(); }, 300);
+    });
+    document.querySelectorAll<HTMLElement>('[data-example]').forEach((b) => b.addEventListener('click', () => {
+      state.text = b.dataset.example!; syncControls(); updateHash(); show();
+    }));
+    for (const cb of feats) cb.addEventListener('change', () => {
+      if (cb.checked) state.feats.add(cb.value); else state.feats.delete(cb.value);
+      syncControls(); updateHash(); show();
+    });
+    $('loop').addEventListener('change', (e) => { player.loop = (e.target as HTMLInputElement).checked; });
+    for (const id of ['show-lines', 'show-ghost', 'show-route', 'show-turns', 'show-air', 'show-names']) $(id).addEventListener('change', applyVisibility);
+    segmented($('extras'), (v) => { state.extras = v as Extras; show(); });
+    segmented($('speed'), (v) => { player.speed = +v; });
+    $('copy-svg').addEventListener('click', () => scene && copyOut(exportSVG(scene, svg, state.text), 'SVG'));
+    $('copy-json').addEventListener('click', () => scene && copyOut(exportPoints(scene, state.text, [...state.feats]), 'Punten'));
+    addEventListener('hashchange', () => { readHash(); syncControls(); show(); });
+  } catch (e) {
+    const p = document.createElement('p');
+    p.className = 'error';
+    p.textContent = (e as Error).message;
+    $('sheet').replaceChildren(p);
+    console.error(e);
+  }
+
+  // ---------- feedback: the frame on screen (the animation pauses)
+  onFeedback(() => {
+    player.setPlaying(false);
+    const fs = defaults();
+    for (const t of state.feats) fs[t] = true;
+    const text = state.text.trim();
+    return {
+      template: 'schrijfroute.yml',
+      title: `[Schrijfroute] ${text.length > 40 ? text.slice(0, 39) + '…' : text}`,
+      fields: { tekst: text, instellingen: encode(fs) },
+      snapshot: () => svgToCanvas(svg, { caption: `${versionText()} · ${encode(fs)} · ${$('time').textContent}` }),
+    };
+  });
+</script>
