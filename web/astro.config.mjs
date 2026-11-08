@@ -1,10 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// GitHub Pages serves the project at https://simonvanherweghe.github.io/cogncur-tex/
+// GitHub Pages serves the project at https://simonvanherweghe.github.io/cogncur/
 export default defineConfig({
   site: 'https://simonvanherweghe.github.io',
-  base: '/cogncur-tex',
+  base: '/cogncur',
   trailingSlash: 'ignore',
   vite: {
     // harfbuzzjs uses top-level await and finds its .wasm via new URL(…, import.meta.url):

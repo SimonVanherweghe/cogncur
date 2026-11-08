@@ -24,7 +24,7 @@ from render_sample import render_lines, render_rows  # noqa: E402
 sys.path.insert(0, str(ROOT / "tests"))
 from compare import Font  # noqa: E402
 
-REPO = "SimonVanherweghe/cogncur-tex"
+REPO = "SimonVanherweghe/cogncur"
 FONT = ROOT / "fonts" / "ttf" / "Vtex-Regular.ttf"
 IMG = ROOT / "docs" / "img"
 IMG_URL = f"https://github.com/{REPO}/blob/main/docs/img"

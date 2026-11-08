@@ -91,7 +91,7 @@ make venv        # Python-omgeving met de font-tools
 make upstream    # haalt het origineel op (vastgezette versie in upstream.lock)
 make all         # bron maken → bouwen → testen → Google Fonts-controles
 make web-data    # lettertype en gegevens voor de website naar web/public/ (daarna committen)
-make serve       # de website lokaal op http://localhost:4321/cogncur-tex/
+make serve       # de website lokaal op http://localhost:4321/cogncur/
 make designer    # bestanden voor de ontwerper opnieuw maken (zie hieronder)
 ```
 

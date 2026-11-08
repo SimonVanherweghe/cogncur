@@ -2,7 +2,7 @@
 final name is chosen (upstream reserves the name "Cogncur")."""
 FAMILY = "Vtex"
 VERSION = (1, 0)
-REPO_URL = "https://github.com/SimonVanherweghe/cogncur-tex"  # TODO: confirm final repo URL
+REPO_URL = "https://github.com/SimonVanherweghe/cogncur"
 COPYRIGHT = f"Copyright 2023 The {FAMILY} Project Authors ({REPO_URL})"
 LICENSE = "This Font Software is licensed under the SIL Open Font License, Version 1.1."
 LICENSE_URL = "https://openfontlicense.org"

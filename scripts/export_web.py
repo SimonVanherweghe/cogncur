@@ -28,8 +28,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 OUT = ROOT / "web" / "public"
-REPO = "SimonVanherweghe/cogncur-tex"
-SITE_URL = "https://simonvanherweghe.github.io/cogncur-tex/"
+REPO = "SimonVanherweghe/cogncur"
+SITE_URL = "https://simonvanherweghe.github.io/cogncur/"
 FONT = ROOT / "fonts" / "ttf" / "Vtex-Regular.ttf"
 REF = ROOT / "upstream" / "fonts" / "cogncur.ttf"
 COMPOSITES = ROOT / "build" / "composites.json"

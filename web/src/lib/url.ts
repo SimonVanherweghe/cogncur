@@ -1,4 +1,4 @@
-// Paths under the site's base (/cogncur-tex/ on GitHub Pages, also in `npm run dev`).
+// Paths under the site's base (/cogncur/ on GitHub Pages, also in `npm run dev`).
 
 const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 

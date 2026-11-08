@@ -16,7 +16,7 @@ REPORT := tests/report
 .DEFAULT_GOAL := all
 .PHONY: all venv upstream sources build test selftest qa corpus serve designer routes web-data web release publish
 
-serve:  ## the website with live reload at http://localhost:4321/cogncur-tex/ (run make web-data first after a font change)
+serve:  ## the website with live reload at http://localhost:4321/cogncur/ (run make web-data first after a font change)
 	npm --prefix web install --no-audit --no-fund
 	npm --prefix web run dev
 

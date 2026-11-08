@@ -174,7 +174,7 @@ def eps_doc(bbox, parts, title):
     return f"""%!PS-Adobe-3.0 EPSF-3.0
 %%BoundingBox: {x0} {y0} {x1} {y1}
 %%Title: {title}
-%%Creator: cogncur-tex scripts/designer_files.py
+%%Creator: cogncur scripts/designer_files.py
 %%EndComments
 {body}
 showpage
