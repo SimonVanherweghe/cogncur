@@ -1,9 +1,9 @@
 {
- "repo": "SimonVanherweghe/cogncur-tex",
- "siteUrl": "https://simonvanherweghe.github.io/cogncur-tex/",
+ "repo": "SimonVanherweghe/cogncur",
+ "siteUrl": "https://simonvanherweghe.github.io/cogncur/",
  "version": "1.000",
- "commit": "02e5918",
- "date": "2026-11-07",
+ "commit": "edd4eaf",
+ "date": "2026-11-08",
  "counts": {
   "origineel": 254,
   "samengesteld": 43,
