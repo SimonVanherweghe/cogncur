@@ -1,4 +1,4 @@
-# Cogncur → Google Fonts (werknaam: Vtex)
+# Cogncur → Google Fonts
 
 *English below the line; [Nederlands](#nederlands) further down.*
 
@@ -9,7 +9,7 @@
 This project prepares the connected handwriting font [Cogncur](https://github.com/syboor/cogncur),
 designed by Liesbeth Flobbe, for submission to Google Fonts. Cogncur is a school cursive used to
 teach handwriting; a Google Fonts version makes it available in Google Docs, Slides and on the web
-without installing anything. "Vtex" is a placeholder family name until the final name is chosen.
+without installing anything.
 
 **What it contains**
 
