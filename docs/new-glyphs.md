@@ -29,3 +29,30 @@ connectors.
 
 To move an accent, add a line to `sources/anchors.yaml`, e.g. `l.caronvert: [540, 1330]`.
 Coordinates are unslanted font units, like the designer's anchors.
+
+## Checklist: the designer's own principles
+
+Her documentation, [Typeface Features](https://cogncur.com/documentation/typeface-features)
+(also in `upstream/documentation/typeface-features.html`), describes the rules her letters follow.
+`make principles` measures the new letters against them, on the centre lines, and compares every
+number with her own letters (report: `tests/report/principles.html`). The results below are
+measurements, not decisions: whether a new letter should follow a rule is for the designer.
+
+| Principle (her documentation) | How it is measured | ð | þ | Þ | ẞ |
+|---|---|---|---|---|---|
+| Straight downstrokes lean 7.5° and are parallel ("Loops and sticks", "Implied slant") | slant of every straight run ≥ 250 units | ✅ 7.50° up to y 728; above that the stem bends left (new) | ✅ 7.50° | ✅ her P stem | ✅ her B stem |
+| Tall loops (b h k l) cross themselves exactly on the waist line | crossings in shaped text, because the upstroke belongs to the connector (`ub` crosses at y 648) | – | ❓ **no loop**: þ joins like p (`ccni`), so the ascender is a stick with b's hook on top | – | – |
+| d and p have a stick, not a loop | – | ✅ like d | ❓ follows p (stick); a loop would be b-like | – | – |
+| Arches and counters branch out/in halfway up the x-height | where the line leaves or joins the stem (her p 0.55, d 0.45) | ✅ 0.45, same as d | ✅ 0.55, same as p | – | – |
+| Teardrop counters start on the waist line; c, e, o share one ellipse (ratio 1.618) | origin check: the bowl is hers, unchanged | ✅ d's bowl | ✅ p's bowl | – | – |
+| Capitals look like print capitals and are initials, joined to the next lowercase letter (P and B with a pen lift) | joins copied from the base letter (`tests/check_composites.py`) | – | – | ✅ like P | ✅ like B |
+| Width based on the golden rectangle | advance width | = d (786) | = p (766) | = P (563) | = B (805) |
+
+What is new, and so not covered by any of her shapes (red in the report):
+
+- **ð**: the top of the stem bending left (483 units of line) and the slash, which crosses the stem at y 1036.
+- **þ**: nothing; it is b's ascender + p. The open question is the loop above.
+- **Þ**: nothing; it is her P with the bowl moved down 300 units.
+- **ẞ**: the top arch, the diagonal and the curve into the lower bowl (1516 units); the stem and the lower bowl are B's.
+
+Her documentation has no rule for ð's bent stem and slash, or for the top of ẞ. Those are design choices for her.

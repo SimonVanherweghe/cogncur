@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 @agents.md
 
 ## Commands
+
 - `make venv` – create `.venv` (Python 3.13) from `requirements.txt`. FontForge (Homebrew, own Python) and HarfBuzz (`hb-shape`/`hb-view`) are also required. `requirements.txt` is a full `pip freeze` lock on purpose: an unpinned install backtracks to an unbuildable fontbakery 0.8.x (the `[googlefonts]` extra no longer exists). Regenerate it with `.venv/bin/pip freeze`.
 - `make upstream` – clone syboor/cogncur into `upstream/` at the commit in `upstream.lock`.
 - `make all` – `sources` → `build` → `test` → `qa`.
@@ -18,7 +19,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - Connectors own the upstroke of l/b/h and the loop of e, while upstream's model puts them in the letter, so `fit_run` trims/turns the main run between the real entry and exit points from shaping.
   - Entry strokes: upstream's n draws "down the stem" in its entry stroke, so entry steps are only dropped when the letter draws that piece in the same direction, or dropping keeps the line unbroken.
   - Glyphs with several exits (B 8, D 9) are not baked in; `entries`/`exits` are stored and the word page walks to the right one.
-- `make web` / `make serve` – the website, an Astro 7 + TypeScript project in `web/` (npm, Node 24). `make serve` = `npm --prefix web run dev` → http://localhost:4321/cogncur/ with live reload. `make web-data` (`scripts/export_web.py`) writes what the font pipeline makes into `web/public/` and **must be committed** (CI can't run FontForge): `fonts/` (both fonts + OFL), `data/tekens.json` (every character with origin and decision issue), `build.json` (version, commit, date), `composites.json`, `routes.json`, `cogncur_shapes.svg` (upstream's stroke model, stripped). Run it after any glyph change (after `make routes` if routes changed). GitHub Actions builds and publishes the site (`.github/workflows/pages.yml`, skipped while the repo is private).
+- `make principles` – (needs `sources` + `build`) `scripts/check_principles.py` measures the new letters (ð þ Þ ẞ) against the designer's documented principles (`upstream/documentation/typeface-features.html`): slant of straight downstrokes, loop crossings in shaped text (the upstroke of b/h/l is in the connector), branch heights, and which stretches are hers vs new. Every number is also taken on her letters. Informational only → `tests/report/principles.{md,html}`; the checklist is in `docs/new-glyphs.md`.
+- `make web` / `make serve` – the website, an Astro 7 + TypeScript project in `web/` (npm, Node 24). `make serve` = `npm --prefix web run dev` → <http://localhost:4321/cogncur/> with live reload. `make web-data` (`scripts/export_web.py`) writes what the font pipeline makes into `web/public/` and **must be committed** (CI can't run FontForge): `fonts/` (both fonts + OFL), `data/tekens.json` (every character with origin and decision issue), `build.json` (version, commit, date), `composites.json`, `routes.json`, `cogncur_shapes.svg` (upstream's stroke model, stripped). Run it after any glyph change (after `make routes` if routes changed). GitHub Actions builds and publishes the site (`.github/workflows/pages.yml`, skipped while the repo is private).
   - Pages (`web/src/pages/`): index, tekens (grid rendered at build time from tekens.json), verbindingen (pair table), proberen (original vs new, feature table, config codes `cogncur: ss03 ss08 -kern` / link form `#cogncur-ss03-ss08-nokern`, text via `?tekst=`), schrijven (word animation, hash `#hond~ss03`), letters (designer's stroke order per letter, hash `#g`, `#a-noentry`, `#k-alt1`). Layout + header: `layouts/Base.astro`, which also declares the CSS fonts `Cogncur` (ours) and `Cogncur Origineel` (upstream) with the same metric overrides so baselines align.
   - Code (`web/src/lib/`): `features.ts` (the one FEATURES list + config codes), `font.ts` (harfbuzzjs shaping, glyph paths), `sheet.ts` (writing lines on canvas), `feedback.ts`, `snapshot.ts` (SVG → PNG), `player.ts` (animation playback). `routes/` is the word animation: `plan.ts` chains the glyph routes from routes.json and, where a route does not end at the next connector, takes the shortest walk over the glyph's centre lines (Dijkstra), else lifts the pen; dots/accents/crossbars "na het woord" (default) or "na elke letter". `strokes/` is the letter animation. `window.schrijfroute.scene` exposes the word plan for debugging.
   - Tests: `npm --prefix web test` (vitest: config codes, geometry, route planning, motion). `npm run build` runs `astro check` first (TS strict). The ports were checked against the old tools: identical plotter exports ("Kopieer punten") for 8 words and 16 letters.
@@ -32,6 +34,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - To test a single font against the reference: `.venv/bin/python tests/compare.py upstream/fonts/cogncur.ttf <font.ttf> --out <dir>`
 
 ## Pipeline (why it looks like this)
+
 - **Source of truth**: `upstream/sources/Cogncur.sfd` (FontForge), which is never modified. Glyphs are drawn as centre lines on the `Skeleton`/`Extra` layers. The style layers (`GRegOutl` = Regular, `GOutline` = Vertical, `GSlOutl` = Oblique, `GEdged`, `GRegEdged`) are pre-stroked copies stored in the sfd.
 - **`scripts/export_ufo.py`** runs under FontForge's Python and automates the manual build steps from `upstream/sources/howto.txt`. FontForge ignores `generate(layer=…)` for UFO output, so the script copies the style layer into `Fore` itself. It also exports the skew-matched `Skeleton` (centre lines) and `Extra` (dots, commas) layers as separate UFOs; postprocess stores them as UFO layers `skeleton` and `extra` (not built into the font; for a later pen-plotter export and the designer files). They must stay separate: closed centre lines (o, e, rings) can't be told apart from filled shapes by size.
 - **`scripts/postprocess_ufo.py`** makes these changes:
@@ -46,12 +49,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Joins** are the critical part. They come from `calt`: a chaining lookup that calls ~46 multiple-substitution lookups, each splitting a letter into connector + letter (+ exit stroke), keyed on the previous glyph. Glyph names must stay identical to the reference, because the test bank compares them.
 
 ## New glyphs drawn in FontForge (`scripts/new_glyphs_ff.py`)
+
 New marks, bars, ð þ Þ ẞ and − are drawn the way the designer works: centre lines on `Skeleton`, filled shapes (dots, commas) on `Extra`. The style layer is then derived with the `derive-layers.py` recipe (skew + round pen of 68). They are drafts; `docs/new-glyphs.md` lists what each one is derived from.
 
 ## New letters (`scripts/composites.py`)
+
 Accented letters missing upstream are built as components (carrier + the designer's combining mark), positioned on her anchors. Anchors are stored unslanted, so the mark is also shifted by the lift × tan 7.5°.
 
 Every glyph that "carries" the base letter gets an accented copy, and every feature statement mentioning it is duplicated:
+
 - variants via single substitution (`s→s1`)
 - entry-stroke ligatures (`cs*_*` only, never e.g. the Dutch `IJ`). The letter's position inside the ligature is found by ink matching (`scripts/locate.py`), which reproduces all upstream precedents exactly. The width rule (ligature width − letter width) is off by up to 2 units.
 
@@ -66,7 +72,9 @@ Positions are also in `sources/anchors.yaml` (overrides win over designer anchor
 `tests/check_composites.py` requires that every new letter shapes exactly like its base letter, in every context and feature configuration. It also checks accent clearance and writes `tests/report/composites.html`.
 
 ## Test bank (`tests/`)
+
 `tests/compare.py` compares against `upstream/fonts/cogncur.ttf` in four layers:
+
 1. HarfBuzz shaping (glyph names + positions) for every corpus line × every feature configuration (default, each ssXX, tnum, onum, calt-off, kern-off)
 2. connected ink components per word (catches broken joins)
 3. per-glyph raster diff and advance widths
@@ -77,6 +85,7 @@ The corpus is generated by `scripts/make_corpus.py`: all letter pairs and triple
 Runs where the reference itself renders `.notdef` (e.g. `…`, which the original lacks) are skipped, not counted as differences.
 
 ## Gotchas
+
 - FontForge ignores `generate(layer=…)` for UFO output (see export_ufo.py). Its Python is separate (3.14) from `.venv`; run FF scripts with `fontforge -lang=py -script`.
 - macOS make 3.81 ignores `export PATH` for simple commands, so the Makefile calls `.venv/bin/<tool>` explicitly. `gftools builder` needs the venv on PATH, so it is set inline.
 - ufoLib2 points compare **by value**: `list.remove(point)` can delete the wrong point. Use `_remove()` (identity) in postprocess_ufo.py.
@@ -85,6 +94,7 @@ Runs where the reference itself renders `.notdef` (e.g. `…`, which the origina
 - The `make all`/`make test` exit code is currently 1 because of one known, intended flag (see open items).
 
 ## Open technical items (status 2026-11-06; design decisions live in the GitHub issues)
+
 - **ľ + ss01**: under ss01 the entry stroke into l (`csh_l`) comes from the top right and touches the apostrophe-caron (`csh_lcaron`, gap 10 < 40). This is the only failure in `make test`.
 - **Dutch j́** (fontbakery `shape_languages` FAIL): with j + U+0301 at a word end, calt inserts the exit stroke `cej` between j and the mark. The original font behaves identically. A possible fix is a mark anchor on `cej` pointing back over the j; this is not decided yet.
 - **Ģ**: the comma below sits at the foot of G's descender loop and looks odd; turned comma above is the alternative.
@@ -97,9 +107,9 @@ Runs where the reference itself renders `.notdef` (e.g. `…`, which the origina
 - The generated UFO is not committed yet; Google Fonts needs sources in the repo eventually.
 
 ## GitHub (private repo `SimonVanherweghe/cogncur`)
+
 - Decision issues are in Dutch and created by `scripts/issues.py`. Each has a hidden `<!-- beslissing:<id> -->` marker, so re-runs skip existing issues. Each option is a separate comment, and people vote with 👍.
 - Images are rendered by `scripts/render_sample.py` (same shaping/rendering as the test bank, on writing lines) into `docs/img/`. They are linked as `https://github.com/<repo>/blob/main/docs/img/<file>?raw=true`, so **commit and push the images before creating the issue**.
 - Labels: `beslissing`, `ontwerper`, `leerkrachten`, `iedereen`.
 - Issue file names use `slug()` (the id, or `"slug"`): macOS is case-insensitive, so `schets-thorn` and `schets-Thorn` collided (issue #3 showed Þ). Slugs must differ by more than case.
 - **Designer files**: `scripts/designer_files.py` writes `docs/ontwerper/<slug>/` for every `ontwerper` issue (glyphs listed in its `"bestanden"`): per glyph an SVG (unslanted, font units, layers hulplijnen/omtrek/middenlijn/vlakken) and an EPS for FontForge *Import* onto Skeleton, plus `overzicht.svg/.eps` of the sample lines. The EPS paints centre lines with `fill`: FontForge expands `stroke` into outlines on import and has no flag against it, but keeps filled open paths open. `python scripts/issues.py --files` adds one comment per designer issue linking them (marker `<!-- bestanden:<id> -->`); commit and push the files first.
-- The public fork `SimonVanherweghe/vtex-font` only mirrors upstream; leave it alone (forks of public repos can't be private).

@@ -14,7 +14,7 @@ TTF    := fonts/ttf/$(FAMILY)-$(STYLE).ttf
 REPORT := tests/report
 
 .DEFAULT_GOAL := all
-.PHONY: all venv upstream sources build test selftest qa corpus serve designer routes web-data web release publish
+.PHONY: all venv upstream sources build test selftest qa corpus serve designer routes web-data web release publish principles
 
 serve:  ## the website with live reload at http://localhost:4321/cogncur/ (run make web-data first after a font change)
 	npm --prefix web install --no-audit --no-fund
@@ -60,6 +60,9 @@ designer:  ## rebuild + regenerate the designer's SVG/EPS files (docs/ontwerper/
 
 routes:  ## draft pen routes per glyph -> build/routes.json + tests/report/routes.html (needs sources + build)
 	$(PY) scripts/routes.py
+
+principles:  ## measure the new letters against the designer's documented principles -> tests/report/principles.html (needs sources + build)
+	$(PY) scripts/check_principles.py
 
 web-data:  ## fonts + data for the website -> web/public/ (commit them; CI can't run FontForge)
 	$(PY) scripts/export_web.py
