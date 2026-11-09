@@ -25,8 +25,8 @@ const pageData: PageData = { slug: shown, label: info.label, build: buildFor(sho
 // Same vertical metrics for both fonts (UPM 2048, ascent 1768, descent 703), so baselines line up.
 const metrics = 'ascent-override: 86.3281%; descent-override: 34.3262%; line-gap-override: 0%; font-display: block;';
 const fontFaces = `
-@font-face { font-family: "Vtex"; src: url("${base}${assets}fonts/Vtex-Regular.ttf") format("truetype"); ${metrics} }
-@font-face { font-family: "Cogncur"; src: url("${base}fonts/cogncur.ttf") format("truetype"); ${metrics} }`;
+@font-face { font-family: "Cogncur"; src: url("${base}${assets}fonts/Cogncur-Regular.ttf") format("truetype"); ${metrics} }
+@font-face { font-family: "Cogncur Origineel"; src: url("${base}fonts/cogncur.ttf") format("truetype"); ${metrics} }`;
 ---
 <!doctype html>
 <html lang="nl" data-assets={assets} data-version={shown} data-versioned={slug ? '' : undefined}>
@@ -40,7 +40,7 @@ const fontFaces = `
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style is:inline set:html={fontFaces}></style>
-    <link rel="preload" href={`${base}${assets}fonts/Vtex-Regular.ttf`} as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href={`${base}${assets}fonts/Cogncur-Regular.ttf`} as="font" type="font/ttf" crossorigin>
     <slot name="head" />
   </head>
   <body>

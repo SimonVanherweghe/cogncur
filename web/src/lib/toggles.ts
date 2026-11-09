@@ -13,7 +13,7 @@ export function bindToggles(root: HTMLElement, state: FeatureState, onChange: ()
     }
     const code = encode(state);
     root.querySelector('[data-code]')!.textContent = code;
-    root.querySelector('[data-count]')!.textContent = code.replace('vtex: ', '');
+    root.querySelector('[data-count]')!.textContent = code.replace('cogncur: ', '');
   };
   for (const cb of boxes) {
     cb.addEventListener('change', () => { state[cb.dataset.tag!] = cb.checked; sync(); onChange(); });

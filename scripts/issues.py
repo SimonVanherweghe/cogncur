@@ -8,7 +8,7 @@ Each issue carries a hidden marker <!-- beslissing:<id> -->; issues whose
 marker already exists are skipped. Designer issues get one comment linking their
 editable SVG/EPS files (scripts/designer_files.py -> docs/ontwerper/<slug>/),
 marked <!-- bestanden:<id> --> so it is posted only once. Images are rendered from the current build
-(fonts/ttf/Vtex-Regular.ttf) into docs/img/ and must be committed and pushed
+(fonts/ttf/Cogncur-Regular.ttf) into docs/img/ and must be committed and pushed
 before the issue is created (the issue links to them in the repo).
 """
 import argparse
@@ -25,19 +25,14 @@ sys.path.insert(0, str(ROOT / "tests"))
 from compare import Font  # noqa: E402
 
 REPO = "SimonVanherweghe/cogncur"
-FONT = ROOT / "fonts" / "ttf" / "Vtex-Regular.ttf"
+FONT = ROOT / "fonts" / "ttf" / "Cogncur-Regular.ttf"
 IMG = ROOT / "docs" / "img"
 IMG_URL = f"https://github.com/{REPO}/blob/main/docs/img"
 TOOL_URL = "https://claude.ai/artifact/VMeKGZgUarp7qicDM7stXy"  # private artifact (make artifact)
 
-# Footer about the font name. Liesbeth Flobbe OK'd keeping "Cogncur" (2026-11-07); the exact
-# name is not chosen yet. OLD_NAAM_VOETNOTEN are the texts --sync-name replaces in live issues.
-NAAM_VOETNOOT = ("_Werknaam van het lettertype: Vtex. Liesbeth Flobbe, de ontwerper van Cogncur, vindt het goed "
-                 "dat het lettertype de naam Cogncur houdt. De definitieve naam kiezen we later._")
-OLD_NAAM_VOETNOTEN = [
-    '_Werknaam van het lettertype: Vtex. De naam "Cogncur" is voorbehouden aan de oorspronkelijke ontwerper._',
-    '_Werknaam van het nieuwe lettertype: Vtex. De naam "Cogncur" is voorbehouden aan de oorspronkelijke ontwerper._',
-]
+# Footer about the font name: Liesbeth Flobbe OK'd keeping "Cogncur" (2026-11-07).
+NAAM_VOETNOOT = ("_Het lettertype heet Cogncur. Liesbeth Flobbe, de ontwerper van Cogncur, vindt het goed "
+                 "dat het lettertype die naam houdt._")
 NIEUWS_ISSUE = "stijlen"  # decision id of issue #1
 NIEUWS = """<!-- nieuws:liesbeth -->
 ### Nieuws: Liesbeth Flobbe zegt ja
@@ -45,7 +40,7 @@ NIEUWS = """<!-- nieuws:liesbeth -->
 Liesbeth Flobbe, die Cogncur ontwierp, heeft geantwoord. Kort samengevat:
 
 - Ze vindt het goed dat Cogncur naar Google Fonts gaat.
-- Het lettertype mag de naam **Cogncur** houden, met een toevoeging voor de varianten. De precieze naam kiezen we later; tot dan blijft "Vtex" de werknaam.
+- Het lettertype mag de naam **Cogncur** houden, met een toevoeging voor de varianten.
 - Ze wordt vermeld als ontwerper van het lettertype.
 - Over de extra tekens (ð, þ, ẞ, de nieuwe accenten, …) is ze enthousiast: ze mogen erbij. Hoe die tekens er precies uitzien, beslissen we nog in de issues voor de ontwerper.
 
@@ -87,11 +82,11 @@ FEATURES_BODY = f"""<!-- beslissing:standaardvormen -->
 
 In **Google Docs, Google Slides** en op de meeste websites kan je de extra opties van een lettertype (de "stijlvarianten") niet aan- of uitzetten. **Wat standaard aan staat, krijgt iedereen.**
 
-Cogncur heeft veel varianten, bijvoorbeeld een moderne t, een drukletter-r of kortere stokken. Ze staan nu allemaal uit. Welke vormen moeten in Vtex standaard zijn?
+Cogncur heeft veel varianten, bijvoorbeeld een moderne t, een drukletter-r of kortere stokken. Ze staan nu allemaal uit. Welke vormen moeten standaard zijn in de Vtex-variant?
 
 ## Zelf uitproberen
 
-In de **vergelijkingstool** typ je je eigen tekst en zet je varianten aan of uit. Je ziet meteen het resultaat op schrijflijnen. Bovenaan rechts staat je keuze als **code** (bijvoorbeeld `vtex: ss03 ss08 ss09`), met een knop om ze te kopiëren.
+In de **vergelijkingstool** typ je je eigen tekst en zet je varianten aan of uit. Je ziet meteen het resultaat op schrijflijnen. Bovenaan rechts staat je keuze als **code** (bijvoorbeeld `cogncur: ss03 ss08 ss09`), met een knop om ze te kopiëren.
 
 👉 {TOOL_URL}
 _(Opent de link niet? Vraag Simon om toegang.)_
@@ -104,7 +99,7 @@ _(Opent de link niet? Vraag Simon om toegang.)_
 
 ## Wat gebeurt er met het resultaat?
 
-De gekozen vormen worden de standaardvormen van Vtex. Google doet dat ook bij zijn eigen schoolschrift **Playwrite** (bijvoorbeeld *Playwrite BE VLG* voor Vlaanderen): vaste vormen per land. In Word of LibreOffice kan je de andere vormen nog altijd zelf kiezen.
+De gekozen vormen worden de standaardvormen van de Vtex-variant van Cogncur. Google doet dat ook bij zijn eigen schoolschrift **Playwrite** (bijvoorbeeld *Playwrite BE VLG* voor Vlaanderen): vaste vormen per land. In Word of LibreOffice kan je de andere vormen nog altijd zelf kiezen.
 
 {NAAM_VOETNOOT}
 """
@@ -331,7 +326,7 @@ def body(d):
 Hieronder staat **voor elke keuze een aparte reactie**. Geef een 👍 bij de keuze die je wilt.
 Wil je iets aanpassen? Schrijf in een reactie onderaan wat er anders moet. Een schets of foto mag ook.
 
-_Dit is een schets op basis van de vormen en de pen van Cogncur. Niets is al definitief. Werknaam van het lettertype: Vtex._
+_Dit is een schets op basis van de vormen en de pen van Cogncur. Niets is al definitief._
 """
 
 
@@ -380,19 +375,8 @@ def post_files_comments(have):
 
 
 def sync_name(dry_run):
-    """Swap the old name footer for NAAM_VOETNOOT in live issue bodies (nothing else changes)
-    and post the news comment on issue #1 once."""
+    """Post the news comment about the name on issue #1 once."""
     have = existing_markers()
-    for key, num in sorted(have.items(), key=lambda kv: kv[1]):
-        live = json.loads(gh("issue", "view", str(num), "-R", REPO, "--json", "body"))["body"]
-        new = live
-        for old in OLD_NAAM_VOETNOTEN:
-            new = new.replace(old, NAAM_VOETNOOT)
-        if new == live:
-            continue
-        print(f"{'would edit' if dry_run else 'edited'}: #{num} ({key})")
-        if not dry_run:
-            gh("issue", "edit", str(num), "-R", REPO, "--body-file", "-", input=new)
     num = str(have[NIEUWS_ISSUE])
     bodies = gh("issue", "view", num, "-R", REPO, "--json", "comments", "-q", ".comments[].body")
     if "<!-- nieuws:liesbeth -->" in bodies:
@@ -409,7 +393,7 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--files", action="store_true", help="add the designer-files comment to designer issues")
     ap.add_argument("--sync-name", action="store_true",
-                    help="update the name footer in live issue bodies + post the news comment on #1")
+                    help="post the news comment about the name on #1")
     ap.add_argument("--labels", action="store_true", help="only create/update the labels")
     a = ap.parse_args()
     if a.labels:
@@ -442,7 +426,7 @@ def main():
                  input=d.get("body") or body(d)).strip()
         num = url.rsplit("/", 1)[1]
         for oid, title, desc, feats, _sample in d.get("feature_options", []):
-            code = ("`vtex: " + " ".join(feats) + "`") if feats else "`vtex: standaard`"
+            code = ("`cogncur: " + " ".join(feats) + "`") if feats else "`cogncur: standaard`"
             gh("issue", "comment", num, "-R", REPO, "--body-file", "-",
                input=f"### {title}\n\n{desc}\n\nCode: {code}\n\n"
                      f"![{title}]({IMG_URL}/standaard-{oid}.png?raw=true)\n\n👍 = dit wil ik standaard")

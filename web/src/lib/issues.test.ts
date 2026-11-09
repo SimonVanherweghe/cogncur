@@ -24,7 +24,7 @@ _No response_
 
 ### Instellingen
 
-vtex: ss03
+cogncur: ss03
 
 ### Versie van het lettertype
 

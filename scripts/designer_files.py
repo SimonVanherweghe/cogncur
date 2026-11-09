@@ -30,8 +30,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "tests"))
 from compare import Font  # noqa: E402
 
-UFO = ROOT / "sources" / "Vtex-Regular.ufo"
-TTF = ROOT / "fonts" / "ttf" / "Vtex-Regular.ttf"
+UFO = ROOT / "sources" / "Cogncur-Regular.ufo"
+TTF = ROOT / "fonts" / "ttf" / "Cogncur-Regular.ttf"
 OUT = ROOT / "docs" / "ontwerper"
 TAN = math.tan(math.radians(7.5))
 UNSLANT = Transform(1, 0, -TAN, 1, 0, 0)

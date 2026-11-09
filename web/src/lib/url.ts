@@ -2,7 +2,7 @@
 
 const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
-/** URL of a file in public/, e.g. asset('fonts/Vtex-Regular.ttf'). */
+/** URL of a file in public/, e.g. asset('fonts/Cogncur-Regular.ttf'). */
 export const asset = (path: string): string => BASE + path.replace(/^\//, '');
 
 /** URL of a file of the version this page shows (fonts/, data/); see layouts/Base.astro (data-assets). */
@@ -13,7 +13,7 @@ export const versionAsset = (path: string): string =>
 export const page = (name: string, versionSegment?: string): string =>
   BASE + (versionSegment ? `${versionSegment}/` : '') + (name === 'index' ? '' : `${name}/`);
 
-/** Hash as key/value pairs: #teken=ď&code=vtex-ss03 */
+/** Hash as key/value pairs: #teken=ď&code=cogncur-ss03 */
 export const hashParams = (): URLSearchParams => new URLSearchParams(location.hash.slice(1));
 
 /** Replace the hash without a history entry; empty values are left out. */

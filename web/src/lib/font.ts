@@ -1,4 +1,4 @@
-// The font in the browser: registered as the CSS font "Vtex" (for text on the page) and loaded
+// The font in the browser: registered as the CSS font "Cogncur" (for text on the page) and loaded
 // into HarfBuzz (for drawing on canvas/SVG with exactly the shaping of the test bank).
 import * as hb from 'harfbuzzjs';
 import { FEATURES, type FeatureState } from './features';
@@ -17,15 +17,15 @@ export interface LoadedFont {
   svgPath(gid: number): string;
 }
 
-// The CSS fonts "Vtex" and "Cogncur" (the original) are declared in layouts/Base.astro with the
+// The CSS fonts "Cogncur" and "Cogncur Origineel" (the original) are declared in layouts/Base.astro with the
 // same metric overrides, so baselines line up. Here the file is only needed for HarfBuzz.
 
-let vtex: Promise<LoadedFont> | undefined;
+let cogncur: Promise<LoadedFont> | undefined;
 
 /** The new font in HarfBuzz. Loaded once per page (the browser cache shares it with the CSS font). */
 export function loadFont(): Promise<LoadedFont> {
-  vtex ??= (async () => {
-    const res = await fetch(versionAsset('fonts/Vtex-Regular.ttf'));
+  cogncur ??= (async () => {
+    const res = await fetch(versionAsset('fonts/Cogncur-Regular.ttf'));
     if (!res.ok) throw new Error(`Lettertype niet gevonden (${res.status}).`);
     const data = await res.arrayBuffer();
     const font = new hb.Font(new hb.Face(new hb.Blob(data)));
@@ -45,7 +45,7 @@ export function loadFont(): Promise<LoadedFont> {
       },
     };
   })();
-  return vtex;
+  return cogncur;
 }
 
 /** Shape one line. All features are passed explicitly (on or off). */

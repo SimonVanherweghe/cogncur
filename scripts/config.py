@@ -1,6 +1,5 @@
-"""Single place for family-level metadata. FAMILY is a placeholder until the
-final name is chosen (upstream reserves the name "Cogncur")."""
-FAMILY = "Vtex"
+"""Single place for family-level metadata."""
+FAMILY = "Cogncur"
 VERSION = (1, 0)
 REPO_URL = "https://github.com/SimonVanherweghe/cogncur"
 COPYRIGHT = f"Copyright 2023 The {FAMILY} Project Authors ({REPO_URL})"

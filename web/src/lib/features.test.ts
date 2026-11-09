@@ -3,15 +3,15 @@ import { decode, defaults, encode, linkCode } from './features';
 
 describe('config codes', () => {
   it('encodes only what differs from the default', () => {
-    expect(encode(defaults())).toBe('vtex: standaard');
-    expect(linkCode(defaults())).toBe('vtex');
+    expect(encode(defaults())).toBe('cogncur: standaard');
+    expect(linkCode(defaults())).toBe('cogncur');
     const s = { ...defaults(), ss03: true, ss08: true, kern: false };
-    expect(encode(s)).toBe('vtex: -kern ss03 ss08');   // in FEATURES order
-    expect(linkCode(s)).toBe('vtex-nokern-ss03-ss08');
+    expect(encode(s)).toBe('cogncur: -kern ss03 ss08');   // in FEATURES order
+    expect(linkCode(s)).toBe('cogncur-nokern-ss03-ss08');
   });
 
   it('reads the forms shared in the issues (text and link)', () => {
-    for (const code of ['vtex: ss03 ss08 -kern', '#vtex-ss03-ss08-nokern', 'VTEX: SS08, ss03; -KERN']) {
+    for (const code of ['cogncur: ss03 ss08 -kern', '#cogncur-ss03-ss08-nokern', 'COGNCUR: SS08, ss03; -KERN']) {
       const { state, unknown } = decode(code);
       expect(unknown).toEqual([]);
       expect(state).toMatchObject({ ss03: true, ss08: true, kern: false, calt: true, ss01: false });
@@ -27,8 +27,8 @@ describe('config codes', () => {
   });
 
   it('reports unknown tokens instead of failing', () => {
-    expect(decode('vtex: ss03 ss99 hallo').unknown).toEqual(['ss99', 'hallo']);
-    expect(decode('vtex: standaard').state).toEqual(defaults());
+    expect(decode('cogncur: ss03 ss99 hallo').unknown).toEqual(['ss99', 'hallo']);
+    expect(decode('cogncur: standaard').state).toEqual(defaults());
     expect(decode('').state).toEqual(defaults());
   });
 });

@@ -76,7 +76,7 @@ const PRESETS: [string, string][] = [
           <button type="button" id="cfgReset">Alles standaard</button>
         </div>
         <label for="cfgIn" style="display:block;margin-top:10px">Code plakken</label>
-        <input type="text" class="code" id="cfgIn" placeholder="vtex: ss03 ss08" spellcheck="false">
+        <input type="text" class="code" id="cfgIn" placeholder="cogncur: ss03 ss08" spellcheck="false">
         <div class="btns"><button type="button" id="cfgApply">Toepassen</button></div>
         <p class="status" id="cfgStatus" role="status"></p>
         <p class="hint">Plak de code in een reactie op GitHub, zodat anderen precies jouw keuze kunnen bekijken.</p>
@@ -188,10 +188,10 @@ Amsterdam bijzonder (hallo)</textarea>
   }
   const viewValue = () => document.querySelector<HTMLInputElement>('input[name=view]:checked')!.value;
 
-  // A shared link wins over saved settings: #vtex-… for the features, ?tekst=… for the text.
+  // A shared link wins over saved settings: #cogncur-… for the features, ?tekst=… for the text.
   // While ?tekst= is in the address it follows the text, so copying the address bar stays exact.
   restore();
-  if (location.hash.toLowerCase().startsWith('#vtex')) Object.assign(state, decode(location.hash).state);
+  if (location.hash.toLowerCase().startsWith('#cogncur')) Object.assign(state, decode(location.hash).state);
   const linkedText = new URLSearchParams(location.search).get('tekst');
   const TEXT_IN_URL = linkedText != null;
   if (TEXT_IN_URL) text.value = linkedText;
@@ -317,7 +317,7 @@ Amsterdam bijzonder (hallo)</textarea>
   $('cfgApply').addEventListener('click', doApply);
   $('cfgIn').addEventListener('keydown', (e) => { if (e.key === 'Enter') doApply(); });
   window.addEventListener('hashchange', () => {
-    if (location.hash.toLowerCase().startsWith('#vtex') && location.hash.slice(1) !== linkCode(state)) {
+    if (location.hash.toLowerCase().startsWith('#cogncur') && location.hash.slice(1) !== linkCode(state)) {
       applyState(decode(location.hash).state);
       render();
     }
@@ -365,8 +365,8 @@ Amsterdam bijzonder (hallo)</textarea>
   .proberen .paper.no-guides .guides { display: none; }
   .proberen .row-label { position: absolute; left: 10px; top: 0; height: 100%; width: calc(var(--margin-x) - 18px); display: flex; align-items: center; justify-content: flex-end; font-size: 13px; font-weight: 700; text-align: right; line-height: 1.2; }
   .proberen .ink { position: absolute; left: calc(var(--margin-x) + 20px); top: 0; font-size: var(--size); line-height: var(--line-h); white-space: pre; font-feature-settings: var(--fea); font-kerning: var(--kerning); font-synthesis: none; }
-  .proberen .ink.orig { font-family: "Cogncur", sans-serif; color: var(--c-orig); opacity: var(--o-orig); }
-  .proberen .ink.new { font-family: "Vtex", sans-serif; color: var(--c-new); opacity: var(--o-new); }
+  .proberen .ink.orig { font-family: "Cogncur Origineel", sans-serif; color: var(--c-orig); opacity: var(--o-orig); }
+  .proberen .ink.new { font-family: "Cogncur", sans-serif; color: var(--c-new); opacity: var(--o-new); }
   .proberen .paper.blend .ink { mix-blend-mode: multiply; }
   .proberen .paper.hide-orig .ink.orig, .proberen .paper.hide-orig .row.only-orig { display: none; }
   .proberen .paper.hide-new .ink.new, .proberen .paper.hide-new .row.only-new { display: none; }
@@ -390,7 +390,7 @@ Amsterdam bijzonder (hallo)</textarea>
   .proberen td.what span { color: var(--ui-muted); font-size: 14px; }
   .proberen td.what em { display: block; font-style: normal; font-size: 13px; color: var(--ui-warn); margin-top: 2px; }
   .proberen td.ex { white-space: nowrap; }
-  .proberen .sample { display: inline-block; font-family: "Vtex", sans-serif; font-size: 30px; line-height: 1.25; color: var(--paper-ink); background: var(--paper); border-radius: 4px; padding: 0 8px; font-synthesis: none; }
+  .proberen .sample { display: inline-block; font-family: "Cogncur", sans-serif; font-size: 30px; line-height: 1.25; color: var(--paper-ink); background: var(--paper); border-radius: 4px; padding: 0 8px; font-synthesis: none; }
   .proberen .sample.after { color: #B42318; }
   .proberen td.ex .arrow { color: var(--ui-muted); margin: 0 6px; }
 

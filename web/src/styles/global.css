@@ -68,7 +68,7 @@ details.feats summary { cursor: pointer; color: var(--ui-muted); font-size: 14px
 .tile {
   position: relative; display: grid; place-items: center; aspect-ratio: 1 / 1.15; padding: 0;
   background: var(--paper); color: var(--paper-ink); border: 1px solid var(--ui-line); border-radius: 8px;
-  font-family: Vtex, var(--font-ui); font-size: 34px; line-height: 1; cursor: pointer; overflow: hidden;
+  font-family: Cogncur, var(--font-ui); font-size: 34px; line-height: 1; cursor: pointer; overflow: hidden;
 }
 .tile:hover { border-color: var(--ui-focus); }
 .tile[aria-pressed="true"] { outline: 3px solid var(--ui-focus); outline-offset: -1px; }
@@ -82,7 +82,7 @@ details.feats summary { cursor: pointer; color: var(--ui-muted); font-size: 14px
 
 /* detail panel */
 .detail h2 { margin: 0; font-size: 22px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
-.detail h2 .big { font-size: 34px; font-family: Vtex, var(--font-ui); }
+.detail h2 .big { font-size: 34px; font-family: Cogncur, var(--font-ui); }
 .detail .meta { color: var(--ui-muted); font-size: 14px; margin: 4px 0 12px; }
 .badge { display: inline-block; font-size: 13px; border-radius: 999px; padding: 1px 10px; color: #fff; }
 .badge.st-origineel { color: var(--ui-panel); }
@@ -95,7 +95,7 @@ details.feats summary { cursor: pointer; color: var(--ui-muted); font-size: 14px
   font: inherit; font-size: 13px; text-align: left; border: 1px solid var(--ui-line); background: var(--paper); color: var(--paper-ink);
   border-radius: 8px; padding: 6px 8px; cursor: pointer;
 }
-.variant .v { display: block; font-family: Vtex; font-size: 30px; line-height: 1.5; white-space: nowrap; overflow: hidden; }
+.variant .v { display: block; font-family: Cogncur; font-size: 30px; line-height: 1.5; white-space: nowrap; overflow: hidden; }
 .variant.on { border-color: var(--ui-focus); box-shadow: 0 0 0 2px var(--ui-focus) inset; }
 .btn-feedback {
   font: inherit; font-weight: 700; width: 100%; margin-top: 14px; padding: 11px 16px; border-radius: 10px; cursor: pointer;
@@ -115,7 +115,7 @@ table.matrix thead th:first-child { left: 0; z-index: 2; }
 table.matrix td { padding: 0; border: 1px solid #E3E9F2; }
 table.matrix td button {
   display: block; width: 62px; height: 46px; padding: 0; border: 0; background: none; cursor: pointer; color: inherit;
-  font-family: Vtex; font-size: 24px; line-height: 46px; white-space: nowrap; overflow: hidden;
+  font-family: Cogncur; font-size: 24px; line-height: 46px; white-space: nowrap; overflow: hidden;
 }
 table.matrix td button:hover { background: #E3E9F2; }
 table.matrix td button[aria-pressed="true"] { background: #CFE0FF; }
@@ -126,7 +126,7 @@ table.matrix td button[aria-pressed="true"] { background: #CFE0FF; }
 .cards a.card:hover { border-color: var(--ui-focus); }
 .cards h3 { margin: 0 0 4px; }
 .cards p { margin: 0; color: var(--ui-muted); font-size: 15px; }
-.hero { font-family: Vtex; font-size: clamp(44px, 9vw, 96px); line-height: 1.6; color: var(--paper-ink); background: var(--paper);
+.hero { font-family: Cogncur; font-size: clamp(44px, 9vw, 96px); line-height: 1.6; color: var(--paper-ink); background: var(--paper);
   border: 1px solid var(--ui-line); border-radius: 12px; padding: 0 24px; overflow: hidden; }
 .steps { padding-left: 1.2em; max-width: 70ch; }
 .steps li { margin-bottom: 6px; }

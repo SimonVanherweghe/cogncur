@@ -254,7 +254,7 @@ const statuses = (Object.keys(STATUS_TEXT) as Status[]).filter((s) => CHARS.some
       ['woorden', current && words !== contextFor(current) ? words : ''],
       ['groep', filter.group === 'all' ? '' : filter.group],
       ['herkomst', filter.status === 'all' ? '' : filter.status],
-      ['code', linkCode(state) === 'vtex' ? '' : linkCode(state)],
+      ['code', linkCode(state) === 'cogncur' ? '' : linkCode(state)],
     ]);
   }
 

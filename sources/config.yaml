@@ -1,7 +1,7 @@
 # gftools builder recipe (https://github.com/googlefonts/gftools/blob/main/docs/gftools-builder/README.md)
 sources:
-  - Vtex-Regular.ufo
-familyName: Vtex
+  - Cogncur-Regular.ufo
+familyName: Cogncur
 buildVariable: false
 buildStatic: true
 buildOTF: false

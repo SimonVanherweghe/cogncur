@@ -36,8 +36,8 @@ from fontTools.svgLib.path import parse_path
 from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parent.parent
-UFO = ROOT / "sources/Vtex-Regular.ufo"
-TTF = ROOT / "fonts/ttf/Vtex-Regular.ttf"
+UFO = ROOT / "sources/Cogncur-Regular.ufo"
+TTF = ROOT / "fonts/ttf/Cogncur-Regular.ttf"
 SHAPES = ROOT / "upstream/webapps/imgen/cogncur_shapes.svg"
 CORPUS = ROOT / "tests/corpus"
 OUT_JSON = ROOT / "build/routes.json"

@@ -33,7 +33,7 @@ REPO = export_web.REPO
 PUBLIC = ROOT / "web" / "public"
 RELEASES = PUBLIC / "data" / "releases.json"
 CONFIG = ROOT / "scripts" / "config.py"
-FONT = ROOT / "fonts" / "ttf" / "Vtex-Regular.ttf"
+FONT = ROOT / "fonts" / "ttf" / "Cogncur-Regular.ttf"
 
 
 def run(*cmd, capture=True):
@@ -134,7 +134,7 @@ def cmd_prepare(version, tag=True):
     # the frozen copy the website shows for this version
     (dest / "fonts").mkdir(parents=True)
     (dest / "data").mkdir()
-    shutil.copyfile(PUBLIC / "fonts" / "Vtex-Regular.ttf", dest / "fonts" / "Vtex-Regular.ttf")
+    shutil.copyfile(PUBLIC / "fonts" / "Cogncur-Regular.ttf", dest / "fonts" / "Cogncur-Regular.ttf")
     for name in ("tekens.json", "composites.json", "routes.json", "build.json"):
         if (PUBLIC / "data" / name).exists():
             shutil.copyfile(PUBLIC / "data" / name, dest / "data" / name)
@@ -144,7 +144,7 @@ def cmd_prepare(version, tag=True):
     build["commit"] = slug
     (dest / "data" / "build.json").write_text(json.dumps(build, ensure_ascii=False, indent=1))
 
-    diff = changed(PUBLIC / "versions" / prev["slug"] / "fonts" / "Vtex-Regular.ttf", FONT) if prev else []
+    diff = changed(PUBLIC / "versions" / prev["slug"] / "fonts" / "Cogncur-Regular.ttf", FONT) if prev else []
     notes, milestone = notes_from_milestone(version)
     rel.append({"version": version, "slug": slug, "date": datetime.date.today().isoformat(), "tag": slug,
                 "milestone": milestone, "notes": notes, "changed": diff, "previous": prev["version"] if prev else None})
@@ -176,8 +176,8 @@ def cmd_publish(version):
         sys.exit(f"no prepared release {version}: run `make release V={version}` first")
     run("git", "push", "origin", "main", capture=False)
     run("git", "push", "origin", slug, capture=False)
-    font = PUBLIC / "versions" / slug / "fonts" / "Vtex-Regular.ttf"
-    asset = ROOT / "build" / f"Vtex-Regular-{version}.ttf"
+    font = PUBLIC / "versions" / slug / "fonts" / "Cogncur-Regular.ttf"
+    asset = ROOT / "build" / f"Cogncur-Regular-{version}.ttf"
     asset.parent.mkdir(exist_ok=True)
     shutil.copyfile(font, asset)
     run("gh", "release", "create", slug, str(asset), "-R", REPO, "--title", f"Versie {version}", "--notes", release_notes(entry))

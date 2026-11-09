@@ -5,7 +5,7 @@
 The website itself is the Astro project in web/; it is built and published by GitHub
 Actions, which can't run FontForge. So everything that comes out of the font pipeline is
 written here and committed:
-  web/public/fonts/   Vtex-Regular.ttf, the original cogncur.ttf, LICENSE.txt (OFL travels with them)
+  web/public/fonts/   Cogncur-Regular.ttf, the original cogncur.ttf, LICENSE.txt (OFL travels with them)
   web/public/data/    tekens.json     every encoded character: group, origin (status)
                       decisions.json  decision id -> title + the characters it is about (scripts/issues.py);
                                       the website links issues to characters with it (web/scripts/fetch-issues.ts)
@@ -30,7 +30,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 OUT = ROOT / "web" / "public"
 REPO = "SimonVanherweghe/cogncur"
 SITE_URL = "https://simonvanherweghe.github.io/cogncur/"
-FONT = ROOT / "fonts" / "ttf" / "Vtex-Regular.ttf"
+FONT = ROOT / "fonts" / "ttf" / "Cogncur-Regular.ttf"
 REF = ROOT / "upstream" / "fonts" / "cogncur.ttf"
 COMPOSITES = ROOT / "build" / "composites.json"
 ROUTES = ROOT / "build" / "routes.json"
@@ -136,7 +136,7 @@ def main():
         shutil.rmtree(OUT / sub, ignore_errors=True)
         (OUT / sub).mkdir(parents=True)
     (OUT / "data" / "releases.json").write_text(releases)   # owned by release.py: keep it
-    shutil.copyfile(FONT, OUT / "fonts" / "Vtex-Regular.ttf")
+    shutil.copyfile(FONT, OUT / "fonts" / "Cogncur-Regular.ttf")
     shutil.copyfile(REF, OUT / "fonts" / "cogncur.ttf")
     shutil.copyfile(ROOT / "LICENSE.txt", OUT / "fonts" / "LICENSE.txt")
     shutil.copyfile(COMPOSITES, OUT / "data" / "composites.json")
@@ -160,7 +160,7 @@ def main():
     if last:
         from fontdiff import changed
         build["changedSince"] = {"version": last["version"],
-                                 "chars": changed(OUT / "versions" / last["slug"] / "fonts" / "Vtex-Regular.ttf", FONT)}
+                                 "chars": changed(OUT / "versions" / last["slug"] / "fonts" / "Cogncur-Regular.ttf", FONT)}
     (OUT / "data" / "tekens.json").write_text(json.dumps({"chars": chars}, ensure_ascii=False, indent=0))
     (OUT / "data" / "decisions.json").write_text(json.dumps(decisions(), ensure_ascii=False, indent=1))
     (OUT / "data" / "build.json").write_text(json.dumps(build, ensure_ascii=False, indent=1))

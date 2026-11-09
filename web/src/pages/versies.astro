@@ -56,7 +56,7 @@ const tekens = (n: number) => `${n} ${n === 1 ? 'teken' : 'tekens'}`;
         )}
         <p>
           <a href={page('tekens', segment(r.slug))}>Bekijk deze versie</a>{' · '}
-          <a href={asset(`versions/${r.slug}/fonts/Vtex-Regular.ttf`)} download={`Vtex-Regular-${r.version}.ttf`}>Download het lettertype</a>{' · '}
+          <a href={asset(`versions/${r.slug}/fonts/Cogncur-Regular.ttf`)} download={`Cogncur-Regular-${r.version}.ttf`}>Download het lettertype</a>{' · '}
           <a href={`${REPO_URL}/releases/tag/${r.tag}`} target="_blank" rel="noopener">Op GitHub</a>
         </p>
       </section>
@@ -70,5 +70,5 @@ const tekens = (n: number) => `${n} ${n === 1 ? 'teken' : 'tekens'}`;
   .release h3 { font-size: 16px; margin: 12px 0 4px; }
   .release .meta { color: var(--ui-muted); margin: 2px 0 8px; font-size: 14px; }
   .badge.latest { background: var(--st-veranderd); font-size: 12px; }
-  .changed-chars { font-family: Vtex, var(--font-ui); font-size: 22px; }
+  .changed-chars { font-family: Cogncur, var(--font-ui); font-size: 22px; }
 </style>

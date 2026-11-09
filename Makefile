@@ -6,7 +6,7 @@ export PATH := $(CURDIR)/$(VENV)/bin:$(PATH)
 
 STYLE  := Regular
 LAYER  := GRegOutl
-FAMILY := Vtex
+FAMILY := Cogncur
 SFD    := upstream/sources/Cogncur.sfd
 REF    := upstream/fonts/cogncur.ttf
 UFO    := sources/$(FAMILY)-$(STYLE).ufo

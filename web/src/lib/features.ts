@@ -1,5 +1,5 @@
 // OpenType features of the font, with the Dutch texts shown on the site, and the
-// shareable config codes: "vtex: ss03 ss08 -kern" (text) and "vtex-ss03-ss08-nokern" (link).
+// shareable config codes: "cogncur: ss03 ss08 -kern" (text) and "cogncur-ss03-ss08-nokern" (link).
 // Texts paraphrase the designer's own documentation (upstream/documentation/customization.html);
 // the example words are hers.
 
@@ -58,16 +58,16 @@ export const defaults = (): FeatureState => Object.fromEntries(FEATURES.map((f) 
 
 const changed = (state: FeatureState) => FEATURES.filter((f) => !!state[f.tag] !== !!f.on);
 
-/** Text form, for issues and comments: "vtex: ss03 ss08 -kern" (only what differs from the default). */
+/** Text form, for issues and comments: "cogncur: ss03 ss08 -kern" (only what differs from the default). */
 export function encode(state: FeatureState): string {
   const toks = changed(state).map((f) => (state[f.tag] ? '' : '-') + f.tag);
-  return 'vtex: ' + (toks.length ? toks.join(' ') : 'standaard');
+  return 'cogncur: ' + (toks.length ? toks.join(' ') : 'standaard');
 }
 
-/** Link form, for URL hashes: "vtex-ss03-ss08-nokern" (artifacts and some chats only pass plain names). */
+/** Link form, for URL hashes: "cogncur-ss03-ss08-nokern" (artifacts and some chats only pass plain names). */
 export function linkCode(state: FeatureState): string {
   const toks = changed(state).map((f) => (state[f.tag] ? '' : 'no') + f.tag);
-  return 'vtex' + (toks.length ? '-' + toks.join('-') : '');
+  return 'cogncur' + (toks.length ? '-' + toks.join('-') : '');
 }
 
 /** Accepts both forms (and "#…", "standaard"). Unknown tokens are returned, not thrown. */
@@ -75,10 +75,10 @@ export function decode(str: string | null | undefined): { state: FeatureState; u
   const state = defaults();
   const unknown: string[] = [];
   const s = (str ?? '').trim().replace(/^#/, '');
-  const toks = /^vtex(-|$)/i.test(s)
-    ? s.slice(4).split('-').filter(Boolean).map((t) => t.toLowerCase())
+  const toks = /^cogncur(-|$)/i.test(s)
+    ? s.slice('cogncur'.length).split('-').filter(Boolean).map((t) => t.toLowerCase())
         .map((t) => (/^no[a-z0-9]{4}$/.test(t) && BY_TAG[t.slice(2)] ? '-' + t.slice(2) : t))
-    : s.replace(/^vtex\s*:?\s*/i, '').split(/[\s,;]+/).filter(Boolean).map((t) => t.toLowerCase());
+    : s.replace(/^cogncur\s*:?\s*/i, '').split(/[\s,;]+/).filter(Boolean).map((t) => t.toLowerCase());
   for (const t of toks) {
     const neg = t.startsWith('-');
     const tag = neg ? t.slice(1) : t;
