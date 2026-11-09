@@ -29,7 +29,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 OUT = ROOT / "web" / "public"
 REPO = "SimonVanherweghe/cogncur"
-SITE_URL = "https://simonvanherweghe.github.io/cogncur/"
+SITE_URL = "https://donebysimon.be/cogncur/"
 FONT = ROOT / "fonts" / "ttf" / "Cogncur-Regular.ttf"
 REF = ROOT / "upstream" / "fonts" / "cogncur.ttf"
 COMPOSITES = ROOT / "build" / "composites.json"

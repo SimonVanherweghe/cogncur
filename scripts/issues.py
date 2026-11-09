@@ -28,7 +28,7 @@ REPO = "SimonVanherweghe/cogncur"
 FONT = ROOT / "fonts" / "ttf" / "Cogncur-Regular.ttf"
 IMG = ROOT / "docs" / "img"
 IMG_URL = f"https://github.com/{REPO}/blob/main/docs/img"
-TOOL_URL = "https://claude.ai/artifact/VMeKGZgUarp7qicDM7stXy"  # private artifact (make artifact)
+TOOL_URL = "https://donebysimon.be/cogncur/proberen/"
 
 # Footer about the font name: Liesbeth Flobbe OK'd keeping "Cogncur" (2026-11-07).
 NAAM_VOETNOOT = ("_Het lettertype heet Cogncur. Liesbeth Flobbe, de ontwerper van Cogncur, vindt het goed "
@@ -89,7 +89,6 @@ Cogncur heeft veel varianten, bijvoorbeeld een moderne t, een drukletter-r of ko
 In de **vergelijkingstool** typ je je eigen tekst en zet je varianten aan of uit. Je ziet meteen het resultaat op schrijflijnen. Bovenaan rechts staat je keuze als **code** (bijvoorbeeld `cogncur: ss03 ss08 ss09`), met een knop om ze te kopiëren.
 
 👉 {TOOL_URL}
-_(Opent de link niet? Vraag Simon om toegang.)_
 
 ## Hoe stemmen?
 

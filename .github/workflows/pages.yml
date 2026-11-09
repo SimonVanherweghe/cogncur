@@ -1,9 +1,9 @@
 # Builds the website (web/, Astro) and publishes it on GitHub Pages:
-# https://simonvanherweghe.github.io/cogncur/
+# https://donebysimon.be/cogncur/
 # Fonts and data come from the font pipeline (make web-data) and are committed in web/public/,
 # because FontForge can't run here. The issues are read here (web/scripts/fetch-issues.ts), and the
 # site is rebuilt whenever an issue changes, so "Al gemeld" stays current.
-# Skipped while the repository is private (Pages needs it public on the free plan); in the
+# Skipped if the repository is private (Pages needs it public on the free plan); in the
 # repository settings, Pages → Source must be "GitHub Actions".
 name: Website
 

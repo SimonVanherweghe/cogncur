@@ -1,9 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// GitHub Pages serves the project at https://simonvanherweghe.github.io/cogncur/
+// GitHub Pages serves the project at https://donebysimon.be/cogncur/ (the account's custom domain;
+// simonvanherweghe.github.io/cogncur/ redirects there)
 export default defineConfig({
-  site: 'https://simonvanherweghe.github.io',
+  site: 'https://donebysimon.be',
   base: '/cogncur',
   trailingSlash: 'ignore',
   vite: {

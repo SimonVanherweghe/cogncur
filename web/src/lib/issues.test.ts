@@ -32,7 +32,7 @@ versie 1.000 · 386212f · 2026-11-07
 
 ### Link naar dit scherm
 
-https://simonvanherweghe.github.io/cogncur/tekens/#teken=%C4%8F`;
+https://donebysimon.be/cogncur/tekens/#teken=%C4%8F`;
 
 const issue = (over: Partial<ApiIssue>): ApiIssue => ({
   number: 1, title: '', state: 'open', html_url: 'https://github.com/x/y/issues/1', body: '', labels: [], ...over,
