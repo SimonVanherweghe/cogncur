@@ -38,7 +38,7 @@ export const FEATURES: Feature[] = [
   { tag: 'ss08', group: 'lower', name: 'Moderne t', desc: 'De bekende drukletter-t. Standaard volgt de t de Duitse en Nederlandse traditie, zonder penlift.', ex: 'toot' },
   { tag: 'ss09', group: 'lower', name: 'Moderne t met rechte verbinding', desc: 'Rechte verbinding naar de moderne t, zoals veel Nederlandse methodes.', warn: 'Werkt alleen samen met ss08.', needs: ['ss08'], ex: 'toot' },
   { tag: 'ss11', group: 'lower', name: 'r en z beginnen met een hoek', desc: 'r en z (en Z) beginnen met een hoek in plaats van een boog tegen de middellijn.', ex: 'rz Z' },
-  { tag: 'ss12', group: 'lower', name: 'Ronde verbindingen (onderbogen)', desc: 'Rechte stukjes in verbindingen worden bogen.', warn: 'De ontwerper raadt dit af.', ex: 'impunity' },
+  { tag: 'ss12', group: 'lower', name: 'Ronde verbindingen (onderbogen)', desc: 'Rechte stukjes in verbindingen worden bogen.', warn: 'De documentatie van het originele Cogncur raadt dit af.', ex: 'impunity' },
   { tag: 'ss13', group: 'lower', name: 'y begint met een hoek', desc: 'y begint met een hoek, zoals i; geldt ook voor de ij.', ex: 'yummy' },
   { tag: 'ss14', group: 'lower', name: 'w begint met een boog', desc: 'w begint met een boog, zoals v.', ex: 'wow' },
   { tag: 'ss15', group: 'lower', name: 'p begint met een boog', desc: 'p begint met een boog, zoals n.', ex: 'pup' },

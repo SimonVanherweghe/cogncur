@@ -20,10 +20,10 @@ export const GROUP_NAMES: Record<CharGroup, string> = {
 };
 
 export const STATUS_TEXT: Record<Status, [label: string, desc: string]> = {
-  origineel: ['Origineel', 'Getekend door de ontwerper van Cogncur.'],
-  samengesteld: ['Samengesteld', 'Nieuw: letter en accent van de ontwerper, automatisch samengezet.'],
+  origineel: ['Origineel', 'Uit het originele Cogncur.'],
+  samengesteld: ['Samengesteld', 'Nieuw: letter en accent uit het originele Cogncur, automatisch samengezet.'],
   schets: ['Schets', 'Nieuwe vorm, nog niet goedgekeurd. Er loopt een vraag aan de ontwerper.'],
-  nieuw: ['Nieuw', 'Nieuw teken, gemaakt uit vormen van de ontwerper.'],
+  nieuw: ['Nieuw', 'Nieuw teken, gemaakt uit vormen van het originele Cogncur.'],
 };
 
 export const hexU = (c: string): string => 'U+' + c.codePointAt(0)!.toString(16).toUpperCase().padStart(4, '0');

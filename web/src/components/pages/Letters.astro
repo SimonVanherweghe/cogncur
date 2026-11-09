@@ -232,7 +232,7 @@ const { slug, segment } = Astro.props;
     return {
       template: 'schrijfroute.yml',
       title: `[Schrijfroute] letter ${choice.base}`,
-      fields: { tekst: `${choice.base} (${variant}${choice.entry ? '' : ', zonder aanloop'}; model: ${id})`, instellingen: `schrijfmodel van de ontwerper, helling ${slant}°` },
+      fields: { tekst: `${choice.base} (${variant}${choice.entry ? '' : ', zonder aanloop'}; model: ${id})`, instellingen: `schrijfmodel van het originele Cogncur, helling ${slant}°` },
       snapshot: () => svgToCanvas(svg, { caption: `${versionText()} · ${id} · ${$('time').textContent}` }),
       existing: byWord.get(choice.base),
     };

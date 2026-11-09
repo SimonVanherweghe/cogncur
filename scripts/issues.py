@@ -162,8 +162,8 @@ DECISIONS = [
         "bestanden": "ð",
         "titel": "Schets: ð (eth)",
         "context": "De **ð** komt voor in het IJslands en het Faeröers. Cogncur heeft deze letter niet. "
-                   "De schets gebruikt de buik van haar **d**, een steel die bovenaan naar links buigt, en een schuine streep. "
-                   "Alles is getekend als middenlijn en daarna met haar pen (rond, 68 eenheden, 7,5° helling) uitgezet.\n\n"
+                   "De schets gebruikt de buik van de **d** uit het originele Cogncur, een steel die bovenaan naar links buigt, en een schuine streep. "
+                   "Alles is getekend als middenlijn en daarna met de pen van het originele Cogncur (rond, 68 eenheden, 7,5° helling) uitgezet.\n\n"
                    "De ð verbindt zich precies zoals de **d** (getest).",
         "glyphs": ["ð d ð"], "words": ["aða eðe bróðir með"],
         "options": VOTE_DRAFT,
@@ -172,8 +172,8 @@ DECISIONS = [
         "id": "schets-thorn", "labels": ["ontwerper"],
         "bestanden": "þ",
         "titel": "Schets: þ (thorn)",
-        "context": "De **þ** komt voor in het IJslands. De schets combineert de lus bovenaan van haar **b** met de "
-                   "staart en de buik van haar **p**.\n\nDe þ verbindt zich precies zoals de **p** (getest).",
+        "context": "De **þ** komt voor in het IJslands. De schets combineert de lus bovenaan van de **b** met de "
+                   "staart en de buik van de **p** uit het originele Cogncur.\n\nDe þ verbindt zich precies zoals de **p** (getest).",
         "glyphs": ["þ p b þ"], "words": ["þú þetta aþa"],
         "options": VOTE_DRAFT,
     },
@@ -181,7 +181,7 @@ DECISIONS = [
         "id": "schets-Thorn", "labels": ["ontwerper"],
         "slug": "schets-thorn-hoofdletter", "bestanden": "Þ",
         "titel": "Schets: Þ (hoofdletter thorn)",
-        "context": "De **Þ** is de hoofdletter van þ (IJslands). De schets is haar **P** met de buik naar het midden verschoven.\n\n"
+        "context": "De **Þ** is de hoofdletter van þ (IJslands). De schets is de **P** uit het originele Cogncur, met de buik naar het midden verschoven.\n\n"
                    "De Þ verbindt zich precies zoals de **P** (getest).",
         "glyphs": ["Þ P Þ"], "words": ["Þór Þingvellir"],
         "options": VOTE_DRAFT,
@@ -190,7 +190,7 @@ DECISIONS = [
         "id": "schets-scharfes-s", "labels": ["ontwerper"],
         "bestanden": "ẞ",
         "titel": "Schets: ẞ (hoofdletter ringel-s)",
-        "context": "De **ẞ** is de Duitse hoofdletter van ß. De schets gebruikt de steel en de onderste buik van haar **B**, "
+        "context": "De **ẞ** is de Duitse hoofdletter van ß. De schets gebruikt de steel en de onderste buik van de **B** uit het originele Cogncur, "
                    "met een vlakke bovenkant en een schuine lijn. Van alle schetsen is dit de ruwste.\n\n"
                    "De ẞ verbindt zich precies zoals de **B** (getest).",
         "glyphs": ["ẞ B ß ẞ"], "words": ["STRAẞE GROẞ Fuẞ"],
@@ -200,7 +200,7 @@ DECISIONS = [
         "id": "accent-ogonek", "labels": ["ontwerper"],
         "bestanden": "ąęįųĄĘĮŲ",
         "titel": "Nieuw accent: ogonek (ą ę į ų)",
-        "context": "Het haakje onder **ą ę į ų** (Pools, Litouws) bestaat niet in Cogncur. Het is nieuw getekend als middenlijn en met haar pen uitgezet. "
+        "context": "Het haakje onder **ą ę į ų** (Pools, Litouws) bestaat niet in Cogncur. Het is nieuw getekend als middenlijn en met de pen van het originele Cogncur uitgezet. "
                    "Het hangt aan de onderkant van de laatste stok van de letter. Die plaats is geschat.\n\n"
                    "De letters verbinden zich precies zoals a, e, i, u (getest).",
         "glyphs": ["ą ę į ų Ą Ę Į Ų"], "words": ["mąka ręka gęś ąžuolas"],
@@ -210,7 +210,7 @@ DECISIONS = [
         "id": "accent-dubbele-aigu", "labels": ["ontwerper"],
         "bestanden": "őűŐŰ",
         "titel": "Nieuw accent: dubbele accent aigu (ő ű)",
-        "context": "Het dubbele accent op **ő ű** (Hongaars) bestaat uit twee van haar eigen accents aigus, "
+        "context": "Het dubbele accent op **ő ű** (Hongaars) bestaat uit twee accents aigus uit het originele Cogncur, "
                    "elk 20 % smaller en naast elkaar gezet.",
         "glyphs": ["ő ű Ő Ű  ó ú"], "words": ["idő tűz Őrség Ügyes"],
         "options": VOTE_DRAFT,
@@ -219,7 +219,7 @@ DECISIONS = [
         "id": "accent-komma-onder", "labels": ["ontwerper"],
         "bestanden": "șțķļņģȘȚĶĻŅ",
         "titel": "Nieuw accent: komma onder (ș ț ķ ļ ņ) en boven (ģ)",
-        "context": "De komma onder **ș ț** (Roemeens) en **ķ ļ ņ** (Lets) is haar eigen komma, op 80 % van de grootte. "
+        "context": "De komma onder **ș ț** (Roemeens) en **ķ ļ ņ** (Lets) is de komma uit het originele Cogncur, op 80 % van de grootte. "
                    "Voor de **ģ** staat de komma, zoals in het Lets gebruikelijk, omgekeerd *boven* de letter.\n\n"
                    "_De Ģ (hoofdletter) is een aparte vraag: daar botst de komma met de lus van de G._",
         "glyphs": ["ș ț ķ ļ ņ ģ  Ș Ț Ķ Ļ Ņ"], "words": ["școală țară ķirsis ļoti ģimene"],
@@ -229,7 +229,7 @@ DECISIONS = [
         "id": "accent-punt-boven", "labels": ["ontwerper"],
         "bestanden": "ċėġżĊĖĠŻİ",
         "titel": "Nieuw accent: punt boven (ċ ė ġ ż İ)",
-        "context": "De punt op **ċ ė ġ ż** (Pools, Litouws, Maltees) en de **İ** (Turks) is exact de punt van haar **i**.",
+        "context": "De punt op **ċ ė ġ ż** (Pools, Litouws, Maltees) en de **İ** (Turks) is exact de punt op de **i** uit het originele Cogncur.",
         "glyphs": ["ċ ė ġ ż  Ċ Ė Ġ Ż İ  i"], "words": ["żaba ėsti ġurnata İzmir"],
         "options": VOTE_DRAFT,
     },
@@ -238,7 +238,7 @@ DECISIONS = [
         "bestanden": "ďľťĽ",
         "titel": "Nieuw accent: haček als apostrof (ď ľ ť Ľ)",
         "context": "Bij **ď ľ ť Ľ** (Tsjechisch, Slowaaks) staat de haček niet boven de lange stok maar ernaast, als een apostrof. "
-                   "Daarvoor is haar eigen apostrof (zoals in *don't*) gebruikt, rechts van de stok. De plaats is per letter geschat.\n\n"
+                   "Daarvoor is de apostrof uit het originele Cogncur (zoals in *don't*) gebruikt, rechts van de stok. De plaats is per letter geschat.\n\n"
                    "_Voor de ľ in stijlvariant ss01 is er een aparte vraag, want daar raakt de apostrof bijna de instreek._",
         "glyphs": ["ď ľ ť Ľ  č"], "words": ["ďakujem ľahký ťava Ľubica"],
         "options": VOTE_DRAFT,
@@ -247,8 +247,8 @@ DECISIONS = [
         "id": "streep-letters", "labels": ["ontwerper"],
         "bestanden": "ĐÐđĦħŁł",
         "titel": "Schets: letters met een streep (Đ Ð đ Ħ ħ Ł ł)",
-        "context": "**Đ đ** (Kroatisch, Vietnamees), **Ð** (IJslands), **Ħ ħ** (Maltees) en **Ł ł** (Pools) zijn haar letter "
-                   "met een rechte streep (of schuine streep bij Ł ł). Die streep is met haar pen getekend. De hoogte van de streep is geschat.",
+        "context": "**Đ đ** (Kroatisch, Vietnamees), **Ð** (IJslands), **Ħ ħ** (Maltees) en **Ł ł** (Pools) zijn de letters uit het originele Cogncur "
+                   "met een rechte streep (of schuine streep bij Ł ł). Die streep is getekend met de pen van het originele Cogncur. De hoogte van de streep is geschat.",
         "glyphs": ["Đ Ð đ Ħ ħ Ł ł"], "words": ["Đorđe ħobż łódka Łódź"],
         "options": VOTE_DRAFT,
     },
@@ -257,7 +257,7 @@ DECISIONS = [
         "bestanden": "¯ˆˇ˘˙˚˛˜˝…−",
         "titel": "Schets: losse accenten, … en −",
         "context": "Google Fonts vraagt ook **losse accenten** (¯ ˆ ˇ ˘ ˙ ˚ ˛ ˜ ˝), het **beletselteken** (…) en het **minteken** (−). "
-                   "De losse accenten zijn haar eigen accenten met ruimte ernaast. … bestaat uit drie van haar punten. − is de liggende streep van haar +.",
+                   "De losse accenten zijn de accenten uit het originele Cogncur met ruimte ernaast. … bestaat uit drie punten uit het originele Cogncur. − is de liggende streep van de + uit het originele Cogncur.",
         "glyphs": ["¯ ˆ ˇ ˘ ˙ ˚ ˛ ˜ ˝"], "words": ["en zo… 5 − 3 = 2"],
         "options": VOTE_DRAFT,
     },
